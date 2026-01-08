@@ -2,248 +2,207 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Mason’s Mansion | V18.2026 Architect</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mason’s Mansion | Mark V14</title>
     <style>
-        :root { 
-            --accent: #ffcc33; --bg: #05050a; --glass: rgba(15, 15, 25, 0.85); 
-            --glow: rgba(255, 204, 51, 0.4); --font-mono: 'JetBrains Mono', monospace;
+        :root {
+            --bg: #050400;
+            --accent: #ffcc33; /* Honey Gold */
+            --glow: rgba(255, 204, 51, 0.4);
+            --glass: rgba(15, 12, 5, 0.98);
+            --border: rgba(255, 204, 51, 0.2);
+            --text: #ffffff;
+            --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
-        body, html { margin: 0; padding: 0; background: var(--bg); overflow: hidden; font-family: 'Orbitron', sans-serif; cursor: none; color: white; }
-        canvas#bg-layer { position: fixed; inset: 0; z-index: -1; }
+
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font); overflow: hidden; height: 100vh; }
+
+        /* --- AUTH OVERLAY --- */
+        #auth-overlay {
+            position: fixed; inset: 0; z-index: 10000;
+            display: flex; align-items: center; justify-content: center;
+            background: #000; transition: 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .login-card { 
+            background: var(--glass); padding: 40px; border-radius: 40px; 
+            border: 1px solid var(--border); text-align: center; width: 380px; 
+            box-shadow: 0 0 50px rgba(0,0,0,1), 0 0 20px var(--glow);
+        }
+        .login-card h1 { color: var(--accent); letter-spacing: 8px; margin-bottom: 5px; font-size: 28px; text-shadow: 0 0 15px var(--glow); }
+        .credits { font-size: 10px; opacity: 0.5; margin-bottom: 30px; letter-spacing: 3px; }
+        .login-card input { 
+            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--border); 
+            padding: 15px; border-radius: 15px; color: #fff; margin-bottom: 15px; 
+            text-align: center; font-size: 16px; transition: 0.3s;
+        }
+        .login-card input:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--glow); }
+        .login-card button { 
+            width: 100%; padding: 18px; border-radius: 15px; border: none; 
+            background: var(--accent); color: #000; font-weight: 900; 
+            cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
+        }
+
+        /* --- MARK AI COMPANION --- */
+        #mark-container {
+            position: fixed; bottom: 100px; right: 30px; z-index: 5000;
+            width: 320px; background: var(--glass); border: 1px solid var(--border);
+            border-radius: 25px; display: none; flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8); border-bottom: 3px solid var(--accent);
+        }
+        .mark-header { padding: 15px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+        .mark-avatar { width: 30px; height: 30px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; }
+        .mark-chat { height: 300px; overflow-y: auto; padding: 15px; font-size: 14px; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 8px 12px; border-radius: 12px; max-width: 85%; line-height: 1.4; }
+        .msg.mark { background: rgba(255,204,51,0.1); align-self: flex-start; border-left: 2px solid var(--accent); }
+        .msg.user { background: rgba(255,255,255,0.05); align-self: flex-end; }
+        .mark-input-area { padding: 15px; display: flex; gap: 8px; border-top: 1px solid var(--border); }
+        .mark-input-area input { flex: 1; background: transparent; border: none; color: #fff; }
+
+        /* --- DESKTOP --- */
+        #desktop { position: relative; width: 100vw; height: 100vh; display: none; background: radial-gradient(circle at center, #111 0%, #000 100%); }
         
-        #neural-hand { width: 14px; height: 14px; background: var(--accent); position: fixed; border-radius: 50%; pointer-events: none; z-index: 10000; box-shadow: 0 0 20px var(--accent); transition: transform 0.05s linear; }
+        /* --- TASKBAR --- */
+        #taskbar { 
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); 
+            background: var(--glass); border: 1px solid var(--border); 
+            padding: 10px 25px; border-radius: 30px; display: flex; gap: 20px; 
+            z-index: 1000; backdrop-filter: blur(20px);
+        }
+        .t-icon { 
+            width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; 
+            background: rgba(255,255,255,0.03); border-radius: 18px; cursor: pointer; 
+            font-size: 26px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+        .t-icon:hover { transform: translateY(-12px) scale(1.1); background: var(--accent); color: #000; box-shadow: 0 10px 25px var(--glow); }
 
-        #ai-interface { position: fixed; top: 40px; left: 40px; width: 300px; z-index: 2000; }
-        #mark-face { width: 80px; height: 80px; border: 2px solid var(--accent); border-radius: 50%; margin-bottom: 15px; position: relative; box-shadow: 0 0 30px var(--glow); background: #000; transition: 0.3s; }
-        .eye { width: 20px; height: 4px; background: var(--accent); position: absolute; top: 30px; transition: 0.3s; }
-        .eye.left { left: 15px; } .eye.right { right: 15px; }
-        #mouth { width: 30px; height: 2px; background: var(--accent); position: absolute; bottom: 20px; left: 25px; transition: 0.3s; }
-        
-        /* EXPRESSIONS */
-        .thinking .eye { height: 10px; border-radius: 50%; }
-        .happy #mouth { height: 10px; border-radius: 0 0 20px 20px; background: transparent; border-bottom: 3px solid var(--accent); }
-        .win #mark-face { box-shadow: 0 0 50px #ff4444; border-color: #ff4444; }
+        /* --- SIDEBAR --- */
+        #sidebar {
+            position: fixed; left: -280px; top: 50%; transform: translateY(-50%);
+            width: 260px; background: var(--glass); border: 1px solid var(--border);
+            padding: 20px; border-radius: 0 30px 30px 0; z-index: 2000;
+            transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        #sidebar.open { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.8); }
+        #sidebar-tab {
+            position: absolute; right: -45px; top: 50%; transform: translateY(-50%);
+            background: var(--accent); color: #000; padding: 20px 10px;
+            border-radius: 0 15px 15px 0; cursor: pointer; font-weight: 900; 
+            writing-mode: vertical-rl; letter-spacing: 2px;
+        }
 
-        .window { position: absolute; background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; backdrop-filter: blur(15px); display: none; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 5000; }
-        .win-header { padding: 10px 15px; background: rgba(255,255,255,0.05); cursor: move; display: flex; justify-content: space-between; font-size: 10px; color: var(--accent); letter-spacing: 2px; }
-        .game-grid { display: grid; padding: 15px; gap: 8px; background: #000; }
-        .ttt-grid { grid-template-columns: repeat(3, 80px); }
-        .cell { width: 80px; height: 80px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--accent); transition: 0.2s; }
-
-        .mono-board { display: grid; grid-template-columns: repeat(4, 60px); grid-template-rows: repeat(4, 60px); gap: 4px; padding: 10px; background: #000; }
-        .m-tile { border: 1px solid #222; font-size: 8px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .p-token { width: 10px; height: 10px; border-radius: 50%; position: absolute; box-shadow: 0 0 10px currentColor; }
-
-        #taskbar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--glass); padding: 10px 30px; border-radius: 50px; display: flex; gap: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        .icon { font-size: 24px; cursor: none; filter: grayscale(1); transition: 0.3s; }
-        .icon:hover { filter: grayscale(0); transform: scale(1.2); }
-
-        #win-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
-    <canvas id="bg-layer"></canvas>
-    <div id="neural-hand"></div>
 
-    <div id="ai-interface">
-        <div id="mark-face">
-            <div class="eye left"></div>
-            <div class="eye right"></div>
-            <div id="mouth"></div>
+    <div id="auth-overlay">
+        <div class="login-card">
+            <h1>MASON</h1>
+            <div class="credits">V14 LIVING EDITION</div>
+            <input type="password" id="pass-input" placeholder="ACCESS KEY">
+            <button onclick="unlock()">Initialize</button>
         </div>
-        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--accent);">M.A.R.K V18: <span id="ai-status">WAITING</span></div>
     </div>
 
-    <div id="win-overlay">
-        <h1 id="win-text" style="color:var(--accent); letter-spacing:10px; text-align:center;">CORE BREACH</h1>
-        <button onclick="location.reload()" style="background:none; border:1px solid var(--accent); color:var(--accent); padding:10px 30px; margin-top:20px; font-family: 'Orbitron'; cursor: none;">REBOOT_SYSTEM</button>
-    </div>
-
-    <div id="win-ttt" class="window" style="top:150px; left:400px;">
-        <div class="win-header"><span>NEURAL_XO</span><span onclick="System.close('ttt')">×</span></div>
-        <div class="game-grid ttt-grid" id="ttt-board"></div>
-    </div>
-
-    <div id="win-mono" class="window" style="top:200px; left:500px;">
-        <div class="win-header"><span>CYBER_MONO</span><span onclick="System.close('mono')">×</span></div>
-        <div class="mono-board" id="mono-board"></div>
-        <div style="padding: 10px; font-size: 10px; color: var(--accent); display: flex; justify-content: space-between;" id="mono-stats">
-            <span>MASON: $1500</span><span>AI: $1500</span>
+    <div id="desktop">
+        <!-- Sidebar Navigation -->
+        <div id="sidebar">
+            <div id="sidebar-tab" onclick="toggleSidebar()">MADNESS</div>
+            <h3 style="color:var(--accent); font-size: 12px; letter-spacing: 2px;">PROTOCOL LIST</h3>
+            <button class="option-btn" onclick="alert('Module Alpha')">SYSTEM BYPASS</button>
+            <button class="option-btn" onclick="alert('Module Beta')">NETWORK SHADOW</button>
+            <button class="option-btn" onclick="alert('Module Gamma')">ENCRYPTION KEY</button>
         </div>
-        <button onclick="System.monoMove()" style="background: var(--accent); border: none; padding: 12px; font-weight: bold; cursor: none; font-family: 'Orbitron';">EXECUTE_ROLL</button>
-    </div>
 
-    <div id="taskbar">
-        <div class="icon" onclick="System.open('ttt')">⚔️</div>
-        <div class="icon" onclick="System.open('mono')">🏦</div>
+        <!-- Taskbar -->
+        <div id="taskbar">
+            <div class="t-icon" onclick="toggleMark()">M</div>
+            <div class="t-icon">🌐</div>
+            <div class="t-icon">📁</div>
+            <div class="t-icon">⚙️</div>
+        </div>
+
+        <!-- Mark AI Interface -->
+        <div id="mark-container">
+            <div class="mark-header">
+                <div class="mark-avatar">M</div>
+                <span style="font-weight: 900; font-size: 12px; letter-spacing: 1px;">MARK COMPANION</span>
+            </div>
+            <div id="chat-box" class="mark-chat">
+                <div class="msg mark">Welcome to the Mansion. I'm Mark. What's the plan?</div>
+            </div>
+            <div class="mark-input-area">
+                <input type="text" id="mark-msg" placeholder="Talk to Mark..." onkeypress="if(event.key === 'Enter') sendToMark()">
+                <button onclick="sendToMark()" style="background:var(--accent); border:none; border-radius:5px; padding: 5px 10px; cursor:pointer;">➔</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        class ParticleSystem {
-            constructor() {
-                this.canvas = document.getElementById('bg-layer');
-                this.ctx = this.canvas.getContext('2d');
-                this.particles = [];
-                window.addEventListener('resize', () => this.resize());
-                this.resize();
-                this.init();
-            }
-            resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; }
-            init() { for(let i=0; i<60; i++) this.particles.push({x: Math.random()*this.canvas.width, y: Math.random()*this.canvas.height, vx: Math.random()-0.5, vy: Math.random()-0.5}); }
-            draw() {
-                this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
-                this.ctx.strokeStyle = "rgba(255, 204, 51, 0.1)";
-                this.particles.forEach(p => {
-                    p.x += p.vx; p.y += p.vy;
-                    if(p.x<0 || p.x>this.canvas.width) p.vx *= -1;
-                    if(p.y<0 || p.y>this.canvas.height) p.vy *= -1;
-                    this.ctx.beginPath(); this.ctx.arc(p.x, p.y, 1, 0, Math.PI*2); this.ctx.stroke();
-                });
-                requestAnimationFrame(() => this.draw());
+        // --- AUTHENTICATION ---
+        function unlock() {
+            const pass = document.getElementById('pass-input').value;
+            if(pass === "3.14") {
+                document.getElementById('auth-overlay').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('auth-overlay').style.display = 'none';
+                    document.getElementById('desktop').style.display = 'block';
+                }, 1000);
+            } else {
+                alert("ACCESS DENIED");
             }
         }
 
-        class TicTacToeAI {
-            constructor() { this.board = Array(9).fill(null); }
-            checkWinner(b) {
-                const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-                for(let [a,b_idx,c] of wins) if(b[a] && b[a]===b[b_idx] && b[a]===b[c]) return b[a];
-                return b.includes(null) ? null : 'draw';
-            }
-            minimax(b, depth, alpha, beta, isMax) {
-                let res = this.checkWinner(b);
-                if(res === 'O') return 10 - depth;
-                if(res === 'X') return depth - 10;
-                if(res === 'draw') return 0;
-                if(isMax) {
-                    let best = -Infinity;
-                    for(let i=0; i<9; i++) if(!b[i]) {
-                        b[i]='O'; best = Math.max(best, this.minimax(b, depth+1, alpha, beta, false));
-                        b[i]=null; alpha = Math.max(alpha, best); if(beta <= alpha) break;
-                    }
-                    return best;
-                } else {
-                    let best = Infinity;
-                    for(let i=0; i<9; i++) if(!b[i]) {
-                        b[i]='X'; best = Math.min(best, this.minimax(b, depth+1, alpha, beta, true));
-                        b[i]=null; beta = Math.min(beta, best); if(beta <= alpha) break;
-                    }
-                    return best;
-                }
-            }
-            getBestMove() {
-                let bestVal = -Infinity; let move = -1;
-                for(let i=0; i<9; i++) if(!this.board[i]) {
-                    this.board[i] = 'O';
-                    let moveVal = this.minimax(this.board, 0, -Infinity, Infinity, false);
-                    this.board[i] = null;
-                    if(moveVal > bestVal) { bestVal = moveVal; move = i; }
-                }
-                return move;
-            }
+        // --- SIDEBAR ---
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
         }
 
-        const System = {
-            ttt: new TicTacToeAI(),
-            mono: { pPos: 0, aiPos: 0, pBal: 1500, aiBal: 1500, owners: Array(12).fill(null) },
+        // --- MARK AI LOGIC ---
+        function toggleMark() {
+            const container = document.getElementById('mark-container');
+            container.style.display = (container.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        const markResponses = [
+            "I've optimized your current workflow. Anything else?",
+            "The Mansion's security is currently at 100%.",
+            "I'm processing that... Done. What's next?",
+            "Mason mentioned you might say that.",
+            "Analyzing data patterns... everything looks gold.",
+            "Should I engage the shadow protocol?",
+            "I'm here. Always watching, always learning.",
+            "That's a bold move. I like it.",
+            "Connection stable. Ready for commands.",
+            "I've updated the V14 logs with your input."
+        ];
+
+        function sendToMark() {
+            const input = document.getElementById('mark-msg');
+            const chatBox = document.getElementById('chat-box');
             
-            init() {
-                new ParticleSystem().draw();
-                this.renderTTT();
-                this.renderMono();
-                document.addEventListener('mousemove', e => {
-                    const h = document.getElementById('neural-hand');
-                    h.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-                });
-                this.open('ttt');
-            },
+            if(input.value.trim() === "") return;
 
-            setMood(mood, status) {
-                const f = document.getElementById('mark-face');
-                f.className = mood;
-                document.getElementById('ai-status').innerText = status;
-            },
+            // User Message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'msg user';
+            userMsg.innerText = input.value;
+            chatBox.appendChild(userMsg);
 
-            renderTTT() {
-                const container = document.getElementById('ttt-board');
-                container.innerHTML = '';
-                this.ttt.board.forEach((val, i) => {
-                    const c = document.createElement('div');
-                    c.className = 'cell'; c.innerText = val || '';
-                    c.onclick = () => this.playerMove(i);
-                    container.appendChild(c);
-                });
-            },
+            // Mark Thinking
+            setTimeout(() => {
+                const markMsg = document.createElement('div');
+                markMsg.className = 'msg mark';
+                // Pick a random response from the "thousands" (simulated via array)
+                const randomResp = markResponses[Math.floor(Math.random() * markResponses.length)];
+                markMsg.innerText = randomResp;
+                chatBox.appendChild(markMsg);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 600);
 
-            playerMove(i) {
-                if(this.ttt.board[i] || this.ttt.checkWinner(this.ttt.board)) return;
-                this.ttt.board[i] = 'X'; this.renderTTT();
-                this.setMood('thinking', 'SIMULATING_TIMELINES');
-                if(this.ttt.checkWinner(this.ttt.board)) return this.endGame();
-                
-                setTimeout(() => {
-                    const aiMove = this.ttt.getBestMove();
-                    if(aiMove !== -1) this.ttt.board[aiMove] = 'O';
-                    this.renderTTT();
-                    this.setMood('', 'OPTIMAL_PATH_FOUND');
-                    if(this.ttt.checkWinner(this.ttt.board)) this.endGame();
-                }, 600);
-            },
-
-            renderMono() {
-                const b = document.getElementById('mono-board'); b.innerHTML = '';
-                for(let i=0; i<12; i++) {
-                    const t = document.createElement('div');
-                    t.className = 'm-tile';
-                    if(this.mono.owners[i] === 'P') t.style.boxShadow = "inset 0 0 10px var(--accent)";
-                    if(this.mono.owners[i] === 'AI') t.style.boxShadow = "inset 0 0 10px #ff4444";
-                    
-                    if(this.mono.pPos === i) t.innerHTML += '<div class="p-token" style="background:var(--accent); left:2px; color:var(--accent)"></div>';
-                    if(this.mono.aiPos === i) t.innerHTML += '<div class="p-token" style="background:#ff4444; right:2px; color:#ff4444"></div>';
-                    b.appendChild(t);
-                }
-                document.getElementById('mono-stats').innerHTML = `<span>MASON: $${this.mono.pBal}</span><span>AI: $${this.mono.aiBal}</span>`;
-            },
-
-            monoMove() {
-                // Player Turn
-                this.mono.pPos = (this.mono.pPos + Math.floor(Math.random()*6)+1) % 12;
-                this.handleTile(this.mono.pPos, 'P');
-                
-                // AI Turn
-                setTimeout(() => {
-                    this.mono.aiPos = (this.mono.aiPos + Math.floor(Math.random()*6)+1) % 12;
-                    this.handleTile(this.mono.aiPos, 'AI');
-                    this.renderMono();
-                    if(this.mono.pBal <= 0 || this.mono.aiBal <= 0) this.endGame("BANKRUPTCY_PROTOCOL");
-                }, 500);
-            },
-
-            handleTile(pos, user) {
-                const rent = 200, price = 300;
-                if(this.mono.owners[pos] === null) {
-                    if(user === 'AI' || confirm("BUY PROPERTY for $300?")) {
-                        if(user === 'P') { this.mono.pBal -= price; this.mono.owners[pos] = 'P'; }
-                        else { this.mono.aiBal -= price; this.mono.owners[pos] = 'AI'; this.setMood('thinking', 'ASSET_ACQUIRED'); }
-                    }
-                } else if(this.mono.owners[pos] !== user) {
-                    if(user === 'P') { this.mono.pBal -= rent; this.mono.aiBal += rent; this.setMood('happy', 'COLLECTING_TAX'); }
-                    else { this.mono.aiBal -= rent; this.mono.pBal += rent; }
-                }
-            },
-
-            endGame(reason) {
-                const res = this.ttt.checkWinner(this.ttt.board);
-                this.setMood('win', 'SESSION_TERMINATED');
-                document.getElementById('win-text').innerText = reason || (res === 'X' ? "MASON_WINS" : "AI_DOMINANCE");
-                document.getElementById('win-overlay').style.display = 'flex';
-            },
-
-            open(id) { document.getElementById('win-'+id).style.display = 'flex'; },
-            close(id) { document.getElementById('win-'+id).style.display = 'none'; }
-        };
-
-        System.init();
+            input.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
     </script>
 </body>
 </html>
