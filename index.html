@@ -262,4 +262,53 @@ function applyTheme(t){
   document.querySelectorAll(".panel,.box").forEach(el=>el.style.background=t.panel);
   document.querySelectorAll(".theme-btn").forEach(el=>el.style.background=t.accent);
   core.style.background=t.accent;trail.style.borderColor=t.accent;
-  document.documentElement.style.setProperty
+  document.documentElement.style.setProperty("--glow",t.glow);
+}
+
+/* Login System */
+function unlock(){
+  const val=document.getElementById("userPass").value;
+  if(val===USER){lock.style.display="none";vipLogin.style.display="block";}
+  else document.getElementById("userErr").style.display="block";
+}
+function vipUnlock(){
+  const val=document.getElementById("vipPass").value;
+  if(val===VIP){vipLogin.style.display="none";vipPanel.style.display="block";renderThemes();}
+  else document.getElementById("vipErr").style.display="block";
+}
+function ownerUnlock(){
+  const val=document.getElementById("ownerPass").value;
+  if(val===OWNER){ownerLogin.style.display="none";ownerPanel.style.display="block";renderThemes();}
+  else document.getElementById("ownerErr").style.display="block";
+}
+
+/* Panel Control */
+function closeVIP(){vipPanel.style.display="none";}
+function closeOwner(){ownerPanel.style.display="none";}
+function closeAdmin(){adminPanel.style.display="none";}
+
+/* Owner Actions */
+function grantVIP(){
+  const u=prompt("Enter username to grant VIP:");if(u && !vipUsers.includes(u)){vipUsers.push(u);alert(u+" is now VIP!");}
+}
+function revokeVIP(){
+  const u=prompt("Enter username to revoke VIP:");const idx=vipUsers.indexOf(u);if(idx>-1){vipUsers.splice(idx,1);alert(u+" VIP revoked!");}
+}
+function startRGBTheme(){
+  let hue=0;clearInterval(window.rgbInterval);
+  window.rgbInterval=setInterval(()=>{
+    document.body.style.background=`hsl(${hue},80%,15%)`;
+    document.querySelectorAll(".panel,.box").forEach(el=>el.style.background=`hsla(${hue},80%,25%,.8)`);
+    document.querySelectorAll(".theme-btn").forEach(el=>el.style.background=`hsl(${hue},80%,50%)`);
+    core.style.background=`hsl(${hue},80%,50%)`;trail.style.borderColor=`hsl(${hue},80%,50%)`;
+    document.documentElement.style.setProperty("--glow",`hsla(${hue},80%,50%,.35)`);
+    hue=(hue+1)%360;
+  },40);
+}
+
+/* Init */
+renderGames();
+renderThemes();
+</script>
+</body>
+</html>
