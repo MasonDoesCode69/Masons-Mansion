@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Mason’s Mansion</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
 :root{
   --bg:#050505;
@@ -17,216 +16,76 @@
   --glow:rgba(125,249,255,.35);
 }
 
-/* EXTRA THEME COLORS */
-:root[data-theme="honey"]{--bg:#fff1d6;--panel:rgba(255,220,180,.75);--card:rgba(255,230,200,.9);--border:#d9a066;--text:#5b3a00;--accent:#ffbf00;--glow:rgba(255,191,0,.35);}
-:root[data-theme="blue"]{--bg:#e0f7ff;--panel:rgba(180,220,255,.75);--card:rgba(200,240,255,.9);--border:#66aaff;--text:#002c5f;--accent:#00bfff;--glow:rgba(0,191,255,.35);}
-:root[data-theme="vip"]{--bg:#ffe6f0;--panel:rgba(255,200,230,.75);--card:rgba(255,220,240,.9);--border:#ff66aa;--text:#40002b;--accent:#ff3399;--glow:rgba(255,51,153,.35);}
-:root[data-theme="owner"]{--bg:#fff5e6;--panel:rgba(255,235,200,.75);--card:rgba(255,245,210,.9);--border:#ffaa33;--text:#5a3b00;--accent:#ff9900;--glow:rgba(255,153,0,.35);}
-:root[data-theme="galaxy"]{--bg:#1c0033;--panel:rgba(50,10,80,.75);--card:rgba(80,20,140,.9);--border:#440088;--text:#ffffff;--accent:#bb88ff;--glow:rgba(187,136,255,.35);}
-:root[data-theme="supernova"]{--bg:#fff0cc;--panel:rgba(255,200,120,.75);--card:rgba(255,220,150,.9);--border:#ff9900;--text:#330800;--accent:#ff5500;--glow:rgba(255,85,0,.35);}
-:root[data-theme="mint"]{--bg:#e6fff5;--panel:rgba(180,255,220,.75);--card:rgba(200,255,230,.9);--border:#33cc99;--text:#003322;--accent:#00ffaa;--glow:rgba(0,255,170,.35);}
-:root[data-theme="sunset"]{--bg:#ffe6cc;--panel:rgba(255,180,120,.75);--card:rgba(255,200,150,.9);--border:#ff6600;--text:#331900;--accent:#ff3300;--glow:rgba(255,51,0,.35);}
-:root[data-theme="forest"]{--bg:#e6ffe6;--panel:rgba(180,255,180,.75);--card:rgba(200,240,200,.9);--border:#33aa33;--text:#003300;--accent:#00cc00;--glow:rgba(0,204,0,.35);}
-:root[data-theme="night"]{--bg:#000022;--panel:rgba(20,20,50,.75);--card:rgba(40,40,90,.9);--border:#222266;--text:#ccccff;--accent:#8888ff;--glow:rgba(136,136,255,.35);}
-:root[data-theme="rose"]{--bg:#ffe6f0;--panel:rgba(255,180,220,.75);--card:rgba(255,200,230,.9);--border:#ff66aa;--text:#400020;--accent:#ff3388;--glow:rgba(255,51,136,.35);}
-:root[data-theme="cyber"]{--bg:#000011;--panel:rgba(10,10,50,.75);--card:rgba(20,20,100,.9);--border:#00ffff;--text:#00ffdd;--accent:#00ffff;--glow:rgba(0,255,255,.35);}
-
+/* basic resets */
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:system-ui,-apple-system,sans-serif;
-  background:var(--bg);
+  background:radial-gradient(circle at top,#0c1a1d,#050505);
   color:var(--text);
   min-height:100vh;
   overflow:hidden;
   cursor:none;
-  transition:background 0.5s,color 0.5s;
 }
 
-/* ===== CURSOR ===== */
+/* cursor */
 .cursor-core,.cursor-glow,.cursor-trail{
-  position:fixed;
-  pointer-events:none;
-  z-index:9999;
-  border-radius:50%;
+  position:fixed;pointer-events:none;border-radius:50%;z-index:9999;
 }
-.cursor-core{
-  width:6px;height:6px;
-  background:#fff;
-}
-.cursor-glow{
-  width:120px;height:120px;
-  background:radial-gradient(circle,var(--glow),transparent 70%);
-  filter:blur(8px);
-  transition:transform .05s linear;
-}
-.cursor-trail{
-  width:36px;height:36px;
-  border:1px solid rgba(255,255,255,.35);
-  opacity:.5;
-  transition:transform .12s ease-out;
-}
+.cursor-core{width:6px;height:6px;background:#fff;}
+.cursor-glow{width:120px;height:120px;background:radial-gradient(circle,var(--glow),transparent 70%);filter:blur(8px);transition:transform .05s linear;}
+.cursor-trail{width:36px;height:36px;border:1px solid rgba(255,255,255,.35);opacity:.5;transition:transform .12s ease-out;}
 
-/* ===== PANELS ===== */
+/* overlays */
 .overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.88);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:10000;
+  position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;z-index:10000;
 }
 .box{
-  background:var(--panel);
-  backdrop-filter:blur(14px);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:26px;
-  width:300px;
-  text-align:center;
-  box-shadow:0 0 50px #000;
+  background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:20px;
+  padding:26px;width:300px;text-align:center;box-shadow:0 0 50px #000;
 }
-.box h2{
-  letter-spacing:.18em;
-  margin-bottom:10px;
-}
-.box input{
-  width:100%;
-  padding:9px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background:var(--card);
-  color:var(--text);
-  text-align:center;
-  margin-bottom:10px;
-}
-.box button{
-  padding:8px 16px;
-  border-radius:12px;
-  border:none;
-  background:var(--accent);
-  color:#000;
-  cursor:pointer;
-  font-weight:600;
-  margin:4px;
-  transition:.2s;
-}
-.box button:hover{
-  transform:scale(1.05);
-  box-shadow:0 0 12px var(--glow);
-}
-.error{display:none;color:#ff6a6a;font-size:11px}
+.box h2{letter-spacing:.18em;margin-bottom:10px;}
+.box input{width:100%;padding:9px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);text-align:center;margin-bottom:10px;}
+.box button{padding:8px 16px;border-radius:999px;border:none;background:var(--accent);color:#000;cursor:pointer;font-weight:600;margin:3px;}
+.error{display:none;color:#ff6a6a;font-size:11px;}
 
-/* ===== MAIN UI ===== */
-.page{
-  max-width:1200px;
-  margin:0 auto;
-  padding:20px;
-}
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:24px;
-  padding:16px 22px;
-  margin-bottom:18px;
-  position:relative;
-}
-header h1{
-  font-size:20px;
-  letter-spacing:.25em;
-}
-header span{
-  font-size:11px;
-  color:var(--muted);
-}
+/* page */
+.page{max-width:1200px;margin:0 auto;padding:20px;}
+header{display:flex;justify-content:space-between;align-items:center;background:var(--panel);border:1px solid var(--border);border-radius:24px;padding:16px 22px;margin-bottom:18px;}
+header h1{font-size:20px;letter-spacing:.25em;}
+header span{font-size:11px;color:var(--muted);}
+.layout{display:grid;grid-template-columns:260px 1fr;gap:18px;}
+.panel{background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:20px;padding:14px;}
+.panel h3{font-size:12px;letter-spacing:.18em;color:var(--muted);margin-bottom:8px;}
+.game{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;margin-bottom:6px;cursor:pointer;transition:.15s;}
+.game:hover{border-color:var(--accent);box-shadow:0 0 18px var(--glow);}
+.setting{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;}
+iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;}
 
-/* admin button top-left */
-#adminBtn{
-  position:absolute;
-  left:10px;
-  top:10px;
-  padding:6px 12px;
-  border-radius:12px;
-  background:var(--accent);
-  color:#000;
-  font-size:11px;
-  cursor:pointer;
-  font-weight:600;
-  border:none;
-  transition:.2s;
-}
-#adminBtn:hover{
-  transform:scale(1.05);
-  box-shadow:0 0 10px var(--glow);
-}
-
-.layout{
-  display:grid;
-  grid-template-columns:260px 1fr;
-  gap:18px;
-}
-.panel{
-  background:var(--panel);
-  backdrop-filter:blur(14px);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:14px;
-}
-.panel h3{
-  font-size:12px;
-  letter-spacing:.18em;
-  color:var(--muted);
-  margin-bottom:8px;
-}
-
-.game{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:10px;
-  margin-bottom:6px;
-  cursor:pointer;
-  transition:.15s;
-}
-.game:hover{
-  border-color:var(--accent);
-  box-shadow:0 0 18px var(--glow);
-}
-
-.setting{
-  display:flex;
-  justify-content:space-between;
-  font-size:12px;
-  margin-bottom:6px;
-}
-
-iframe{
-  width:100%;
-  height:560px;
-  border:none;
-  border-radius:18px;
-  background:#000;
-}
-
-/* theme list buttons */
-.themeBtn{
-  display:block;
-  width:100%;
-  margin-bottom:6px;
-}
+/* theme buttons */
+.theme-btn{padding:6px 12px;margin:4px;border-radius:12px;border:none;cursor:pointer;font-weight:600;color:#fff;}
+.theme-btn:hover{opacity:.85;}
+.theme-honey{background:#ffbf00;}
+.theme-blue{background:#00bfff;}
+.theme-vip{background:#ff3399;}
+.theme-owner{background:#ff9900;}
+.theme-galaxy{background:#bb88ff;}
+.theme-supernova{background:#ff5500;}
+.theme-mint{background:#00ffaa;}
+.theme-sunset{background:#ff3300;}
+.theme-forest{background:#00cc00;}
+.theme-night{background:#8888ff;}
+.theme-rose{background:#ff3388;}
+.theme-cyber{background:#00ffff;}
 </style>
 </head>
-<body data-theme="default">
+<body>
 
-<!-- CURSOR -->
+<!-- Cursor -->
 <div class="cursor-glow"></div>
 <div class="cursor-trail"></div>
 <div class="cursor-core"></div>
 
-<!-- USER LOCK -->
+<!-- Lock -->
 <div class="overlay" id="lock">
   <div class="box">
     <h2>MASON’S MANSION</h2>
@@ -236,58 +95,52 @@ iframe{
   </div>
 </div>
 
-<!-- ADMIN PANEL PASSWORDS -->
-<div class="overlay" id="adminLogin" style="display:none">
-  <div class="box">
-    <h2>ADMIN LOGIN</h2>
-    <input id="adminPass" type="password" placeholder="Admin password">
-    <button onclick="adminUnlock()">Unlock</button>
-    <div class="error" id="adminErr">Wrong password</div>
-  </div>
-</div>
-
+<!-- VIP Login -->
 <div class="overlay" id="vipLogin" style="display:none">
   <div class="box">
-    <h2>VIP LOGIN</h2>
+    <h2>VIP</h2>
     <input id="vipPass" type="password" placeholder="VIP password">
     <button onclick="vipUnlock()">Enter</button>
     <div class="error" id="vipErr">Wrong password</div>
   </div>
 </div>
 
+<!-- Owner Login -->
 <div class="overlay" id="ownerLogin" style="display:none">
   <div class="box">
-    <h2>OWNER LOGIN</h2>
+    <h2>OWNER</h2>
     <input id="ownerPass" type="password" placeholder="Owner password">
     <button onclick="ownerUnlock()">Enter</button>
     <div class="error" id="ownerErr">Wrong password</div>
   </div>
 </div>
 
-<!-- PANELS -->
+<!-- Admin Panel -->
 <div class="overlay" id="adminPanel" style="display:none">
   <div class="box">
     <h2>ADMIN PANEL</h2>
-    <div id="adminCommands"></div>
-    <br>
+    <input id="gName" placeholder="Game name">
+    <input id="gUrl" placeholder="Game URL">
+    <button onclick="addGame()">Add Game</button>
+    <br><br>
     <button onclick="closeAdmin()">Close</button>
   </div>
 </div>
 
+<!-- VIP Panel -->
 <div class="overlay" id="vipPanel" style="display:none">
   <div class="box">
     <h2>VIP PANEL</h2>
-    <div id="vipCommands"></div>
-    <br>
-    <button onclick="closeVip()">Close</button>
+    <button onclick="alert('You clicked a silly VIP button!')">Silly Button</button>
+    <button onclick="closeVIP()">Close</button>
   </div>
 </div>
 
+<!-- Owner Panel -->
 <div class="overlay" id="ownerPanel" style="display:none">
   <div class="box">
     <h2>OWNER PANEL</h2>
-    <div id="ownerCommands"></div>
-    <br>
+    <button onclick="alert('Owner can do powerful things!')">Owner Button</button>
     <button onclick="closeOwner()">Close</button>
   </div>
 </div>
@@ -296,7 +149,6 @@ iframe{
 <header>
   <h1>MASON’S MANSION</h1>
   <span>private unblocked lounge</span>
-  <button id="adminBtn" onclick="openAdmin()">Panel</button>
 </header>
 
 <div class="layout">
@@ -320,42 +172,40 @@ iframe{
 </div>
 
 <script>
-/* CURSOR */
-const core=document.querySelector(".cursor-core"),
-glow=document.querySelector(".cursor-glow"),
-trail=document.querySelector(".cursor-trail");
-
+/* cursor */
+const core=document.querySelector(".cursor-core"),glow=document.querySelector(".cursor-glow"),trail=document.querySelector(".cursor-trail");
 document.addEventListener("mousemove",e=>{
   core.style.transform=`translate(${e.clientX-3}px,${e.clientY-3}px)`;
   glow.style.transform=`translate(${e.clientX-60}px,${e.clientY-60}px)`;
   trail.style.transform=`translate(${e.clientX-18}px,${e.clientY-18}px)`;
 });
 
-/* PASSWORDS */
-const USER="Honey";
-const ADMIN="Hubbard330!";
-const VIP="VIP67";
-const OWNER="masononly69";
-
-/* GAMES */
+/* logic */
+const USER="Honey",VIP="VIP67",OWNER="masononly69",ADMIN="Hubbard330!";
 let games=[
- {name:"Gladihoppers",url:"https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html"},
- {name:"BitLife",url:"https://3kh0.github.io/bitlife/"},
- {name:"Proxy",url:"https://ultraviolet-node.netlify.app/"}
+{name:"Gladihoppers",url:"https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html"},
+{name:"BitLife",url:"https://3kh0.github.io/bitlife/"},
+{name:"Proxy",url:"https://ultraviolet-node.netlify.app/"}
 ];
 
-const list=document.getElementById("games");
-const player=document.getElementById("player");
+const themeList=[
+{name:"Honey",type:"public",colors:{bg:"#fffae5",panel:"rgba(255,191,0,.5)",accent:"#ffbf00",glow:"rgba(255,191,0,.35)"}},
+{name:"Blue",type:"public",colors:{bg:"#e5f7ff",panel:"rgba(0,191,255,.25)",accent:"#00bfff",glow:"rgba(0,191,255,.35)"}},
+{name:"Galaxy",type:"public",colors:{bg:"#1b0033",panel:"rgba(50,20,60,.7)",accent:"#bb88ff",glow:"rgba(187,136,255,.35)"}},
+{name:"Supernova",type:"owner",colors:{bg:"#2b0000",panel:"rgba(255,85,0,.75)",accent:"#ff5500",glow:"rgba(255,85,0,.35)"}},
+{name:"VIP Pink",type:"vip",colors:{bg:"#ffe5f0",panel:"rgba(255,51,153,.5)",accent:"#ff3399",glow:"rgba(255,51,153,.35)"}},
+{name:"Mint",type:"public",colors:{bg:"#e5fff8",panel:"rgba(0,255,170,.25)",accent:"#00ffaa",glow:"rgba(0,255,170,.35)"}},
+{name:"Sunset",type:"public",colors:{bg:"#fff0e5",panel:"rgba(255,51,0,.25)",accent:"#ff3300",glow:"rgba(255,51,0,.35)"}},
+{name:"Forest",type:"public",colors:{bg:"#e5ffe5",panel:"rgba(0,204,0,.25)",accent:"#00cc00",glow:"rgba(0,204,0,.35)"}},
+{name:"Night",type:"public",colors:{bg:"#e5e5ff",panel:"rgba(136,136,255,.25)",accent:"#8888ff",glow:"rgba(136,136,255,.35)"}},
+{name:"Rose",type:"public",colors:{bg:"#ffe5ea",panel:"rgba(255,51,136,.25)",accent:"#ff3388",glow:"rgba(255,51,136,.35)"}},
+{name:"Cyber",type:"public",colors:{bg:"#e5ffff",panel:"rgba(0,255,255,.25)",accent:"#00ffff",glow:"rgba(0,255,255,.35)"}}
+];
 
-function unlock(){
-  if(userPass.value===USER){
-    lock.style.display="none";
-    renderGames();
-    renderThemes();
-  }else userErr.style.display="block";
-}
+const list=document.getElementById("games"),player=document.getElementById("player"),themes=document.getElementById("themes");
 
-function renderGames(){
+/* render games */
+function render(){
   list.innerHTML="";
   games.forEach(g=>{
     const d=document.createElement("div");
@@ -365,7 +215,6 @@ function renderGames(){
     list.appendChild(d);
   });
 }
-
 function launch(g){
   if(optTab.checked){window.open(g.url,"_blank");return;}
   if(optCloak.checked){
@@ -377,75 +226,42 @@ function launch(g){
   player.sandbox=optSandbox.checked?"allow-scripts allow-same-origin allow-forms":"";
 }
 
-/* THEMES */
-const themeList=[
- {name:"Honey",type:"public"},
- {name:"Blue",type:"public"},
- {name:"Galaxy",type:"vip"},
- {name:"Supernova",type:"owner"},
- {name:"Mint",type:"public"},
- {name:"Sunset",type:"public"},
- {name:"Forest",type:"public"},
- {name:"Night",type:"vip"},
- {name:"Rose",type:"vip"},
- {name:"Cyber",type:"owner"}
-];
-
-const themeDiv=document.getElementById("themes");
+/* render themes */
 function renderThemes(){
-  themeDiv.innerHTML="";
+  themes.innerHTML="";
   themeList.forEach(t=>{
     const b=document.createElement("button");
-    b.className="themeBtn";
+    b.className="theme-btn theme-"+t.name.toLowerCase().replace(/\s/g,'');
     b.textContent=t.name;
     b.onclick=()=>applyTheme(t);
-    themeDiv.appendChild(b);
+    themes.appendChild(b);
   });
 }
-
 function applyTheme(t){
   if(t.type==="vip"){vipLogin.style.display="flex";return;}
   if(t.type==="owner"){ownerLogin.style.display="flex";return;}
-  document.body.dataset.theme=t.name.toLowerCase();
+  document.body.style.background=t.colors.bg;
+  document.querySelectorAll(".panel,.box").forEach(el=>el.style.background=t.colors.panel);
+  document.querySelectorAll(".theme-btn").forEach(el=>el.style.background=t.colors.accent);
+  document.documentElement.style.setProperty("--glow",t.colors.glow);
+  core.style.background=t.colors.accent;
+  trail.style.borderColor=t.colors.accent;
 }
 
-/* VIP LOGIN */
-function vipUnlock(){
-  if(vipPass.value===VIP){
-    vipLogin.style.display="none";
-    vipPanel.style.display="flex";
-  } else vipErr.style.display="block";
-}
-function closeVip(){vipPanel.style.display="none";}
+/* login functions */
+function unlock(){if(userPass.value===USER){lock.style.display="none";render();renderThemes();}else userErr.style.display="block";}
+function vipUnlock(){if(vipPass.value===VIP){vipLogin.style.display="none";vipPanel.style.display="flex";}else vipErr.style.display="block";}
+function ownerUnlock(){if(ownerPass.value===OWNER){ownerLogin.style.display="none";ownerPanel.style.display="flex";}else ownerErr.style.display="block";}
 
-/* OWNER LOGIN */
-function ownerUnlock(){
-  if(ownerPass.value===OWNER){
-    ownerLogin.style.display="none";
-    ownerPanel.style.display="flex";
-  } else ownerErr.style.display="block";
-}
+/* panels */
+document.addEventListener("keydown",e=>{if(e.ctrlKey&&e.shiftKey&&e.key==="A")adminPanel.style.display="flex";});
+function addGame(){if(!gName.value||!gUrl.value)return;games.push({name:gName.value,url:gUrl.value});render();gName.value=gUrl.value="";}
+function closeAdmin(){adminPanel.style.display="none";}
+function closeVIP(){vipPanel.style.display="none";}
 function closeOwner(){ownerPanel.style.display="none";}
 
-/* ADMIN LOGIN */
-function openAdmin(){adminLogin.style.display="flex";}
-function adminUnlock(){
-  if(adminPass.value===ADMIN){
-    adminLogin.style.display="none";
-    adminPanel.style.display="flex";
-    renderAdminCommands();
-  } else adminErr.style.display="block";
-}
-function closeAdmin(){adminPanel.style.display="none";}
-
-/* PANEL COMMANDS */
-function renderAdminCommands(){
-  adminCommands.innerHTML="";
-  const btn1=document.createElement("button");
-  btn1.textContent="Reset Games";
-  btn1.onclick=()=>{games=[];localStorage.removeItem("mm_games");renderGames();};
-  adminCommands.appendChild(btn1);
-
-  const btn2=document.createElement("button");
-  btn2.textContent="Add Public Theme";
-  btn2.onclick=()=>{const t=prompt("Theme name:");if(t){themeList.push({name
+render();
+renderThemes();
+</script>
+</body>
+</html>
