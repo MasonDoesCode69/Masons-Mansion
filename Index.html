@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Mason’s Mansion Deluxe</title>
+<title>Mason’s Mansion</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 :root{
   --bg:#050505;
@@ -16,15 +17,29 @@
   --glow:rgba(125,249,255,.35);
 }
 
-/* ===== RESET ===== */
-*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif}
+/* EXTRA THEME COLORS */
+:root[data-theme="honey"]{--bg:#fff1d6;--panel:rgba(255,220,180,.75);--card:rgba(255,230,200,.9);--border:#d9a066;--text:#5b3a00;--accent:#ffbf00;--glow:rgba(255,191,0,.35);}
+:root[data-theme="blue"]{--bg:#e0f7ff;--panel:rgba(180,220,255,.75);--card:rgba(200,240,255,.9);--border:#66aaff;--text:#002c5f;--accent:#00bfff;--glow:rgba(0,191,255,.35);}
+:root[data-theme="vip"]{--bg:#ffe6f0;--panel:rgba(255,200,230,.75);--card:rgba(255,220,240,.9);--border:#ff66aa;--text:#40002b;--accent:#ff3399;--glow:rgba(255,51,153,.35);}
+:root[data-theme="owner"]{--bg:#fff5e6;--panel:rgba(255,235,200,.75);--card:rgba(255,245,210,.9);--border:#ffaa33;--text:#5a3b00;--accent:#ff9900;--glow:rgba(255,153,0,.35);}
+:root[data-theme="galaxy"]{--bg:#1c0033;--panel:rgba(50,10,80,.75);--card:rgba(80,20,140,.9);--border:#440088;--text:#ffffff;--accent:#bb88ff;--glow:rgba(187,136,255,.35);}
+:root[data-theme="supernova"]{--bg:#fff0cc;--panel:rgba(255,200,120,.75);--card:rgba(255,220,150,.9);--border:#ff9900;--text:#330800;--accent:#ff5500;--glow:rgba(255,85,0,.35);}
+:root[data-theme="mint"]{--bg:#e6fff5;--panel:rgba(180,255,220,.75);--card:rgba(200,255,230,.9);--border:#33cc99;--text:#003322;--accent:#00ffaa;--glow:rgba(0,255,170,.35);}
+:root[data-theme="sunset"]{--bg:#ffe6cc;--panel:rgba(255,180,120,.75);--card:rgba(255,200,150,.9);--border:#ff6600;--text:#331900;--accent:#ff3300;--glow:rgba(255,51,0,.35);}
+:root[data-theme="forest"]{--bg:#e6ffe6;--panel:rgba(180,255,180,.75);--card:rgba(200,240,200,.9);--border:#33aa33;--text:#003300;--accent:#00cc00;--glow:rgba(0,204,0,.35);}
+:root[data-theme="night"]{--bg:#000022;--panel:rgba(20,20,50,.75);--card:rgba(40,40,90,.9);--border:#222266;--text:#ccccff;--accent:#8888ff;--glow:rgba(136,136,255,.35);}
+:root[data-theme="rose"]{--bg:#ffe6f0;--panel:rgba(255,180,220,.75);--card:rgba(255,200,230,.9);--border:#ff66aa;--text:#400020;--accent:#ff3388;--glow:rgba(255,51,136,.35);}
+:root[data-theme="cyber"]{--bg:#000011;--panel:rgba(10,10,50,.75);--card:rgba(20,20,100,.9);--border:#00ffff;--text:#00ffdd;--accent:#00ffff;--glow:rgba(0,255,255,.35);}
+
+*{box-sizing:border-box;margin:0;padding:0}
 body{
+  font-family:system-ui,-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--text);
   min-height:100vh;
   overflow:hidden;
-  color:var(--text);
-  background:var(--bg);
-  transition:background 0.8s ease;
   cursor:none;
+  transition:background 0.5s,color 0.5s;
 }
 
 /* ===== CURSOR ===== */
@@ -34,7 +49,10 @@ body{
   z-index:9999;
   border-radius:50%;
 }
-.cursor-core{width:6px;height:6px;background:#fff}
+.cursor-core{
+  width:6px;height:6px;
+  background:#fff;
+}
 .cursor-glow{
   width:120px;height:120px;
   background:radial-gradient(circle,var(--glow),transparent 70%);
@@ -48,7 +66,7 @@ body{
   transition:transform .12s ease-out;
 }
 
-/* ===== OVERLAYS ===== */
+/* ===== PANELS ===== */
 .overlay{
   position:fixed;
   inset:0;
@@ -64,7 +82,7 @@ body{
   border:1px solid var(--border);
   border-radius:20px;
   padding:26px;
-  width:320px;
+  width:300px;
   text-align:center;
   box-shadow:0 0 50px #000;
 }
@@ -84,24 +102,24 @@ body{
 }
 .box button{
   padding:8px 16px;
-  border-radius:999px;
+  border-radius:12px;
   border:none;
   background:var(--accent);
   color:#000;
   cursor:pointer;
   font-weight:600;
-  margin:2px;
-  transition:0.2s;
+  margin:4px;
+  transition:.2s;
 }
 .box button:hover{
-  filter:brightness(1.2);
   transform:scale(1.05);
+  box-shadow:0 0 12px var(--glow);
 }
 .error{display:none;color:#ff6a6a;font-size:11px}
 
-/* ===== PAGE ===== */
+/* ===== MAIN UI ===== */
 .page{
-  max-width:1300px;
+  max-width:1200px;
   margin:0 auto;
   padding:20px;
 }
@@ -114,13 +132,40 @@ header{
   border-radius:24px;
   padding:16px 22px;
   margin-bottom:18px;
+  position:relative;
 }
-header h1{font-size:22px;letter-spacing:.25em}
-header span{font-size:11px;color:var(--muted)}
+header h1{
+  font-size:20px;
+  letter-spacing:.25em;
+}
+header span{
+  font-size:11px;
+  color:var(--muted);
+}
+
+/* admin button top-left */
+#adminBtn{
+  position:absolute;
+  left:10px;
+  top:10px;
+  padding:6px 12px;
+  border-radius:12px;
+  background:var(--accent);
+  color:#000;
+  font-size:11px;
+  cursor:pointer;
+  font-weight:600;
+  border:none;
+  transition:.2s;
+}
+#adminBtn:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 10px var(--glow);
+}
 
 .layout{
   display:grid;
-  grid-template-columns:280px 1fr;
+  grid-template-columns:260px 1fr;
   gap:18px;
 }
 .panel{
@@ -129,8 +174,6 @@ header span{font-size:11px;color:var(--muted)}
   border:1px solid var(--border);
   border-radius:20px;
   padding:14px;
-  min-height:500px;
-  overflow-y:auto;
 }
 .panel h3{
   font-size:12px;
@@ -138,6 +181,7 @@ header span{font-size:11px;color:var(--muted)}
   color:var(--muted);
   margin-bottom:8px;
 }
+
 .game{
   background:var(--card);
   border:1px solid var(--border);
@@ -151,12 +195,14 @@ header span{font-size:11px;color:var(--muted)}
   border-color:var(--accent);
   box-shadow:0 0 18px var(--glow);
 }
+
 .setting{
   display:flex;
   justify-content:space-between;
   font-size:12px;
   margin-bottom:6px;
 }
+
 iframe{
   width:100%;
   height:560px;
@@ -165,64 +211,15 @@ iframe{
   background:#000;
 }
 
-/* ===== BUTTON PANELS ===== */
-.button-panel{
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  margin-top:10px;
+/* theme list buttons */
+.themeBtn{
+  display:block;
+  width:100%;
+  margin-bottom:6px;
 }
-.button-panel button{
-  flex:1 1 45%;
-  background:linear-gradient(120deg,#7df9ff,#00dfff);
-  border:none;
-  padding:8px 12px;
-  border-radius:12px;
-  color:#000;
-  cursor:pointer;
-  font-weight:600;
-  transition:0.2s;
-}
-.button-panel button:hover{
-  filter:brightness(1.2);
-  transform:scale(1.05);
-}
-
-/* ===== THEME COLORS ===== */
-body.honey{--bg:#fff1c4;--panel:rgba(255,223,143,.85);--card:rgba(255,223,143,.9);--accent:#f9a826;--glow:rgba(249,168,38,.35);}
-body.blue{--bg:#cce0ff;--panel:rgba(173,216,230,.85);--card:rgba(173,216,230,.9);--accent:#0aa6ff;--glow:rgba(10,166,255,.35);}
-body.galaxy{--bg:#0d001f;--panel:rgba(20,10,50,.85);--card:rgba(30,20,70,.9);--accent:#ff00ff;--glow:rgba(255,0,255,.35);}
-body.supernova{--bg:#1a0000;--panel:rgba(50,10,10,.85);--card:rgba(80,20,20,.9);--accent:#ffdd33;--glow:rgba(255,221,51,.35);}
-body.neon{--bg:#050505;--panel:rgba(0,255,255,.15);--card:rgba(0,255,255,.25);--accent:#0ff;--glow:rgba(0,255,255,.35);}
-body.shadow{--bg:#101010;--panel:rgba(20,20,20,.85);--card:rgba(40,40,40,.9);--accent:#888;--glow:rgba(136,136,136,.35);}
-body.sunset{--bg:#ffb347;--panel:rgba(255,160,122,.85);--card:rgba(255,160,122,.9);--accent:#ff4500;--glow:rgba(255,69,0,.35);}
-body.ice{--bg:#e0f7ff;--panel:rgba(180,240,255,.85);--card:rgba(180,240,255,.9);--accent:#00dfff;--glow:rgba(0,223,255,.35);}
-body.rainbow{--bg:linear-gradient(90deg,#ff0000,#ff7f00,#ffff00,#00ff00,#0000ff,#4b0082,#8f00ff);--panel:rgba(255,255,255,.15);--card:rgba(255,255,255,.25);--accent:#fff;--glow:rgba(255,255,255,.35);}
-body.cosmic{--bg:#0f0033;--panel:rgba(20,10,40,.85);--card:rgba(30,20,60,.9);--accent:#ff33cc;--glow:rgba(255,51,204,.35);}
-body.lavender{--bg:#e6e6fa;--panel:rgba(230,230,250,.85);--card:rgba(230,230,250,.9);--accent:#9370db;--glow:rgba(147,112,219,.35);}
-body.aurora{--bg:#001a33;--panel:rgba(0,26,51,.85);--card:rgba(0,51,102,.9);--accent:#00ffaa;--glow:rgba(0,255,170,.35);}
-body.mint{--bg:#dfffe0;--panel:rgba(200,255,220,.85);--card:rgba(200,255,220,.9);--accent:#00bb33;--glow:rgba(0,187,51,.35);}
-body.caramel{--bg:#ffe0b2;--panel:rgba(255,200,150,.85);--card:rgba(255,200,150,.9);--accent:#ff9933;--glow:rgba(255,153,51,.35);}
-body.pearl{--bg:#f0e6f6;--panel:rgba(200,180,220,.85);--card:rgba(200,180,220,.9);--accent:#aa88ff;--glow:rgba(170,136,255,.35);}
-body.electric{--bg:#0f0f0f;--panel:rgba(20,20,20,.85);--card:rgba(40,40,40,.9);--accent:#ffff00;--glow:rgba(255,255,0,.35);}
-body.magenta{--bg:#330033;--panel:rgba(50,0,50,.85);--card:rgba(80,20,80,.9);--accent:#ff00ff;--glow:rgba(255,0,255,.35);}
-body.tropical{--bg:#ffefd5;--panel:rgba(255,239,213,.85);--card:rgba(255,239,213,.9);--accent:#ff69b4;--glow:rgba(255,105,180,.35);}
-
-/* Scrollbar */
-.panel::-webkit-scrollbar{width:8px}
-.panel::-webkit-scrollbar-track{background:rgba(0,0,0,.2);border-radius:4px}
-.panel::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px}
-
-/* Extra fun animations */
-@keyframes pulse{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.05)}
-  100%{transform:scale(1)}
-}
-.game:hover{animation:pulse 0.4s}
 </style>
 </head>
-<body>
+<body data-theme="default">
 
 <!-- CURSOR -->
 <div class="cursor-glow"></div>
@@ -239,74 +236,59 @@ body.tropical{--bg:#ffefd5;--panel:rgba(255,239,213,.85);--card:rgba(255,239,213
   </div>
 </div>
 
-<!-- ADMIN BUTTON LOGIN -->
+<!-- ADMIN PANEL PASSWORDS -->
 <div class="overlay" id="adminLogin" style="display:none">
   <div class="box">
     <h2>ADMIN LOGIN</h2>
-    <input id="adminPass" type="password" placeholder="Enter admin password">
+    <input id="adminPass" type="password" placeholder="Admin password">
     <button onclick="adminUnlock()">Unlock</button>
     <div class="error" id="adminErr">Wrong password</div>
   </div>
 </div>
 
-<!-- VIP LOGIN -->
 <div class="overlay" id="vipLogin" style="display:none">
   <div class="box">
     <h2>VIP LOGIN</h2>
-    <input id="vipPass" type="password" placeholder="Enter VIP password">
-    <button onclick="vipUnlock()">Unlock</button>
+    <input id="vipPass" type="password" placeholder="VIP password">
+    <button onclick="vipUnlock()">Enter</button>
     <div class="error" id="vipErr">Wrong password</div>
   </div>
 </div>
 
-<!-- OWNER LOGIN -->
 <div class="overlay" id="ownerLogin" style="display:none">
   <div class="box">
     <h2>OWNER LOGIN</h2>
-    <input id="ownerPass" type="password" placeholder="Enter Owner password">
-    <button onclick="ownerUnlock()">Unlock</button>
+    <input id="ownerPass" type="password" placeholder="Owner password">
+    <button onclick="ownerUnlock()">Enter</button>
     <div class="error" id="ownerErr">Wrong password</div>
   </div>
 </div>
 
-<!-- ADMIN PANEL -->
+<!-- PANELS -->
 <div class="overlay" id="adminPanel" style="display:none">
   <div class="box">
     <h2>ADMIN PANEL</h2>
-    <div class="button-panel">
-      <button onclick="clearIframe()">Clear Iframe</button>
-      <button onclick="showUsers()">Show Dummy Users</button>
-      <button onclick="adminFun()">Do Fun Thing</button>
-    </div>
-    <br><button onclick="closeAdmin()">Close</button>
+    <div id="adminCommands"></div>
+    <br>
+    <button onclick="closeAdmin()">Close</button>
   </div>
 </div>
 
-<!-- VIP PANEL -->
 <div class="overlay" id="vipPanel" style="display:none">
   <div class="box">
     <h2>VIP PANEL</h2>
-    <div class="button-panel">
-      <button onclick="themeRandom()">Random Theme</button>
-      <button onclick="invertColors()">Invert Colors</button>
-      <button onclick="confetti()">Confetti!</button>
-      <button onclick="vipFun()">Silly Thing</button>
-    </div>
-    <br><button onclick="closeVIP()">Close</button>
+    <div id="vipCommands"></div>
+    <br>
+    <button onclick="closeVip()">Close</button>
   </div>
 </div>
 
-<!-- OWNER PANEL -->
 <div class="overlay" id="ownerPanel" style="display:none">
   <div class="box">
     <h2>OWNER PANEL</h2>
-    <div class="button-panel">
-      <button onclick="resetGames()">Reset Games</button>
-      <button onclick="unlockVIP()">Unlock VIP Theme</button>
-      <button onclick="addOwnerGame()">Add Owner Game</button>
-      <button onclick="themeRandom()">Random Theme</button>
-    </div>
-    <br><button onclick="closeOwner()">Close</button>
+    <div id="ownerCommands"></div>
+    <br>
+    <button onclick="closeOwner()">Close</button>
   </div>
 </div>
 
@@ -314,22 +296,23 @@ body.tropical{--bg:#ffefd5;--panel:rgba(255,239,213,.85);--card:rgba(255,239,213
 <header>
   <h1>MASON’S MANSION</h1>
   <span>private unblocked lounge</span>
-  <button style="position:absolute;top:10px;left:10px;background:#7df9ff;color:#000;padding:6px 10px;border-radius:12px;z-index:10001;" onclick="showAdminLogin()">Admin</button>
-  <button style="position:absolute;top:10px;left:80px;background:#ff7df9;color:#000;padding:6px 10px;border-radius:12px;z-index:10001;" onclick="showVIPLogin()">VIP</button>
-  <button style="position:absolute;top:10px;left:140px;background:#ffd700;color:#000;padding:6px 10px;border-radius:12px;z-index:10001;" onclick="showOwnerLogin()">Owner</button>
+  <button id="adminBtn" onclick="openAdmin()">Panel</button>
 </header>
 
 <div class="layout">
   <aside class="panel">
     <h3>GAMES</h3>
     <div id="games"></div>
+
     <h3 style="margin-top:14px">SETTINGS</h3>
     <div class="setting">Open in new tab <input type="checkbox" id="optTab"></div>
     <div class="setting">Iframe sandbox <input type="checkbox" id="optSandbox" checked></div>
     <div class="setting">About:Blank cloak <input type="checkbox" id="optCloak"></div>
+
     <h3 style="margin-top:14px">THEMES</h3>
-    <div id="themeList" class="button-panel"></div>
+    <div id="themes"></div>
   </aside>
+
   <section class="panel">
     <iframe id="player"></iframe>
   </section>
@@ -341,41 +324,38 @@ body.tropical{--bg:#ffefd5;--panel:rgba(255,239,213,.85);--card:rgba(255,239,213
 const core=document.querySelector(".cursor-core"),
 glow=document.querySelector(".cursor-glow"),
 trail=document.querySelector(".cursor-trail");
+
 document.addEventListener("mousemove",e=>{
   core.style.transform=`translate(${e.clientX-3}px,${e.clientY-3}px)`;
   glow.style.transform=`translate(${e.clientX-60}px,${e.clientY-60}px)`;
   trail.style.transform=`translate(${e.clientX-18}px,${e.clientY-18}px)`;
 });
 
-/* LOGIC */
+/* PASSWORDS */
 const USER="Honey";
 const ADMIN="Hubbard330!";
 const VIP="VIP67";
 const OWNER="masononly69";
 
-let games=JSON.parse(localStorage.getItem("mm_games"))||[
-  {name:"Gladihoppers",url:"https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html"},
-  {name:"BitLife",url:"https://3kh0.github.io/bitlife/"},
-  {name:"Proxy",url:"https://ultraviolet-node.netlify.app/"}
+/* GAMES */
+let games=[
+ {name:"Gladihoppers",url:"https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html"},
+ {name:"BitLife",url:"https://3kh0.github.io/bitlife/"},
+ {name:"Proxy",url:"https://ultraviolet-node.netlify.app/"}
 ];
-
-let themes=["honey","blue","galaxy","supernova","neon","shadow","sunset","ice","rainbow","cosmic","lavender","aurora","mint","caramel","pearl","electric","magenta","tropical"];
-let publicThemes=["honey","blue","galaxy","supernova","neon","shadow"];
-let vipThemes=["sunset","ice","rainbow","cosmic","lavender"];
-let ownerThemes=["aurora","mint","caramel","pearl","electric","magenta","tropical"];
 
 const list=document.getElementById("games");
 const player=document.getElementById("player");
-const themeList=document.getElementById("themeList");
 
 function unlock(){
   if(userPass.value===USER){
     lock.style.display="none";
-    render();
-    renderThemes(publicThemes);
+    renderGames();
+    renderThemes();
   }else userErr.style.display="block";
 }
-function render(){
+
+function renderGames(){
   list.innerHTML="";
   games.forEach(g=>{
     const d=document.createElement("div");
@@ -385,8 +365,87 @@ function render(){
     list.appendChild(d);
   });
 }
+
 function launch(g){
   if(optTab.checked){window.open(g.url,"_blank");return;}
   if(optCloak.checked){
     const w=window.open();
-    w.document.write(`<iframe src="${g.url}" style
+    w.document.write(`<iframe src="${g.url}" style="border:none;width:100%;height:100%"></iframe>`);
+    return;
+  }
+  player.src=g.url;
+  player.sandbox=optSandbox.checked?"allow-scripts allow-same-origin allow-forms":"";
+}
+
+/* THEMES */
+const themeList=[
+ {name:"Honey",type:"public"},
+ {name:"Blue",type:"public"},
+ {name:"Galaxy",type:"vip"},
+ {name:"Supernova",type:"owner"},
+ {name:"Mint",type:"public"},
+ {name:"Sunset",type:"public"},
+ {name:"Forest",type:"public"},
+ {name:"Night",type:"vip"},
+ {name:"Rose",type:"vip"},
+ {name:"Cyber",type:"owner"}
+];
+
+const themeDiv=document.getElementById("themes");
+function renderThemes(){
+  themeDiv.innerHTML="";
+  themeList.forEach(t=>{
+    const b=document.createElement("button");
+    b.className="themeBtn";
+    b.textContent=t.name;
+    b.onclick=()=>applyTheme(t);
+    themeDiv.appendChild(b);
+  });
+}
+
+function applyTheme(t){
+  if(t.type==="vip"){vipLogin.style.display="flex";return;}
+  if(t.type==="owner"){ownerLogin.style.display="flex";return;}
+  document.body.dataset.theme=t.name.toLowerCase();
+}
+
+/* VIP LOGIN */
+function vipUnlock(){
+  if(vipPass.value===VIP){
+    vipLogin.style.display="none";
+    vipPanel.style.display="flex";
+  } else vipErr.style.display="block";
+}
+function closeVip(){vipPanel.style.display="none";}
+
+/* OWNER LOGIN */
+function ownerUnlock(){
+  if(ownerPass.value===OWNER){
+    ownerLogin.style.display="none";
+    ownerPanel.style.display="flex";
+  } else ownerErr.style.display="block";
+}
+function closeOwner(){ownerPanel.style.display="none";}
+
+/* ADMIN LOGIN */
+function openAdmin(){adminLogin.style.display="flex";}
+function adminUnlock(){
+  if(adminPass.value===ADMIN){
+    adminLogin.style.display="none";
+    adminPanel.style.display="flex";
+    renderAdminCommands();
+  } else adminErr.style.display="block";
+}
+function closeAdmin(){adminPanel.style.display="none";}
+
+/* PANEL COMMANDS */
+function renderAdminCommands(){
+  adminCommands.innerHTML="";
+  const btn1=document.createElement("button");
+  btn1.textContent="Reset Games";
+  btn1.onclick=()=>{games=[];localStorage.removeItem("mm_games");renderGames();};
+  adminCommands.appendChild(btn1);
+
+  const btn2=document.createElement("button");
+  btn2.textContent="Add Public Theme";
+  btn2.onclick=()=>{const t=prompt("Theme name:");if(t){themeList.push({name
