@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mason’s Mansion</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#050505;
+  --panel:rgba(20,20,20,.75);
+  --card:rgba(30,30,30,.9);
+  --border:#222;
+  --text:#f5f5f5;
+  --muted:#9a9a9a;
+  --accent:#7df9ff;
+  --glow:rgba(125,249,255,.35);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at top,#0c1a1d,#050505);
+  color:var(--text);
+  min-height:100vh;
+  overflow:hidden;
+  cursor:none;
+}
+
+/* ===== CURSOR ===== */
+.cursor-core,.cursor-glow,.cursor-trail{
+  position:fixed;
+  pointer-events:none;
+  z-index:9999;
+  border-radius:50%;
+}
+.cursor-core{
+  width:6px;height:6px;
+  background:#fff;
+}
+.cursor-glow{
+  width:120px;height:120px;
+  background:radial-gradient(circle,var(--glow),transparent 70%);
+  filter:blur(8px);
+  transition:transform .05s linear;
+}
+.cursor-trail{
+  width:36px;height:36px;
+  border:1px solid rgba(255,255,255,.35);
+  opacity:.5;
+  transition:transform .12s ease-out;
+}
+
+/* ===== LOCK / ADMIN ===== */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.88);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10000;
+}
+.box{
+  background:var(--panel);
+  backdrop-filter:blur(14px);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:26px;
+  width:300px;
+  text-align:center;
+  box-shadow:0 0 50px #000;
+}
+.box h2{
+  letter-spacing:.18em;
+  margin-bottom:10px;
+}
+.box input{
+  width:100%;
+  padding:9px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--text);
+  text-align:center;
+  margin-bottom:10px;
+}
+.box button{
+  padding:8px 16px;
+  border-radius:999px;
+  border:none;
+  background:var(--accent);
+  color:#000;
+  cursor:pointer;
+  font-weight:600;
+}
+.error{display:none;color:#ff6a6a;font-size:11px}
+
+/* ===== MAIN UI ===== */
+.page{
+  max-width:1200px;
+  margin:0 auto;
+  padding:20px;
+}
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:16px 22px;
+  margin-bottom:18px;
+}
+header h1{
+  font-size:20px;
+  letter-spacing:.25em;
+}
+header span{
+  font-size:11px;
+  color:var(--muted);
+}
+
+.layout{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:18px;
+}
+.panel{
+  background:var(--panel);
+  backdrop-filter:blur(14px);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:14px;
+}
+.panel h3{
+  font-size:12px;
+  letter-spacing:.18em;
+  color:var(--muted);
+  margin-bottom:8px;
+}
+
+.game{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:10px;
+  margin-bottom:6px;
+  cursor:pointer;
+  transition:.15s;
+}
+.game:hover{
+  border-color:var(--accent);
+  box-shadow:0 0 18px var(--glow);
+}
+
+.setting{
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  margin-bottom:6px;
+}
+
+iframe{
+  width:100%;
+  height:560px;
+  border:none;
+  border-radius:18px;
+  background:#000;
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor-glow"></div>
+<div class="cursor-trail"></div>
+<div class="cursor-core"></div>
+
+<!-- USER LOCK -->
+<div class="overlay" id="lock">
+  <div class="box">
+    <h2>MASON’S MANSION</h2>
+    <input id="userPass" type="password" placeholder="Enter password">
+    <button onclick="unlock()">Enter</button>
+    <div class="error" id="userErr">Wrong password</div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="overlay" id="adminLogin" style="display:none">
+  <div class="box">
+    <h2>ADMIN</h2>
+    <input id="adminPass" type="password" placeholder="Admin password">
+    <button onclick="adminUnlock()">Unlock</button>
+    <div class="error" id="adminErr">Wrong password</div>
+  </div>
+</div>
+
+<div class="overlay" id="adminPanel" style="display:none">
+  <div class="box">
+    <h2>ADMIN PANEL</h2>
+    <input id="gName" placeholder="Game name">
+    <input id="gUrl" placeholder="Game URL">
+    <button onclick="addGame()">Add Game</button>
+    <br><br>
+    <button onclick="closeAdmin()">Close</button>
+  </div>
+</div>
+
+<div class="page">
+<header>
+  <h1>MASON’S MANSION</h1>
+  <span>private unblocked lounge</span>
+</header>
+
+<div class="layout">
+  <aside class="panel">
+    <h3>GAMES</h3>
+    <div id="games"></div>
+
+    <h3 style="margin-top:14px">SETTINGS</h3>
+    <div class="setting">Open in new tab <input type="checkbox" id="optTab"></div>
+    <div class="setting">Iframe sandbox <input type="checkbox" id="optSandbox" checked></div>
+    <div class="setting">About:Blank cloak <input type="checkbox" id="optCloak"></div>
+  </aside>
+
+  <section class="panel">
+    <iframe id="player"></iframe>
+  </section>
+</div>
+</div>
+
+<script>
+/* CURSOR */
+const core=document.querySelector(".cursor-core"),
+glow=document.querySelector(".cursor-glow"),
+trail=document.querySelector(".cursor-trail");
+
+document.addEventListener("mousemove",e=>{
+  core.style.transform=`translate(${e.clientX-3}px,${e.clientY-3}px)`;
+  glow.style.transform=`translate(${e.clientX-60}px,${e.clientY-60}px)`;
+  trail.style.transform=`translate(${e.clientX-18}px,${e.clientY-18}px)`;
+});
+
+/* LOGIC */
+const USER="Honey";
+const ADMIN="Hubbard330!";
+
+let games=JSON.parse(localStorage.getItem("mm_games"))||[
+ {name:"Gladihoppers",url:"https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html"},
+ {name:"BitLife",url:"https://3kh0.github.io/bitlife/"},
+ {name:"Proxy",url:"https://ultraviolet-node.netlify.app/"}
+];
+
+const list=document.getElementById("games");
+const player=document.getElementById("player");
+
+function unlock(){
+  if(userPass.value===USER){
+    lock.style.display="none";
+    render();
+  }else userErr.style.display="block";
+}
+
+function render(){
+  list.innerHTML="";
+  games.forEach(g=>{
+    const d=document.createElement("div");
+    d.className="game";
+    d.textContent=g.name;
+    d.onclick=()=>launch(g);
+    list.appendChild(d);
+  });
+}
+
+function launch(g){
+  if(optTab.checked){window.open(g.url,"_blank");return;}
+  if(optCloak.checked){
+    const w=window.open();
+    w.document.write(`<iframe src="${g.url}" style="border:none;width:100%;height:100%"></iframe>`);
+    return;
+  }
+  player.src=g.url;
+  player.sandbox=optSandbox.checked?"allow-scripts allow-same-origin allow-forms":"";
+}
+
+/* ADMIN */
+document.addEventListener("keydown",e=>{
+  if(e.ctrlKey&&e.shiftKey&&e.key==="A") adminLogin.style.display="flex";
+});
+
+function adminUnlock(){
+  if(adminPass.value===ADMIN){
+    adminLogin.style.display="none";
+    adminPanel.style.display="flex";
+  }else adminErr.style.display="block";
+}
+
+function closeAdmin(){adminPanel.style.display="none"}
+
+function addGame(){
+  if(!gName.value||!gUrl.value)return;
+  games.push({name:gName.value,url:gUrl.value});
+  localStorage.setItem("mm_games",JSON.stringify(games));
+  render();
+  gName.value=gUrl.value="";
+}
+</script>
+</body>
+</html>
