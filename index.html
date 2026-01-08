@@ -1,234 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Drive</title> <!-- The ultimate unblocked title -->
-  <style>
-    /* ============= GLOBAL & THEME ============= */
-    @import url('fonts.googleapis.com');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Google Drive</title> <!-- Fake title for unblocking -->
+    <style>
+        :root {
+            --bg: #050400;
+            --accent: #ffcc33; /* Honey Gold */
+            --glow: rgba(255, 204, 51, 0.3);
+            --glass: rgba(20, 18, 10, 0.95);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #ffffff;
+            --font: 'Segoe UI', system-ui, sans-serif;
+        }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Orbitron', sans-serif; }
-    body {
-      background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
-      color: #f8fafc;
-      overflow-x: hidden;
-      min-height: 100vh;
-    }
-    a { color: inherit; text-decoration: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        body, html { 
+            width: 100%; height: 100%; overflow: hidden; 
+            background: var(--bg); color: var(--text); 
+            font-family: var(--font); cursor: crosshair;
+        }
 
-    /* Keyframe Animations */
-    @keyframes glow {
-      0%, 100% { text-shadow: 0 0 5px #06b6d4, 0 0 10px #06b6d4; }
-      50% { text-shadow: 0 0 10px #06b6d4, 0 0 20px #06b6d4; }
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-    }
+        /* --- AUTH --- */
+        #auth-overlay {
+            position: fixed; inset: 0; z-index: 10000;
+            display: flex; align-items: center; justify-content: center;
+            background: #000; transition: 1s;
+        }
+        .login-card { background: var(--glass); padding: 40px; border-radius: 30px; border: 1px solid var(--accent); text-align: center; width: 350px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        .login-card h1 { color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-size: 24px; }
+        .login-card input { width: 100%; background: #000; border: 1px solid var(--border); padding: 12px; border-radius: 10px; color: #fff; margin-bottom: 10px; text-align: center; }
+        .login-card button { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--accent); color: #000; font-weight: 900; cursor: pointer; }
 
-    /* ============= PASSWORD PROTECTION (HONEY) ============= */
-    #lock-screen {
-      position: fixed; inset: 0; background: #020617; z-index: 9999;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center;
-    }
-    #lock-screen h2 { color: #06b6d4; margin-bottom: 20px; animation: glow 2s infinite alternate; }
-    #lock-screen input {
-      padding: 12px; border-radius: 8px; border: 2px solid #06b6d4;
-      background: #1e293b; color: white; text-align: center; font-size: 18px; outline: none;
-      box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
-    }
-    #lock-screen button {
-      margin-top: 25px; padding: 12px 30px; border-radius: 999px; border: none;
-      background: #facc15; color: #020617; font-weight: bold; cursor: pointer;
-      box-shadow: 0 0 15px rgba(250, 204, 21, 0.6); transition: 0.3s;
-    }
-    #lock-screen button:hover { background: #fcd34d; transform: translateY(-2px); }
+        /* --- SIDEBAR (MADNESS LIST) --- */
+        #sidebar {
+            position: fixed; left: -240px; top: 50%; transform: translateY(-50%);
+            width: 240px; background: var(--glass); border: 1px solid var(--border);
+            padding: 20px; border-radius: 0 20px 20px 0; z-index: 2000;
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #sidebar.open { left: 0; box-shadow: 0 0 30px var(--glow); border-right: 2px solid var(--accent); }
+        #sidebar-tab {
+            position: absolute; right: -40px; top: 50%; transform: translateY(-50%);
+            background: var(--accent); color: #000; padding: 12px 8px;
+            border-radius: 0 10px 10px 0; cursor: pointer; font-weight: 900; writing-mode: vertical-rl; font-size: 12px;
+        }
+        .option-btn { width: 100%; padding: 10px; margin: 4px 0; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: #fff; border-radius: 8px; font-size: 11px; cursor: pointer; text-align: left; }
+        .option-btn:hover { background: var(--accent); color: #000; }
 
-    /* ============= MAIN LAYOUT ============= */
-    #main-content { display: none; padding: 20px; max-width: 1200px; margin: auto; }
-    header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid #1e293b; }
-    .logo { font-size: 28px; font-weight: bold; color: #06b6d4; animation: glow 1.5s infinite alternate; }
-    
-    /* ============= GAME HUB GRID ============= */
-    .game-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 25px; margin-top: 30px;
-    }
-    .game-card {
-      background: #1e293b; border-radius: 12px; padding: 20px;
-      text-align: center; transition: 0.3s; cursor: pointer; border: 1px solid #334155;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
-    .game-card:hover { transform: translateY(-5px) scale(1.03); border-color: #06b6d4; box-shadow: 0 0 20px rgba(6, 182, 212, 0.4); }
-    .game-icon { font-size: 50px; margin-bottom: 15px; }
+        /* --- DESKTOP & BOB --- */
+        #desktop { position: relative; width: 100vw; height: 100vh; z-index: 10; display: none; }
+        
+        #bob-assistant {
+            position: fixed; bottom: 100px; right: 20px; width: 200px;
+            background: var(--glass); border: 1px solid var(--accent);
+            padding: 15px; border-radius: 15px; font-size: 12px; box-shadow: 0 0 20px var(--glow);
+        }
+        #bob-avatar { width: 40px; height: 40px; background: orange; border-radius: 50%; border: 2px solid var(--accent); margin-bottom: 10px; }
 
-    /* ============= BOB AI ASSISTANT (Cool Version) ============= */
-    #bob-assistant {
-      position: fixed; bottom: 20px; right: 20px; width: 280px;
-      background: #1e293b; border: 2px solid #facc15; border-radius: 15px 15px 0 15px;
-      padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 100;
-      animation: pulse 4s infinite;
-    }
-    #bob-avatar {
-      width: 60px; height: 60px; background: linear-gradient(45deg, #f97316, #b91c1c);
-      border-radius: 50%; margin: -50px auto 10px auto; border: 4px solid #facc15;
-    }
-    #bob-text { font-size: 14px; line-height: 1.4; color: #e2e8f0; }
-    .bob-name { font-weight: bold; color: #facc15; display: block; margin-bottom: 8px; }
+        /* --- GAME WINDOW --- */
+        #game-window {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80%; height: 80%; background: #000; border: 2px solid var(--accent);
+            border-radius: 20px; overflow: hidden; display: none;
+        }
+        .win-header { background: var(--glass); padding: 10px; display: flex; justify-content: space-between; }
+        
+        #taskbar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--glass); border: 1px solid var(--border); padding: 10px 20px; border-radius: 20px; display: flex; gap: 15px; z-index: 1000; }
+        .t-icon { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 14px; cursor: pointer; font-size: 24px; transition: 0.2s; }
+        .t-icon:hover { transform: translateY(-5px); background: var(--accent); color: #000; }
 
-    /* ============= GAME CONTAINER FOR EMBEDDED GAME ============= */
-    #game-embed-container {
-      display: none;
-      position: fixed; inset: 0; background: #000; z-index: 9998;
-    }
-    #game-close-btn {
-        position: fixed; top: 10px; right: 10px; z-index: 10000;
-        background: #ef4444; color: white; padding: 8px 16px; border-radius: 5px;
-        cursor: pointer; display: none; /* Only show when game is open */
-    }
-
-  </style>
+        iframe { width: 100%; height: 100%; border: none; }
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body>
 
-  <!-- Lock Screen -->
-  <div id="lock-screen">
-    <h2>[ ACCESS PROTOCOL: HONEY ]</h2>
-    <input type="password" id="pass-input" placeholder="Initiate Sequence...">
-    <button onclick="checkPass()">ENTER</button>
-  </div>
-
-  <!-- Main Game Site -->
-  <div id="main-content">
-    <header>
-      <div class="logo">&lt;CYBER_HUB /&gt;</div>
-      <div style="font-size: 12px; color: #64748b;">[ESC] Panic Protocol</div>
-    </header>
-
-    <div class="game-grid">
-      <div class="game-card" onclick="launchGame()">
-        <div class="game-icon">⚔️</div>
-        <h3>Gladihoppers</h3>
-        <p style="font-size: 10px; margin-top: 5px; color: #06b6d4;">(Poki Engine)</p>
-      </div>
-      <div class="game-card" onclick="alert('Game 2 Launch Logic Here')">
-        <div class="game-icon">🌌</div>
-        <h3>Star Explorer</h3>
-      </div>
-      <div class="game-card" onclick="alert('Game 3 Launch Logic Here')">
-        <div class="game-icon">🧩</div>
-        <h3>Logic Puzzle</h3>
-      </div>
-      <div class="game-card" onclick="alert('Game 4 Launch Logic Here')">
-        <div class="game-icon">👻</div>
-        <h3>Ghost Hunter</h3>
-      </div>
+    <div id="auth-overlay">
+        <div class="login-card">
+            <h1>BOB'S MANSION</h1>
+            <p style="font-size: 10px; opacity: 0.6; margin-bottom: 20px;">HONEY ENCRYPTED</p>
+            <input type="password" id="sys-pass" placeholder="PASSWORD">
+            <button onclick="App.login()">ENTER</button>
+        </div>
     </div>
 
-    <!-- BOB AI ASSISTANT -->
-    <div id="bob-assistant">
-      <div id="bob-avatar"></div>
-      <span class="bob-name">AI_Bob_v3.0</span>
-      <div id="bob-text">System operational. Gladihoppers is ready for deployment. Stay undetected!</div>
+    <div id="desktop">
+        <!-- Madness List Sidebar -->
+        <div id="sidebar">
+            <div id="sidebar-tab" onclick="document.getElementById('sidebar').classList.toggle('open')">MADNESS LIST</div>
+            <h4 style="font-size: 10px; color: var(--accent); margin-bottom: 10px; letter-spacing: 2px;">OS MODS</h4>
+            <button class="option-btn" onclick="App.bobSpeak('RGB Mode Engaged!')">1. Toggle RGB</button>
+            <button class="option-btn" onclick="App.bobSpeak('Stealth Mode On.')">2. Stealth Mode</button>
+            <button class="option-btn" onclick="window.location.href='https://drive.google.com'">3. Emergency Exit</button>
+        </div>
+
+        <!-- Bob AI Assistant -->
+        <div id="bob-assistant">
+            <div id="bob-avatar"></div>
+            <strong>Bob AI</strong>
+            <p id="bob-text">Welcome back. Gladihoppers is ready for deployment.</p>
+        </div>
+
+        <!-- Game Window -->
+        <div id="game-window">
+            <div class="win-header">
+                <span style="color:var(--accent); font-weight:bold;">GLADIHOPPERS V1.0</span>
+                <span onclick="App.closeGame()" style="cursor:pointer; color:red;">[X]</span>
+            </div>
+            <div id="game-area" style="width:100%; height:calc(100% - 40px);"></div>
+        </div>
+
+        <div id="taskbar">
+            <div class="t-icon" onclick="App.launchGladihoppers()">⚔️</div>
+            <div class="t-icon" onclick="App.bobSpeak('Everything is unblocked and safe.')">🛡️</div>
+            <div id="owner-icon" class="t-icon hidden">👑</div>
+        </div>
     </div>
-  </div>
 
-  <!-- Game Embed Container -->
-  <button id="game-close-btn" onclick="closeGame()">Close Game [ESC]</button>
-  <div id="game-embed-container">
-    <!-- The game script will inject the canvas here -->
-  </div>
-
-
-  <script>
-    // Password Logic
-    function checkPass() {
-      const pass = document.getElementById('pass-input').value;
-      if (pass.toLowerCase() === 'honey') {
-        document.getElementById('lock-screen').style.display = 'none';
-        document.getElementById('main-content').style.display = 'block';
-        bobSpeak("Access Granted. Welcome to Cyber Hub.");
-      } else {
-        alert("Access Denied. Invalid Key.");
-      }
-    }
-
-    // Bob AI Logic
-    function bobSpeak(msg) {
-      document.getElementById('bob-text').innerText = msg;
-    }
-
-    // Game Launch Logic
-    function launchGame() {
-        document.getElementById('main-content').style.display = 'none';
-        document.getElementById('bob-assistant').style.display = 'none';
-        document.getElementById('game-embed-container').style.display = 'block';
-        document.getElementById('game-close-btn').style.display = 'block';
-
-        // Inject the Poki Loader script provided by the user in the prompt
-        const script = document.createElement('script');
-        script.src = 'patch/js/poki-master-loader.js'; // IMPORTANT: You need to host this file
-        document.body.appendChild(script);
-
-        // Define window.config as specified in the user's Gladihoppers code
-        window.config = {
-            loader: 'unity',
-            debug: false,
-            maxRatio: 16 / 9,
-            minRatio: 9 / 16,
-            title: 'Gladihoppers',
-            thumbnail: 'patch/png/null.png',
-            numScreenshots: 5,
-            unityVersion: '2019.3.13f1',
-            unityWebglBuildUrl: 'Build/Gladihoppers.json', // IMPORTANT: You need to host this file
-            fileSize: 23,
-            cachedDecompressedFileSizes: {
-                'Gladihoppers.data.unityweb': 17409938,
-                'Gladihoppers.wasm.code.unityweb': 6410659,
-                'Gladihoppers.wasm.framework.unityweb': 91463,
+    <script>
+        const App = {
+            login() {
+                const p = document.getElementById('sys-pass').value;
+                if(p === "honey" || p === "masononly69") {
+                    if(p === "masononly69") document.getElementById('owner-icon').classList.remove('hidden');
+                    document.getElementById('auth-overlay').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('auth-overlay').classList.add('hidden');
+                        document.getElementById('desktop').style.display = 'block';
+                    }, 500);
+                } else {
+                    alert("ACCESS DENIED");
+                }
             },
+
+            bobSpeak(msg) {
+                document.getElementById('bob-text').innerText = msg;
+            },
+
+            launchGladihoppers() {
+                document.getElementById('game-window').style.display = 'block';
+                this.bobSpeak("Initializing Gladihoppers... Good luck, Commander.");
+                
+                // Injecting the requested Gladihoppers logic
+                window.config = {
+                    loader: 'unity',
+                    debug: false,
+                    maxRatio: 16 / 9,
+                    minRatio: 9 / 16,
+                    title: 'Gladihoppers',
+                    thumbnail: 'patch/png/null.png',
+                    numScreenshots: 5,
+                    unityVersion: '2019.3.13f1',
+                    unityWebglBuildUrl: 'Build/Gladihoppers.json',
+                    fileSize: 23,
+                    cachedDecompressedFileSizes: {
+                        'Gladihoppers.data.unityweb': 17409938,
+                        'Gladihoppers.wasm.code.unityweb': 6410659,
+                        'Gladihoppers.wasm.framework.unityweb': 91463,
+                    },
+                };
+
+                const s = document.createElement('script');
+                s.src = "patch/js/poki-master-loader.js"; 
+                document.getElementById('game-area').appendChild(s);
+            },
+
+            closeGame() {
+                document.getElementById('game-window').style.display = 'none';
+                document.getElementById('game-area').innerHTML = "";
+            }
         };
-    }
 
-    function closeGame() {
-        document.getElementById('main-content').style.display = 'block';
-        document.getElementById('bob-assistant').style.display = 'block';
-        document.getElementById('game-embed-container').style.display = 'none';
-        document.getElementById('game-close-btn').style.display = 'none';
-        // Reloading might be necessary for some Unity builds to properly stop/unload
-        // location.reload();
-    }
-
-
-    // Random Bob Tips
-    const tips = [
-      "Remember to save your progress!",
-      "Math class is temporary, high scores are forever.",
-      "I'm scanning for teacher wifi signals... all clear!",
-      "That last game was impressive!"
-    ];
-
-    setInterval(() => {
-      if(document.getElementById('main-content').style.display === 'block') {
-        const randomTip = tips[Math.floor(Math.random() * tips.length)];
-        bobSpeak(randomTip);
-      }
-    }, 15000);
-
-    // Panic Key (Esc) Redirects to Google Drive/Classroom
-    window.addEventListener('keydown', (e) => {
-      if (e.key === "Escape") {
-        window.location.href = "https://drive.google.com";
-      }
-    });
-
-    // Enter Key for password
-    document.getElementById('pass-input').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') checkPass();
-    });
-  </script>
+        // Panic Key
+        window.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") window.location.href = "https://drive.google.com";
+        });
+    </script>
 </body>
 </html>
