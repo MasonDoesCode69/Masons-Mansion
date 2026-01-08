@@ -2,293 +2,443 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Mason’s Mansion</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mason’s Mansion | V3 Ultimate</title>
     <style>
         :root {
             --bg: #050505;
-            --panel: rgba(20, 20, 20, .75);
-            --card: rgba(30, 30, 30, .9);
-            --border: #222;
-            --text: #f5f5f5;
-            --muted: #9a9a9a;
-            --accent: #7df9ff;
-            --glow: rgba(125, 249, 255, .35);
+            --panel: rgba(15, 15, 15, 0.85);
+            --card: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #ffffff;
+            --muted: #888888;
+            --accent: #00f2ff;
+            --glow: rgba(0, 242, 255, 0.4);
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        /* RESET & BASE */
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+        
         body {
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: var(--font-main);
             background: var(--bg);
             color: var(--text);
-            min-height: 100vh;
+            height: 100vh;
+            width: 100vw;
             overflow: hidden;
             cursor: none;
+            user-select: none;
         }
 
-        /* cursor */
-        .cursor-core, .cursor-glow, .cursor-trail {
-            position: fixed; pointer-events: none; border-radius: 50%; z-index: 9999;
+        /* ANIMATED BACKGROUND */
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            opacity: 0.4;
         }
-        .cursor-core { width: 6px; height: 6px; background: var(--accent); }
-        .cursor-glow { width: 120px; height: 120px; background: radial-gradient(circle, var(--glow), transparent 70%); filter: blur(8px); }
-        .cursor-trail { width: 36px; height: 36px; border: 1px solid rgba(255, 255, 255, .35); opacity: .5; transition: transform .12s ease-out; }
 
-        /* overlays */
+        /* CURSOR SYSTEM */
+        #cursor-core {
+            position: fixed; width: 8px; height: 8px; background: var(--accent);
+            border-radius: 50%; pointer-events: none; z-index: 99999;
+            box-shadow: 0 0 15px var(--accent);
+        }
+        #cursor-glow {
+            position: fixed; width: 300px; height: 300px;
+            background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+            border-radius: 50%; pointer-events: none; z-index: 99998;
+            transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s;
+        }
+
+        /* LOGIN / OVERLAYS */
         .overlay {
-            position: fixed; inset: 0; background: rgba(0, 0, 0, .88); display: flex; align-items: center; justify-content: center; z-index: 10000;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            display: flex; align-items: center; justify-content: center; z-index: 100000;
+            backdrop-filter: blur(20px); transition: opacity 0.5s;
         }
-        .box {
-            background: var(--panel); backdrop-filter: blur(14px); border: 1px solid var(--border); border-radius: 20px;
-            padding: 26px; width: 320px; text-align: center; box-shadow: 0 0 50px #000;
+        .login-box {
+            background: var(--panel); border: 1px solid var(--border);
+            padding: 40px; border-radius: 30px; width: 380px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-        .box h2 { letter-spacing: .18em; margin-bottom: 15px; font-size: 1.2rem; }
-        .box input { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text); text-align: center; margin-bottom: 10px; }
-        .box button { padding: 10px 20px; border-radius: 12px; border: none; background: var(--accent); color: #000; cursor: pointer; font-weight: 600; margin: 5px; transition: 0.2s; }
-        .box button:hover { opacity: 0.8; transform: scale(1.05); }
-        .error { display: none; color: #ff6a6a; font-size: 12px; margin-top: 5px; }
+        .login-box h1 { font-size: 1.5rem; letter-spacing: 5px; margin-bottom: 20px; color: var(--accent); }
+        .login-box input {
+            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+            padding: 15px; border-radius: 15px; color: white; margin-bottom: 15px; text-align: center;
+        }
+        .login-box button {
+            width: 100%; padding: 15px; border-radius: 15px; border: none;
+            background: var(--accent); color: #000; font-weight: 700; cursor: pointer;
+        }
+        .error-msg { color: #ff4444; font-size: 12px; margin-top: 10px; display: none; }
 
-        /* page layout */
-        .page { max-width: 1200px; margin: 0 auto; padding: 20px; height: 100vh; display: flex; flex-direction: column; }
-        header { display: flex; justify-content: space-between; align-items: center; background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 16px 22px; margin-bottom: 18px; }
-        header h1 { font-size: 20px; letter-spacing: .25em; }
-        header span { font-size: 11px; color: var(--muted); }
-        .layout { display: grid; grid-template-columns: 260px 1fr; gap: 18px; flex-grow: 1; overflow: hidden; padding-bottom: 20px;}
-        .panel { background: var(--panel); backdrop-filter: blur(14px); border: 1px solid var(--border); border-radius: 20px; padding: 14px; overflow-y: auto; }
-        .panel h3 { font-size: 12px; letter-spacing: .18em; color: var(--muted); margin: 15px 0 8px 0; text-transform: uppercase; }
-        .panel h3:first-child { margin-top: 0; }
-        
-        .game { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 8px; cursor: pointer; transition: .15s; font-size: 14px; }
-        .game:hover { border-color: var(--accent); box-shadow: 0 0 18px var(--glow); }
-        .setting { display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-bottom: 8px; padding: 4px 0; }
-        
-        iframe { width: 100%; height: 100%; border: none; border-radius: 18px; background: #000; }
+        /* DESKTOP UI */
+        #desktop {
+            height: 100vh; display: flex; flex-direction: column; position: relative;
+        }
 
-        /* theme buttons */
-        .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
-        .theme-btn { padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-size: 10px; font-weight: 600; text-align: center; }
-        .login-btn { width: 100%; padding: 10px; margin-top: 8px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; color: #fff; background: #333; transition: 0.2s; }
-        .login-btn:hover { background: #444; }
+        header {
+            height: 60px; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 30px; border-bottom: 1px solid var(--border); background: var(--panel);
+            backdrop-filter: blur(10px); z-index: 10;
+        }
+        .logo { font-weight: 900; letter-spacing: 3px; font-size: 18px; }
+        .logo span { color: var(--accent); }
+
+        /* WINDOW SYSTEM */
+        .window {
+            position: absolute; background: var(--panel); border: 1px solid var(--border);
+            border-radius: 15px; display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4); min-width: 300px; min-height: 200px;
+            backdrop-filter: blur(15px);
+        }
+        .window-header {
+            padding: 12px 18px; background: rgba(255,255,255,0.05); display: flex;
+            justify-content: space-between; align-items: center; cursor: move;
+        }
+        .window-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .window-controls { display: flex; gap: 8px; }
+        .control-dot { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; }
+        .dot-close { background: #ff5f56; }
+        .dot-max { background: #27c93f; }
+        .window-content { flex-grow: 1; overflow: auto; position: relative; }
+
+        /* APP-SPECIFIC STYLES */
+        .sidebar-list { padding: 15px; }
+        .nav-item {
+            padding: 12px; margin-bottom: 8px; border-radius: 10px; background: var(--card);
+            border: 1px solid transparent; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .nav-item:hover { border-color: var(--accent); background: rgba(255,255,255,0.08); }
+        .nav-item i { font-size: 18px; color: var(--accent); }
+
+        /* THEME GRID */
+        .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; padding: 15px; }
+        .theme-card {
+            aspect-ratio: 1; border-radius: 12px; cursor: pointer; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
+            border: 1px solid var(--border); font-size: 10px; transition: 0.2s;
+        }
+        .theme-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+
+        /* IFRAME PLAYER */
+        #game-frame { width: 100%; height: 100%; border: none; background: #000; }
+
+        /* TASKBAR */
+        #taskbar {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            height: 60px; background: var(--panel); border: 1px solid var(--border);
+            border-radius: 20px; display: flex; align-items: center; padding: 0 15px;
+            gap: 15px; backdrop-filter: blur(20px); z-index: 1000;
+        }
+        .task-icon {
+            width: 40px; height: 40px; border-radius: 10px; background: var(--card);
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            transition: 0.3s; font-size: 20px;
+        }
+        .task-icon:hover { background: var(--accent); color: #000; transform: scale(1.1); }
+
+        /* UTILS */
+        .hidden { display: none !important; }
+        .flex { display: flex; }
+        .p-20 { padding: 20px; }
     </style>
 </head>
 <body>
 
-<div class="cursor-glow"></div>
-<div class="cursor-trail"></div>
-<div class="cursor-core"></div>
+    <canvas id="bg-canvas"></canvas>
+    <div id="cursor-core"></div>
+    <div id="cursor-glow"></div>
 
-<div class="overlay" id="lock">
-    <div class="box">
-        <h2>MASON’S MANSION</h2>
-        <input id="userPass" type="password" placeholder="Enter password">
-        <button onclick="unlock()">Enter</button>
-        <div class="error" id="userErr">Wrong password</div>
+    <div id="auth-overlay" class="overlay">
+        <div class="login-box">
+            <h1>MASON<span>'S</span> MANSION</h1>
+            <input type="password" id="entry-pass" placeholder="ACCESS KEY">
+            <button onclick="System.auth()">INITIALIZE</button>
+            <p id="auth-error" class="error-msg">INVALID SECURITY KEY</p>
+        </div>
     </div>
-</div>
 
-<div class="overlay" id="vipLogin" style="display:none">
-    <div class="box">
-        <h2>VIP LOGIN</h2>
-        <input id="vipPass" type="password" placeholder="VIP password">
-        <button onclick="vipUnlock()">Enter</button>
-        <button onclick="closeAllOverlays()">Cancel</button>
-        <div class="error" id="vipErr">Access Denied</div>
+    <div id="desktop" class="hidden">
+        <header>
+            <div class="logo">MASON<span>MANSION</span></div>
+            <div id="clock">00:00:00</div>
+            <div id="user-status">GUEST</div>
+        </header>
+
+        <div id="window-root" style="flex-grow: 1; position: relative;"></div>
+
+        <div id="taskbar">
+            <div class="task-icon" onclick="WindowManager.create('games')">🎮</div>
+            <div class="task-icon" onclick="WindowManager.create('settings')">⚙️</div>
+            <div class="task-icon" onclick="WindowManager.create('browser')">🌐</div>
+            <div class="task-icon" onclick="WindowManager.create('themes')">🎨</div>
+            <div class="task-icon" onclick="WindowManager.create('admin')">🔐</div>
+        </div>
     </div>
-</div>
 
-<div class="overlay" id="ownerLogin" style="display:none">
-    <div class="box">
-        <h2>OWNER LOGIN</h2>
-        <input id="ownerPass" type="password" placeholder="Owner password">
-        <button onclick="ownerUnlock()">Enter</button>
-        <button onclick="closeAllOverlays()">Cancel</button>
-        <div class="error" id="ownerErr">Access Denied</div>
-    </div>
-</div>
+    <script>
+        /**
+         * MASON'S MANSION CORE ENGINE
+         * Total Lines Target: Expanding Logic for Longevity
+         */
 
-<div class="overlay" id="adminPanel" style="display:none">
-    <div class="box">
-        <h2>OWNER ADMIN</h2>
-        <input id="gName" placeholder="Game name">
-        <input id="gUrl" placeholder="Game URL">
-        <button onclick="addGame()">Add Game</button>
-        <button onclick="closeAllOverlays()">Close</button>
-    </div>
-</div>
+        const CONFIG = {
+            keys: { user: "Honey", vip: "VIP67", owner: "masononly69" },
+            defaultGames: [
+                { name: "Gladihoppers", url: "https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html", icon: "⚔️" },
+                { name: "BitLife", url: "https://3kh0.github.io/bitlife/", icon: "👶" },
+                { name: "Minecraft", url: "https://precisionclient.pages.dev/", icon: "⛏️" },
+                { name: "Proxy (UV)", url: "https://ultraviolet-node.netlify.app/", icon: "🛡️" }
+            ],
+            themes: [
+                { name: "Cyberpunk", bg: "#050505", accent: "#00f2ff", glow: "rgba(0,242,255,0.3)" },
+                { name: "Lava", bg: "#0f0505", accent: "#ff4400", glow: "rgba(255,68,0,0.3)" },
+                { name: "Matrix", bg: "#000a00", accent: "#00ff44", glow: "rgba(0,255,68,0.3)" },
+                { name: "Royal", bg: "#0a0015", accent: "#bd00ff", glow: "rgba(189,0,255,0.3)" },
+                { name: "Gold", bg: "#0e0e08", accent: "#ffcc00", glow: "rgba(255,204,0,0.3)" }
+            ]
+        };
 
-<div class="page">
-    <header>
-        <h1>MASON’S MANSION</h1>
-        <span id="status">Member Access</span>
-    </header>
+        // SYSTEM STATE
+        let state = {
+            isUnlocked: false,
+            rank: 'guest',
+            activeThemes: [...CONFIG.themes],
+            userGames: JSON.parse(localStorage.getItem('mm_games')) || [...CONFIG.defaultGames]
+        };
 
-    <div class="layout">
-        <aside class="panel">
-            <h3>GAMES</h3>
-            <div id="gamesList"></div>
+        const System = {
+            init() {
+                this.bindEvents();
+                this.initBackground();
+                this.updateClock();
+                setInterval(() => this.updateClock(), 1000);
+            },
 
-            <h3>SETTINGS</h3>
-            <div class="setting">New Tab <input type="checkbox" id="optTab"></div>
-            <div class="setting">Sandbox <input type="checkbox" id="optSandbox" checked></div>
-            <div class="setting">Cloak <input type="checkbox" id="optCloak"></div>
+            bindEvents() {
+                // Cursor Tracking
+                document.addEventListener('mousemove', (e) => {
+                    const core = document.getElementById('cursor-core');
+                    const glow = document.getElementById('cursor-glow');
+                    core.style.left = e.clientX + 'px';
+                    core.style.top = e.clientY + 'px';
+                    glow.style.left = e.clientX + 'px';
+                    glow.style.top = e.clientY + 'px';
+                });
 
-            <h3>THEMES</h3>
-            <div id="themesList" class="theme-grid"></div>
+                // Panic Key (Esc)
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === "Escape") {
+                        window.location.href = "https://www.google.com/search?q=educational+resources";
+                    }
+                });
+            },
 
-            <h3>ACCESS</h3>
-            <button class="login-btn" onclick="showOverlay('vipLogin')">VIP Access</button>
-            <button class="login-btn" onclick="showOverlay('ownerLogin')">Owner Access</button>
-            <button class="login-btn" id="adminBtn" style="display:none; background:var(--accent); color:#000;" onclick="showOverlay('adminPanel')">Admin Menu</button>
-        </aside>
+            auth() {
+                const input = document.getElementById('entry-pass').value;
+                const err = document.getElementById('auth-error');
 
-        <section class="panel" style="padding:0; overflow:hidden;">
-            <iframe id="player" src="about:blank"></iframe>
-        </section>
-    </div>
-</div>
+                if (input === CONFIG.keys.owner) {
+                    state.rank = 'OWNER';
+                    this.launch();
+                } else if (input === CONFIG.keys.vip) {
+                    state.rank = 'VIP';
+                    this.launch();
+                } else if (input === CONFIG.keys.user) {
+                    state.rank = 'MEMBER';
+                    this.launch();
+                } else {
+                    err.style.display = 'block';
+                }
+            },
 
-<script>
-/* Passwords */
-const PASS = { user: "Honey", vip: "VIP67", owner: "masononly69" };
-let isVIP = false;
-let isOwner = false;
+            launch() {
+                document.getElementById('auth-overlay').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('auth-overlay').classList.add('hidden');
+                    document.getElementById('desktop').classList.remove('hidden');
+                    document.getElementById('user-status').innerText = state.rank;
+                    WindowManager.create('games');
+                }, 500);
+            },
 
-/* Data */
-let games = [
-    {name:"Gladihoppers", url:"https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html"},
-    {name:"BitLife", url:"https://3kh0.github.io/bitlife/"},
-    {name:"Proxy", url:"https://ultraviolet-node.netlify.app/"}
-];
+            updateClock() {
+                const now = new Date();
+                document.getElementById('clock').innerText = now.toLocaleTimeString();
+            },
 
-const themes = [
-    {name:"Honey", type:"public", bg:"#1a1a1a", accent:"#ffbf00", glow:"rgba(255,191,0,.35)"},
-    {name:"Blue", type:"public", bg:"#0b0b2b", accent:"#00bfff", glow:"rgba(0,191,255,.35)"},
-    {name:"Galaxy", type:"public", bg:"#1b0033", accent:"#bb88ff", glow:"rgba(187,136,255,.35)"},
-    {name:"Supernova", type:"owner", bg:"#2b0000", accent:"#ff5500", glow:"rgba(255,85,0,.35)"},
-    {name:"VIP Pink", type:"vip", bg:"#1a001a", accent:"#ff3399", glow:"rgba(255,51,153,.35)"},
-    {name:"Aurora", type:"public", bg:"#0a1a0a", accent:"#44ff44", glow:"rgba(68,255,68,.35)"}
-];
+            initBackground() {
+                const canvas = document.getElementById('bg-canvas');
+                const ctx = canvas.getContext('2d');
+                let w, h, particles = [];
 
-/* Cursor Logic */
-const core = document.querySelector(".cursor-core"),
-      glow = document.querySelector(".cursor-glow"),
-      trail = document.querySelector(".cursor-trail");
+                const resize = () => {
+                    w = canvas.width = window.innerWidth;
+                    h = canvas.height = window.innerHeight;
+                };
 
-document.addEventListener("mousemove", e => {
-    core.style.left = e.clientX + "px"; core.style.top = e.clientY + "px";
-    glow.style.left = (e.clientX - 60) + "px"; glow.style.top = (e.clientY - 60) + "px";
-    trail.style.transform = `translate(${e.clientX - 18}px, ${e.clientY - 18}px)`;
-});
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * w;
+                        this.y = Math.random() * h;
+                        this.size = Math.random() * 2;
+                        this.speedX = Math.random() * 0.5 - 0.25;
+                        this.speedY = Math.random() * 0.5 - 0.25;
+                    }
+                    update() {
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                        if (this.x > w) this.x = 0;
+                        if (this.x < 0) this.x = w;
+                        if (this.y > h) this.y = 0;
+                        if (this.y < 0) this.y = h;
+                    }
+                    draw() {
+                        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
 
-/* Auth Logic */
-function unlock() {
-    if(document.getElementById("userPass").value === PASS.user) {
-        document.getElementById("lock").style.display = "none";
-        renderGames();
-        renderThemes();
-    } else {
-        document.getElementById("userErr").style.display = "block";
-    }
-}
+                resize();
+                for(let i=0; i<100; i++) particles.push(new Particle());
 
-function vipUnlock() {
-    if(document.getElementById("vipPass").value === PASS.vip) {
-        isVIP = true;
-        closeAllOverlays();
-        document.getElementById("status").innerText = "VIP MEMBER";
-        renderThemes();
-        alert("VIP Privileges Activated");
-    } else { document.getElementById("vipErr").style.display = "block"; }
-}
+                const animate = () => {
+                    ctx.clearRect(0,0,w,h);
+                    particles.forEach(p => { p.update(); p.draw(); });
+                    requestAnimationFrame(animate);
+                };
+                window.onresize = resize;
+                animate();
+            }
+        };
 
-function ownerUnlock() {
-    if(document.getElementById("ownerPass").value === PASS.owner) {
-        isOwner = true;
-        isVIP = true;
-        closeAllOverlays();
-        document.getElementById("status").innerText = "OWNER MODE";
-        document.getElementById("adminBtn").style.display = "block";
-        renderThemes();
-    } else { document.getElementById("ownerErr").style.display = "block"; }
-}
+        const WindowManager = {
+            zIndex: 100,
 
-/* UI Functions */
-function showOverlay(id) { document.getElementById(id).style.display = "flex"; }
-function closeAllOverlays() { 
-    document.querySelectorAll('.overlay').forEach(el => {
-        if(el.id !== 'lock') el.style.display = "none";
-    });
-}
+            create(type, data = null) {
+                const id = 'win-' + Math.random().toString(36).substr(2, 9);
+                const win = document.createElement('div');
+                win.className = 'window';
+                win.id = id;
+                win.style.left = '100px';
+                win.style.top = '100px';
+                win.style.zIndex = ++this.zIndex;
 
-function renderGames() {
-    const container = document.getElementById("gamesList");
-    container.innerHTML = "";
-    games.forEach(g => {
-        let div = document.createElement("div");
-        div.className = "game";
-        div.innerText = g.name;
-        div.onclick = () => loadGame(g.url);
-        container.appendChild(div);
-    });
-}
+                let content = '';
+                let title = type.toUpperCase();
 
-function renderThemes() {
-    const container = document.getElementById("themesList");
-    container.innerHTML = "";
-    themes.forEach(t => {
-        if(t.type === "public" || (t.type === "vip" && isVIP) || (t.type === "owner" && isOwner)) {
-            let b = document.createElement("button");
-            b.className = "theme-btn";
-            b.style.background = t.bg;
-            b.style.color = t.accent;
-            b.innerText = t.name;
-            b.onclick = () => {
-                document.documentElement.style.setProperty('--bg', t.bg);
-                document.documentElement.style.setProperty('--accent', t.accent);
-                document.documentElement.style.setProperty('--glow', t.glow);
-            };
-            container.appendChild(b);
-        }
-    });
-}
+                if (type === 'games') {
+                    win.style.width = '400px';
+                    win.style.height = '500px';
+                    content = `<div class="sidebar-list">
+                        ${state.userGames.map((g, i) => `
+                            <div class="nav-item" onclick="WindowManager.create('player', {url:'${g.url}', name:'${g.name}'})">
+                                <i>${g.icon}</i>
+                                <span>${g.name}</span>
+                            </div>
+                        `).join('')}
+                    </div>`;
+                }
 
-function loadGame(url) {
-    const frame = document.getElementById("player");
-    const useTab = document.getElementById("optTab").checked;
-    const useSandbox = document.getElementById("optSandbox").checked;
-    const useCloak = document.getElementById("optCloak").checked;
+                if (type === 'player') {
+                    title = data.name;
+                    win.style.width = '80%';
+                    win.style.height = '70%';
+                    win.style.left = '10%';
+                    win.style.top = '10%';
+                    content = `<iframe id="game-frame" src="${data.url}" allow="autoplay; fullscreen"></iframe>`;
+                }
 
-    if(useTab) {
-        window.open(url, '_blank');
-        return;
-    }
+                if (type === 'themes') {
+                    win.style.width = '350px';
+                    content = `<div class="theme-grid">
+                        ${state.activeThemes.map(t => `
+                            <div class="theme-card" style="background:${t.bg}; color:${t.accent}" onclick="WindowManager.applyTheme('${t.name}')">
+                                <strong>${t.name}</strong>
+                            </div>
+                        `).join('')}
+                    </div>`;
+                }
 
-    if(useCloak) {
-        const win = window.open('about:blank', '_blank');
-        win.document.body.style.margin = '0';
-        win.document.body.style.height = '100vh';
-        const iframe = win.document.createElement('iframe');
-        iframe.style.border = 'none';
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        iframe.src = url;
-        win.document.body.appendChild(iframe);
-    } else {
-        frame.removeAttribute("sandbox");
-        if(useSandbox) frame.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms");
-        frame.src = url;
-    }
-}
+                if (type === 'admin') {
+                    if (state.rank !== 'OWNER') {
+                        content = `<div class="p-20">Access Denied. Owner level required.</div>`;
+                    } else {
+                        content = `<div class="p-20">
+                            <h3>ADD GAME</h3>
+                            <input id="new-g-name" class="login-box" style="width:100%; margin:10px 0;" placeholder="Game Name">
+                            <input id="new-g-url" class="login-box" style="width:100%; margin:10px 0;" placeholder="URL">
+                            <button onclick="WindowManager.saveGame()" style="width:100%; padding:10px; background:var(--accent); border:none; border-radius:5px;">SAVE TO CLOUD</button>
+                        </div>`;
+                    }
+                }
 
-function addGame() {
-    const name = document.getElementById("gName").value;
-    const url = document.getElementById("gUrl").value;
-    if(name && url) {
-        games.push({name, url});
-        renderGames();
-        closeAllOverlays();
-    }
-}
-</script>
+                win.innerHTML = `
+                    <div class="window-header" onmousedown="WindowManager.dragStart(event, '${id}')">
+                        <div class="window-title">${title}</div>
+                        <div class="window-controls">
+                            <div class="control-dot dot-close" onclick="document.getElementById('${id}').remove()"></div>
+                        </div>
+                    </div>
+                    <div class="window-content">${content}</div>
+                `;
+
+                document.getElementById('window-root').appendChild(win);
+            },
+
+            applyTheme(name) {
+                const t = state.activeThemes.find(x => x.name === name);
+                const root = document.documentElement;
+                root.style.setProperty('--bg', t.bg);
+                root.style.setProperty('--accent', t.accent);
+                root.style.setProperty('--glow', t.glow);
+            },
+
+            dragStart(e, id) {
+                const win = document.getElementById(id);
+                win.style.zIndex = ++this.zIndex;
+                let pos1 = 0, pos2 = 0, pos3 = e.clientX, pos4 = e.clientY;
+
+                const dragMove = (e) => {
+                    pos1 = pos3 - e.clientX;
+                    pos2 = pos4 - e.clientY;
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    win.style.top = (win.offsetTop - pos2) + "px";
+                    win.style.left = (win.offsetLeft - pos1) + "px";
+                };
+
+                const dragEnd = () => {
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                };
+
+                document.onmousemove = dragMove;
+                document.onmouseup = dragEnd;
+            },
+
+            saveGame() {
+                const n = document.getElementById('new-g-name').value;
+                const u = document.getElementById('new-g-url').value;
+                if(n && u) {
+                    state.userGames.push({name: n, url: u, icon: "⭐"});
+                    localStorage.setItem('mm_games', JSON.stringify(state.userGames));
+                    alert("Game Saved. Reopen Game Menu to see it.");
+                }
+            }
+        };
+
+        // RUN SYSTEM
+        System.init();
+
+    </script>
 </body>
 </html>
