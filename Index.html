@@ -6,8 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+/* ================= THEMES ================= */
 :root{
-  --bg:#050505;
+  --bg:radial-gradient(circle at top,#0c1a1d,#050505);
   --panel:rgba(20,20,20,.75);
   --card:rgba(30,30,30,.9);
   --border:#222;
@@ -17,29 +18,45 @@
   --glow:rgba(125,249,255,.35);
 }
 
-/* HONEY THEME */
+/* HONEY */
 body[data-theme="honey"]{
+  --bg:radial-gradient(circle at top,#2b1d00,#0b0700);
   --accent:#ffcc66;
   --glow:rgba(255,204,102,.35);
 }
 
-/* BLUE THEME */
+/* BLUE */
 body[data-theme="blue"]{
+  --bg:radial-gradient(circle at top,#001b33,#000814);
   --accent:#4da6ff;
   --glow:rgba(77,166,255,.35);
+}
+
+/* VIP */
+body[data-theme="vip"]{
+  --bg:radial-gradient(circle at top,#1a002b,#050008);
+  --accent:#d46bff;
+  --glow:rgba(212,107,255,.4);
+}
+
+/* ADMIN */
+body[data-theme="admin"]{
+  --bg:radial-gradient(circle at top,#330000,#080000);
+  --accent:#ff4d4d;
+  --glow:rgba(255,77,77,.45);
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:system-ui,-apple-system,sans-serif;
-  background:radial-gradient(circle at top,#0c1a1d,#050505);
+  background:var(--bg);
   color:var(--text);
   min-height:100vh;
   overflow:hidden;
   cursor:none;
 }
 
-/* ===== CURSOR ===== */
+/* ================= CURSOR ================= */
 .cursor-core,.cursor-glow,.cursor-trail{
   position:fixed;
   pointer-events:none;
@@ -58,18 +75,22 @@ body{
   opacity:.5;
 }
 
-/* ===== SECRET ADMIN BUTTON ===== */
-#secretAdmin{
+/* ================= ADMIN BUTTON ================= */
+#adminBtn{
   position:fixed;
-  top:0;
-  left:0;
-  width:22px;
-  height:22px;
-  opacity:0;
+  top:10px;
+  left:10px;
+  padding:6px 12px;
+  border-radius:999px;
+  background:var(--accent);
+  color:#000;
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
   z-index:10001;
 }
 
-/* ===== LOCK / ADMIN ===== */
+/* ================= OVERLAYS ================= */
 .overlay{
   position:fixed;
   inset:0;
@@ -82,7 +103,6 @@ body{
 .box{
   background:var(--panel);
   backdrop-filter:blur(14px);
-  border:1px solid var(--border);
   border-radius:20px;
   padding:26px;
   width:300px;
@@ -108,7 +128,7 @@ body{
 }
 .error{display:none;color:#ff6a6a;font-size:11px}
 
-/* ===== MAIN UI ===== */
+/* ================= UI ================= */
 .page{max-width:1200px;margin:0 auto;padding:20px}
 header{
   display:flex;
@@ -142,7 +162,6 @@ header span{font-size:11px;color:var(--muted)}
   cursor:pointer;
 }
 .game:hover{
-  border:1px solid var(--accent);
   box-shadow:0 0 18px var(--glow);
 }
 
@@ -156,9 +175,7 @@ header span{font-size:11px;color:var(--muted)}
 select{
   background:var(--card);
   color:var(--text);
-  border:1px solid var(--border);
   border-radius:999px;
-  padding:2px 8px;
 }
 
 iframe{
@@ -172,9 +189,8 @@ iframe{
 
 <body>
 
-<div id="secretAdmin"></div>
+<div id="adminBtn">ADMIN</div>
 
-<!-- CURSOR -->
 <div class="cursor-glow"></div>
 <div class="cursor-trail"></div>
 <div class="cursor-core"></div>
@@ -189,22 +205,23 @@ iframe{
   </div>
 </div>
 
-<!-- ADMIN -->
+<!-- ADMIN LOGIN -->
 <div class="overlay" id="adminLogin" style="display:none">
   <div class="box">
-    <h2>ADMIN</h2>
+    <h2>ADMIN ACCESS</h2>
     <input id="adminPass" type="password" placeholder="Admin password">
     <button onclick="adminUnlock()">Unlock</button>
-    <div class="error" id="adminErr">Wrong password</div>
+    <div class="error" id="adminErr">Denied</div>
   </div>
 </div>
 
+<!-- ADMIN PANEL -->
 <div class="overlay" id="adminPanel" style="display:none">
   <div class="box">
     <h2>ADMIN PANEL</h2>
-    <input id="gName" placeholder="Game name">
-    <input id="gUrl" placeholder="Game URL">
-    <button onclick="addGame()">Add Game</button><br><br>
+    <button onclick="setAdminTheme()">Force Admin Theme</button><br><br>
+    <button onclick="enableVIP()">Enable VIP Theme</button><br><br>
+    <button onclick="resetAll()">Reset Everything</button><br><br>
     <button onclick="closeAdmin()">Close</button>
   </div>
 </div>
@@ -217,20 +234,14 @@ iframe{
 
 <div class="layout">
 <aside class="panel">
-  <h3>GAMES</h3>
-  <div id="games"></div>
-
-  <h3 style="margin-top:14px">SETTINGS</h3>
-  <div class="setting">Open in new tab <input type="checkbox" id="optTab"></div>
-  <div class="setting">Iframe sandbox <input type="checkbox" id="optSandbox" checked></div>
-  <div class="setting">About:Blank cloak <input type="checkbox" id="optCloak"></div>
-
+  <h3>SETTINGS</h3>
   <div class="setting">
     Theme
     <select id="themeSelect">
       <option value="default">Default</option>
       <option value="honey">Honey</option>
       <option value="blue">Blue</option>
+      <option value="vip" disabled>VIP 🔒</option>
     </select>
   </div>
 </aside>
@@ -242,62 +253,17 @@ iframe{
 </div>
 
 <script>
-/* CURSOR */
-const core=document.querySelector(".cursor-core"),
-glow=document.querySelector(".cursor-glow"),
-trail=document.querySelector(".cursor-trail");
-
-document.addEventListener("mousemove",e=>{
-  core.style.transform=`translate(${e.clientX-3}px,${e.clientY-3}px)`;
-  glow.style.transform=`translate(${e.clientX-60}px,${e.clientY-60}px)`;
-  trail.style.transform=`translate(${e.clientX-18}px,${e.clientY-18}px)`;
-});
-
-/* LOGIC */
 const USER="Honey";
 const ADMIN="Hubbard330!";
-
-let games=JSON.parse(localStorage.getItem("mm_games"))||[
- {name:"Gladihoppers",url:"https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html"},
- {name:"BitLife",url:"https://3kh0.github.io/bitlife/"},
- {name:"Proxy",url:"https://ultraviolet-node.netlify.app/"}
-];
-
-const list=document.getElementById("games");
-const player=document.getElementById("player");
 
 function unlock(){
   if(userPass.value===USER){
     lock.style.display="none";
-    render();
   }else userErr.style.display="block";
 }
 
-function render(){
-  list.innerHTML="";
-  games.forEach(g=>{
-    const d=document.createElement("div");
-    d.className="game";
-    d.textContent=g.name;
-    d.onclick=()=>launch(g);
-    list.appendChild(d);
-  });
-}
-
-function launch(g){
-  if(optTab.checked){window.open(g.url,"_blank");return;}
-  if(optCloak.checked){
-    const w=window.open();
-    w.document.write(`<iframe src="${g.url}" style="border:none;width:100%;height:100%"></iframe>`);
-    w.document.close();
-    return;
-  }
-  player.sandbox=optSandbox.checked?"allow-scripts allow-same-origin allow-forms":"";
-  player.src=g.url;
-}
-
 /* ADMIN */
-secretAdmin.onclick=()=>adminLogin.style.display="flex";
+adminBtn.onclick=()=>adminLogin.style.display="flex";
 
 function adminUnlock(){
   if(adminPass.value===ADMIN){
@@ -307,29 +273,25 @@ function adminUnlock(){
 }
 function closeAdmin(){adminPanel.style.display="none"}
 
-function addGame(){
-  if(!gName.value||!gUrl.value)return;
-  games.push({name:gName.value,url:gUrl.value});
-  localStorage.setItem("mm_games",JSON.stringify(games));
-  render();
-  gName.value=gUrl.value="";
-}
-
 /* THEMES */
 const themeSelect=document.getElementById("themeSelect");
-const savedTheme=localStorage.getItem("mm_theme")||"default";
-if(savedTheme!=="default") document.body.dataset.theme=savedTheme;
-themeSelect.value=savedTheme;
 
 themeSelect.onchange=()=>{
-  if(themeSelect.value==="default"){
-    delete document.body.dataset.theme;
-    localStorage.removeItem("mm_theme");
-  }else{
-    document.body.dataset.theme=themeSelect.value;
-    localStorage.setItem("mm_theme",themeSelect.value);
-  }
-};
+  document.body.dataset.theme=themeSelect.value==="default"?"":themeSelect.value;
+}
+
+/* ADMIN FUN */
+function setAdminTheme(){
+  document.body.dataset.theme="admin";
+}
+function enableVIP(){
+  document.querySelector('option[value="vip"]').disabled=false;
+  alert("VIP theme unlocked 😈");
+}
+function resetAll(){
+  localStorage.clear();
+  location.reload();
+}
 </script>
 </body>
 </html>
