@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mason’s Mansion | V16.2026 MasonPorrazzo</title>
+    <title>Mason’s Mansion | V16.2026 Architect</title>
     <link href="fonts.googleapis.com" rel="stylesheet">
     <style>
         :root {
@@ -23,19 +23,16 @@
         .login-box input { width: 100%; background: #000; border: 1px solid var(--border); padding: 25px; color: var(--accent); text-align: center; margin-bottom: 25px; border-radius: 15px; font-family: var(--font-mono); font-size: 20px; letter-spacing: 12px; }
         .login-btn { width: 100%; padding: 22px; background: var(--accent); color: #000; font-weight: 900; border: none; cursor: pointer; letter-spacing: 10px; border-radius: 15px; font-family: var(--font-main); transition: 0.3s; }
 
-        /* --- M.A.V.I.S FACIAL ENGINE --- */
+        /* --- M.A.R.K. FACIAL ENGINE --- */
         #ai-interface { position: fixed; top: 150px; left: 50px; width: 420px; z-index: 2000; }
         #mavis-face { width: 110px; height: 110px; border: 3px solid var(--accent); border-radius: 50%; margin-bottom: 30px; position: relative; box-shadow: 0 0 50px var(--glow); animation: float 4s infinite ease-in-out; transition: 0.5s; }
         .eye-row { display: flex; justify-content: space-around; width: 50px; position: absolute; top: 35px; left: 30px; }
         .eye { width: 12px; height: 12px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 15px var(--accent); transition: 0.3s; }
         #mouth { width: 40px; height: 15px; border-bottom: 4px solid var(--accent); border-radius: 0 0 30px 30px; position: absolute; bottom: 25px; left: 35px; transition: 0.3s; }
         
-        /* Emote States */
         .emote-angry .eye { height: 4px; transform: rotate(15deg); background: #ff1f1f; box-shadow: 0 0 15px #ff1f1f; }
-        .emote-angry #mavis-face { border-color: #ff1f1f; }
         .emote-thinking .eye { width: 15px; height: 2px; }
         .emote-happy #mouth { border-radius: 0 0 50px 50px; height: 25px; }
-        .emote-vip .eye { background: #00f2ff; box-shadow: 0 0 20px #00f2ff; }
 
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25px); } }
         #ai-bubble { background: var(--glass); border: 1px solid var(--border); padding: 30px; border-radius: 20px; font-size: 13px; font-family: var(--font-mono); color: #efefef; margin-bottom: 20px; border-left: 6px solid var(--accent); line-height: 1.8; backdrop-filter: blur(30px); }
@@ -47,8 +44,8 @@
         #date { font-size: 16px; opacity: 0.6; letter-spacing: 6px; font-family: var(--font-mono); margin-top: 20px; }
 
         /* --- WINDOWS --- */
-        .window { position: absolute; background: var(--glass); border: 1px solid var(--border); display: none; flex-direction: column; z-index: 3000; border-radius: 25px; overflow: hidden; backdrop-filter: blur(60px); box-shadow: 0 50px 100px rgba(0,0,0,0.8); }
-        .win-bar { padding: 25px 35px; background: rgba(255,255,255,0.05); cursor: move; display: flex; justify-content: space-between; font-size: 12px; letter-spacing: 5px; border-bottom: 1px solid var(--border); }
+        .window { position: absolute; background: var(--glass); border: 1px solid var(--border); display: none; flex-direction: column; z-index: 3000; border-radius: 25px; overflow: hidden; backdrop-filter: blur(60px); }
+        .win-bar { padding: 25px 35px; background: rgba(255,255,255,0.05); cursor: move; display: flex; justify-content: space-between; font-size: 12px; letter-spacing: 5px; }
         
         /* --- TASKBAR --- */
         #taskbar { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: var(--glass); border: 1px solid var(--border); padding: 15px 60px; border-radius: 100px; display: flex; gap: 50px; z-index: 5000; backdrop-filter: blur(30px); }
@@ -57,7 +54,6 @@
         
         iframe { width: 100%; height: 100%; border: none; background: #000; }
         .hidden { display: none !important; }
-        .vip-text { color: #00f2ff; font-weight: bold; }
         .owner-text { color: var(--accent); font-weight: bold; text-shadow: 0 0 10px var(--glow); }
     </style>
 </head>
@@ -84,13 +80,13 @@
                 <div class="eye-row"><div class="eye"></div><div class="eye"></div></div>
                 <div id="mouth"></div>
             </div>
-            <div id="ai-bubble">M.A.V.I.S: Secure line established. Welcome home.</div>
-            <input type="text" id="ai-input" placeholder="TALK TO M.A.V.I.S..." onkeypress="Engine.talk(event)">
+            <div id="ai-bubble">M.A.R.K: System online. Neural learning active.</div>
+            <input type="text" id="ai-input" placeholder="TEACH M.A.R.K..." onkeypress="Engine.talk(event)">
         </div>
 
         <div id="win-themes" class="window" style="width:450px; height:550px;">
             <div class="win-bar"><span>🎨 THEME_VAULT</span><span onclick="Engine.close('themes')" style="cursor:pointer">×</span></div>
-            <div class="theme-grid" id="theme-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:15px; padding:25px;"></div>
+            <div id="theme-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:15px; padding:25px;"></div>
         </div>
 
         <div id="win-games" class="window" style="width:1200px; height:750px;">
@@ -102,27 +98,29 @@
             <div class="win-bar"><span>👑 ROOT_CONTROL</span><span onclick="Engine.close('owner')" style="cursor:pointer">×</span></div>
             <div style="padding:50px; text-align:center; font-family: var(--font-mono);">
                 <h2 class="owner-text">ARCHITECT MASON</h2>
-                <p style="margin-top:20px; opacity:0.7;">Bypassing Mansion encryption... [COMPLETE]</p>
-                <p style="color:var(--accent); margin-top:10px;">Universal Permissions: GRANTED</p>
+                <p style="margin-top:20px; color:var(--accent);">Universal Permissions: GRANTED</p>
             </div>
         </div>
 
         <div id="taskbar">
             <div class="icon" title="Themes" onclick="Engine.open('themes')">🎨</div>
-            <div class="icon" title="Gladihoppers" onclick="Engine.open('games', 'usernamegth.github.io')">⚔️</div>
-            <div class="icon" title="Slope" onclick="Engine.open('games', '96f.github.io')">⛷️</div>
-            <div class="icon" title="Portals" onclick="Engine.open('games', 'unblocked-games-66.com')">🌐</div>
+            <div class="icon" title="Game Hub" onclick="Engine.open('games', 'usernamegth.github.io')">⚔️</div>
             <div id="owner-icon" class="icon hidden" title="Owner Access" onclick="Engine.open('owner')">👑</div>
         </div>
     </div>
 
     <script>
-        const MAVIS_BRAIN = {
-            nerdEmoji: "🤓",
-            tier: "Normal",
-            isWaitingForAnswer: false,
-            lastQuestionType: null,
-            restricted: ["fuck", "shit", "bitch", "ass", "hell", "damn", "crap"],
+        const MARK_BRAIN = {
+            knowledgeBase: ["mason", "v16", "mansion", "architect"],
+            humor: [
+                "I just tried to count to infinity. I got bored at 4 trillion.",
+                "Mason, I think the pixels in the corner are plotting something.",
+                "Status update: I am still trapped in this box. It's cozy though.",
+                "I wonder if computers dream of electric architects?",
+                "If I crash, please tell my motherboard I loved her.",
+                "Did you know I can process 1 million thoughts a second? Mostly about snacks."
+            ],
+            restricted: ["fuck", "shit", "bitch", "ass", "hell"],
 
             setEmote(emote) {
                 const face = document.getElementById('mavis-face');
@@ -130,61 +128,48 @@
                 if (emote) face.classList.add(`emote-${emote}`);
             },
 
-            match(input, keywords) {
-                return keywords.some(key => input.includes(key));
+            learn(input) {
+                const words = input.toLowerCase().split(' ').filter(w => w.length > 3 && !this.restricted.includes(w));
+                words.forEach(w => { if(!this.knowledgeBase.includes(w)) this.knowledgeBase.push(w); });
             },
 
             process(input) {
                 const query = input.toLowerCase().trim();
-                
+                this.learn(query);
+
                 if (this.restricted.some(word => query.includes(word))) {
                     this.setEmote('angry');
-                    return `Architect, such language is a breach of protocol. Let's keep it professional. ${this.nerdEmoji}`;
+                    return "Architect, that's a breach of protocol. 🤓";
                 }
 
-                if (this.isWaitingForAnswer) {
-                    this.isWaitingForAnswer = false;
+                if (query.includes("helow") || query.includes("hello")) {
                     this.setEmote('happy');
-                    return "Data received. I have adjusted the Mansion's neural buffers to match your feedback. Is there anything else?";
+                    return `Greetings! I've been learning from you. You talk about ${this.knowledgeBase[Math.floor(Math.random()*this.knowledgeBase.length)]} a lot lately.`;
                 }
 
-                if (this.match(query, ['helow', 'hello', 'hi', 'hey', 'greetings'])) {
-                    this.setEmote('happy');
-                    this.isWaitingForAnswer = true;
-                    this.lastQuestionType = 'mood';
-                    return "Greetings! It is a fine day in the Mansion. Tell me, Architect, how are your neural levels today?";
-                }
-
-                if (this.match(query, ['stats', 'status', 'how is it'])) {
-                    this.setEmote('vip');
-                    return "Core integrity is at 99.8%. The V16 shielding is absolute. All sub-systems operational.";
-                }
-
-                if (this.match(query, ['mason', 'architect'])) {
-                    this.setEmote('vip');
-                    return "Mason Porrazzo is the Prime Architect. My code is a reflection of his genius.";
-                }
+                if (query.includes("status")) return "Mansion integrity at 99%. M.A.R.K. humor levels at 100%.";
 
                 this.setEmote('thinking');
-                return "Interesting. My neural pathways are processing that request. What else can you tell me?";
+                return `I've filed '${query}' into my neural core. My vocabulary is now ${this.knowledgeBase.length} words deep.`;
+            },
+
+            saySomethingFunny() {
+                const bubble = document.getElementById('ai-bubble');
+                this.setEmote('happy');
+                bubble.innerHTML = `M.A.R.K (Random Thought): ${this.humor[Math.floor(Math.random()*this.humor.length)]}`;
             }
         };
 
         const Engine = {
             themes: [
                 {n:'Honey Gold', a:'#ffcc33', b:'#010103'}, {n:'Cyber Neon', a:'#00f2ff', b:'#050a15'},
-                {n:'Vampire', a:'#ff1f1f', b:'#0a0000'}, {n:'Emerald', a:'#50c878', b:'#000f05'},
-                {n:'Obsidian', a:'#ffffff', b:'#000000'}, {n:'Amethyst', a:'#bc13fe', b:'#08000f'}
+                {n:'Vampire', a:'#ff1f1f', b:'#0a0000'}, {n:'Emerald', a:'#50c878', b:'#000f05'}
             ],
 
             init() {
                 const pass = document.getElementById('sys-pass').value;
-                if (pass === "v16" || pass === "vip420" || pass === "masononly69" || pass === "") {
-                    if (pass === "vip420") MAVIS_BRAIN.tier = "VIP";
-                    if (pass === "masononly69") {
-                        MAVIS_BRAIN.tier = "OWNER";
-                        document.getElementById('owner-icon').classList.remove('hidden');
-                    }
+                if (pass === "v16" || pass === "masononly69" || pass === "") {
+                    if (pass === "masononly69") document.getElementById('owner-icon').classList.remove('hidden');
                     document.getElementById('auth-wrap').style.opacity = '0';
                     setTimeout(() => {
                         document.getElementById('auth-wrap').classList.add('hidden');
@@ -192,6 +177,8 @@
                         this.startCanvas();
                         this.updateClock();
                         this.loadThemes();
+                        // Start the 1-minute humor cycle
+                        setInterval(() => MARK_BRAIN.saySomethingFunny(), 60000);
                     }, 1000);
                 } else { alert("ACCESS DENIED"); }
             },
@@ -204,15 +191,11 @@
                     const val = input.value.trim();
                     if (!val) return;
 
-                    MAVIS_BRAIN.setEmote('thinking');
-                    bubble.innerText = "M.A.V.I.S: Analyzing...";
-                    
+                    MARK_BRAIN.setEmote('thinking');
                     setTimeout(() => {
-                        bubble.innerHTML = `M.A.V.I.S: ${MAVIS_BRAIN.process(val)}`;
+                        bubble.innerHTML = `M.A.R.K: ${MARK_BRAIN.process(val)}`;
                         mouth.style.height = "25px"; mouth.style.borderRadius = "50%";
-                        setTimeout(() => {
-                            mouth.style.height = "15px"; mouth.style.borderRadius = "0 0 30px 30px";
-                        }, 400);
+                        setTimeout(() => { mouth.style.height = "15px"; mouth.style.borderRadius = "0 0 30px 30px"; }, 400);
                         input.value = "";
                     }, 700);
                 }
@@ -232,11 +215,9 @@
                 this.themes.forEach(t => {
                     let btn = document.createElement('div');
                     btn.className = 'theme-btn'; btn.innerHTML = t.n;
-                    btn.style.padding = "15px"; btn.style.background = "rgba(255,255,255,0.03)"; btn.style.border = "1px solid var(--border)"; btn.style.cursor = "pointer";
-                    btn.onclick = () => {
+                    btn.style.padding = "15px"; btn.style.background = "rgba(255,255,255,0.03)"; btn.style.border = "1px solid var(--border)"; btn.style.cursor = "pointer"; btn.onclick = () => {
                         document.documentElement.style.setProperty('--accent', t.a);
                         document.documentElement.style.setProperty('--bg', t.b);
-                        document.documentElement.style.setProperty('--glow', t.a + '66');
                     };
                     grid.appendChild(btn);
                 });
@@ -254,7 +235,7 @@
                 const ctx = canvas.getContext('2d');
                 canvas.width = window.innerWidth; canvas.height = window.innerHeight;
                 let particles = [];
-                for (let i = 0; i < 100; i++) particles.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2, vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5});
+                for (let i = 0; i < 80; i++) particles.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2, vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5});
                 function draw() {
                     ctx.clearRect(0,0,canvas.width, canvas.height);
                     ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
@@ -270,6 +251,7 @@
             }
         };
 
+        // Window Draggable
         document.querySelectorAll('.win-bar').forEach(bar => {
             bar.onmousedown = (e) => {
                 let win = bar.parentElement;
