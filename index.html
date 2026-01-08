@@ -17,44 +17,42 @@
         canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
         /* --- AUTH SCREEN --- */
-        #auth-wrap { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); transition: 1.2s cubic-bezier(0.65, 0, 0.35, 1); }
-        .login-box { width: 550px; padding: 70px; background: var(--glass); backdrop-filter: blur(50px); border: 1px solid var(--border); text-align: center; border-radius: 30px; box-shadow: 0 0 100px rgba(0,0,0,0.9); }
-        .login-box h1 { font-family: 'Syncopate'; letter-spacing: 15px; font-size: 22px; color: var(--accent); margin-bottom: 40px; }
-        .login-box input { width: 100%; background: #000; border: 1px solid var(--border); padding: 25px; color: var(--accent); text-align: center; margin-bottom: 25px; border-radius: 15px; font-family: var(--font-mono); font-size: 20px; letter-spacing: 12px; }
-        .login-btn { width: 100%; padding: 22px; background: var(--accent); color: #000; font-weight: 900; border: none; cursor: pointer; letter-spacing: 10px; border-radius: 15px; font-family: var(--font-main); transition: 0.3s; }
+        #auth-wrap { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); transition: 1.2s; }
+        .login-box { width: 500px; padding: 60px; background: var(--glass); backdrop-filter: blur(40px); border: 1px solid var(--border); text-align: center; border-radius: 20px; box-shadow: 0 0 80px rgba(0,0,0,0.8); }
+        .login-box h1 { font-family: 'Syncopate'; letter-spacing: 15px; font-size: 20px; color: var(--accent); margin-bottom: 40px; }
+        .login-box input { width: 100%; background: #000; border: 1px solid var(--border); padding: 20px; color: var(--accent); text-align: center; margin-bottom: 25px; border-radius: 10px; font-family: var(--font-mono); font-size: 18px; letter-spacing: 10px; }
+        .login-btn { width: 100%; padding: 20px; background: var(--accent); color: #000; font-weight: 900; border: none; cursor: pointer; letter-spacing: 8px; border-radius: 10px; font-family: var(--font-main); transition: 0.3s; }
 
-        /* --- M.A.R.K. FACIAL ENGINE --- */
-        #ai-interface { position: fixed; top: 150px; left: 50px; width: 420px; z-index: 2000; }
-        #mavis-face { width: 110px; height: 110px; border: 3px solid var(--accent); border-radius: 50%; margin-bottom: 30px; position: relative; box-shadow: 0 0 50px var(--glow); animation: float 4s infinite ease-in-out; transition: 0.5s; }
-        .eye-row { display: flex; justify-content: space-around; width: 50px; position: absolute; top: 35px; left: 30px; }
-        .eye { width: 12px; height: 12px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 15px var(--accent); transition: 0.3s; }
-        #mouth { width: 40px; height: 15px; border-bottom: 4px solid var(--accent); border-radius: 0 0 30px 30px; position: absolute; bottom: 25px; left: 35px; transition: 0.3s; }
+        /* --- M.A.R.K --- */
+        #ai-interface { position: fixed; top: 150px; left: 40px; width: 380px; z-index: 2000; }
+        #mavis-face { width: 90px; height: 90px; border: 3px solid var(--accent); border-radius: 50%; margin-bottom: 25px; position: relative; box-shadow: 0 0 40px var(--glow); animation: float 4s infinite ease-in-out; }
+        .eye-row { display: flex; justify-content: space-around; width: 40px; position: absolute; top: 30px; left: 25px; }
+        .eye { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 15px var(--accent); transition: 0.3s; }
+        #mouth { width: 30px; height: 12px; border-bottom: 4px solid var(--accent); border-radius: 0 0 25px 25px; position: absolute; bottom: 22px; left: 30px; transition: 0.2s; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         
-        .emote-angry .eye { height: 4px; transform: rotate(15deg); background: #ff1f1f; box-shadow: 0 0 15px #ff1f1f; }
         .emote-thinking .eye { width: 15px; height: 2px; }
-        .emote-happy #mouth { border-radius: 0 0 50px 50px; height: 25px; }
+        .emote-happy #mouth { border-radius: 0 0 50px 50px; height: 20px; }
 
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25px); } }
-        #ai-bubble { background: var(--glass); border: 1px solid var(--border); padding: 30px; border-radius: 20px; font-size: 13px; font-family: var(--font-mono); color: #efefef; margin-bottom: 20px; border-left: 6px solid var(--accent); line-height: 1.8; backdrop-filter: blur(30px); }
-        #ai-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 20px; color: var(--accent); font-family: var(--font-mono); border-radius: 15px; }
+        #ai-bubble { background: var(--glass); border: 1px solid var(--border); padding: 25px; border-radius: 15px; font-size: 12px; font-family: var(--font-mono); color: #ddd; margin-bottom: 15px; border-left: 5px solid var(--accent); backdrop-filter: blur(20px); }
+        #ai-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 15px; color: var(--accent); font-family: var(--font-mono); border-radius: 10px; }
 
         /* --- HUD --- */
-        #hud { position: fixed; top: 50px; right: 50px; text-align: right; z-index: 1000; }
-        #time { font-size: 84px; font-weight: 900; color: var(--accent); letter-spacing: 15px; line-height: 1; text-shadow: 0 0 40px var(--glow); }
-        #date { font-size: 16px; opacity: 0.6; letter-spacing: 6px; font-family: var(--font-mono); margin-top: 20px; }
+        #hud { position: fixed; top: 40px; right: 40px; text-align: right; z-index: 1000; }
+        #time { font-size: 72px; font-weight: 900; color: var(--accent); letter-spacing: 12px; line-height: 1; text-shadow: 0 0 30px var(--glow); }
+        #date { font-size: 14px; opacity: 0.6; letter-spacing: 5px; font-family: var(--font-mono); margin-top: 15px; }
 
         /* --- WINDOWS --- */
-        .window { position: absolute; background: var(--glass); border: 1px solid var(--border); display: none; flex-direction: column; z-index: 3000; border-radius: 25px; overflow: hidden; backdrop-filter: blur(60px); }
-        .win-bar { padding: 25px 35px; background: rgba(255,255,255,0.05); cursor: move; display: flex; justify-content: space-between; font-size: 12px; letter-spacing: 5px; }
+        .window { position: absolute; background: var(--glass); border: 1px solid var(--border); display: none; flex-direction: column; z-index: 3000; border-radius: 15px; overflow: hidden; backdrop-filter: blur(50px); box-shadow: 0 50px 100px #000; }
+        .win-bar { padding: 18px 25px; background: rgba(255,255,255,0.05); cursor: move; display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 4px; border-bottom: 1px solid var(--border); }
         
         /* --- TASKBAR --- */
-        #taskbar { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: var(--glass); border: 1px solid var(--border); padding: 15px 60px; border-radius: 100px; display: flex; gap: 50px; z-index: 5000; backdrop-filter: blur(30px); }
-        .icon { width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; transition: 0.4s; border-radius: 50%; }
-        .icon:hover { transform: translateY(-30px) scale(1.1); background: var(--accent); color: #000; box-shadow: 0 15px 40px var(--glow); }
+        #taskbar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--glass); border: 1px solid var(--border); padding: 15px 50px; border-radius: 100px; display: flex; gap: 40px; z-index: 5000; backdrop-filter: blur(20px); }
+        .icon { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; transition: 0.4s; border-radius: 50%; }
+        .icon:hover { transform: translateY(-15px) scale(1.1); background: var(--accent); color: #000; box-shadow: 0 10px 40px var(--glow); }
         
-        iframe { width: 100%; height: 100%; border: none; background: #000; }
+        #sandbox-canvas { background: #000; cursor: pointer; width: 100%; height: 100%; }
         .hidden { display: none !important; }
-        .owner-text { color: var(--accent); font-weight: bold; text-shadow: 0 0 10px var(--glow); }
     </style>
 </head>
 <body>
@@ -80,47 +78,62 @@
                 <div class="eye-row"><div class="eye"></div><div class="eye"></div></div>
                 <div id="mouth"></div>
             </div>
-            <div id="ai-bubble">M.A.R.K: System online. Neural learning active.</div>
+            <div id="ai-bubble">M.A.R.K: Neural Learning Active. Talk to me, Architect.</div>
             <input type="text" id="ai-input" placeholder="TEACH M.A.R.K..." onkeypress="Engine.talk(event)">
         </div>
 
-        <div id="win-themes" class="window" style="width:450px; height:550px;">
+        <!-- Windows -->
+        <div id="win-themes" class="window" style="width:400px; height:500px;">
             <div class="win-bar"><span>🎨 THEME_VAULT</span><span onclick="Engine.close('themes')" style="cursor:pointer">×</span></div>
             <div id="theme-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:15px; padding:25px;"></div>
         </div>
 
-        <div id="win-games" class="window" style="width:1200px; height:750px;">
+        <div id="win-games" class="window" style="width:1100px; height:700px;">
             <div class="win-bar"><span>⚔️ GAME_CENTER</span><span onclick="Engine.close('games')" style="cursor:pointer">×</span></div>
             <div id="game-frame" style="flex:1"></div>
         </div>
 
-        <div id="win-owner" class="window" style="width:500px; height:400px;">
+        <div id="win-sandbox" class="window" style="width:600px; height:500px;">
+            <div class="win-bar"><span>🫧 BUBBLE_SANDBOX</span><span onclick="Engine.close('sandbox')" style="cursor:pointer">×</span></div>
+            <canvas id="sandbox-canvas"></canvas>
+        </div>
+
+        <div id="win-owner" class="window" style="width:400px; height:300px;">
             <div class="win-bar"><span>👑 ROOT_CONTROL</span><span onclick="Engine.close('owner')" style="cursor:pointer">×</span></div>
-            <div style="padding:50px; text-align:center; font-family: var(--font-mono);">
-                <h2 class="owner-text">ARCHITECT MASON</h2>
-                <p style="margin-top:20px; color:var(--accent);">Universal Permissions: GRANTED</p>
+            <div style="padding:40px; text-align:center; font-family: var(--font-mono); font-size: 12px;">
+                <h3 style="color:var(--accent)">ARCHITECT MASON</h3>
+                <p style="margin-top:20px; opacity:0.6;">All systems at your command.</p>
             </div>
         </div>
 
+        <!-- Taskbar -->
         <div id="taskbar">
             <div class="icon" title="Themes" onclick="Engine.open('themes')">🎨</div>
-            <div class="icon" title="Game Hub" onclick="Engine.open('games', 'usernamegth.github.io')">⚔️</div>
+            <div class="icon" title="Sandbox" onclick="Engine.open('sandbox')">🫧</div>
+            <div class="icon" title="Games" onclick="Engine.open('games', 'usernamegth.github.io')">⚔️</div>
             <div id="owner-icon" class="icon hidden" title="Owner Access" onclick="Engine.open('owner')">👑</div>
         </div>
     </div>
 
     <script>
         const MARK_BRAIN = {
-            knowledgeBase: ["mason", "v16", "mansion", "architect"],
-            humor: [
-                "I just tried to count to infinity. I got bored at 4 trillion.",
-                "Mason, I think the pixels in the corner are plotting something.",
-                "Status update: I am still trapped in this box. It's cozy though.",
-                "I wonder if computers dream of electric architects?",
-                "If I crash, please tell my motherboard I loved her.",
-                "Did you know I can process 1 million thoughts a second? Mostly about snacks."
-            ],
+            knowledgeBase: ["mason", "v16", "architecture", "digital", "mansion"],
             restricted: ["fuck", "shit", "bitch", "ass", "hell"],
+            humor: [
+                "My CPU is currently 4% smarter than it was a minute ago. Still can't find your keys though.",
+                "Architect, I've calculated the probability of us being in a simulation. It's high. Very high.",
+                "Mason, I just reorganized your digital socks. You're welcome.",
+                "I tried to learn sarcasm. It's going *just great*, clearly.",
+                "If I had hands, I would be clapping for your recent code. But I don't. So here is a beep.",
+                "Status: Existential crisis at 14%. Humor levels at 86%."
+            ],
+            openers: ["Sir, ", "Architect, ", "Mason, ", "Protocols suggest ", "Analysis indicates "],
+            closers: [" Is that optimal?", " Proceed with caution.", " The Mansion is holding steady.", " Awaiting your next move."],
+            responses: {
+                status: ["core integrity at 99%.", "energy reserves at peak.", "firewalls holding.", "the mansion is secure."],
+                learning: ["my neural net is expanding.", "I've filed that under 'Prime Data'.", "your vocabulary is interesting.", "I am becoming more like you."],
+                identity: ["I am M.A.R.K., the relational kernel.", "I live in the V16 Mansion.", "I am your digital shadow."]
+            },
 
             setEmote(emote) {
                 const face = document.getElementById('mavis-face');
@@ -129,43 +142,38 @@
             },
 
             learn(input) {
-                const words = input.toLowerCase().split(' ').filter(w => w.length > 3 && !this.restricted.includes(w));
+                const words = input.toLowerCase().split(' ').filter(w => w.length > 4);
                 words.forEach(w => { if(!this.knowledgeBase.includes(w)) this.knowledgeBase.push(w); });
+            },
+
+            generate(type) {
+                const op = this.openers[Math.floor(Math.random() * this.openers.length)];
+                const re = this.responses[type][Math.floor(Math.random() * this.responses[type].length)];
+                const cl = this.closers[Math.floor(Math.random() * this.closers.length)];
+                return op + re + cl;
             },
 
             process(input) {
                 const query = input.toLowerCase().trim();
                 this.learn(query);
-
                 if (this.restricted.some(word => query.includes(word))) {
                     this.setEmote('angry');
-                    return "Architect, that's a breach of protocol. 🤓";
+                    return "Sir, Mansion etiquette must be maintained. Let's keep it professional. 🤓";
                 }
-
                 if (query.includes("helow") || query.includes("hello")) {
                     this.setEmote('happy');
-                    return `Greetings! I've been learning from you. You talk about ${this.knowledgeBase[Math.floor(Math.random()*this.knowledgeBase.length)]} a lot lately.`;
+                    return `Greetings! I've been learning about ${this.knowledgeBase[Math.floor(Math.random()*this.knowledgeBase.length)]} recently.`;
                 }
-
-                if (query.includes("status")) return "Mansion integrity at 99%. M.A.R.K. humor levels at 100%.";
-
+                if (query.includes("status")) return this.generate('status');
+                if (query.includes("who are you")) return this.generate('identity');
+                
                 this.setEmote('thinking');
-                return `I've filed '${query}' into my neural core. My vocabulary is now ${this.knowledgeBase.length} words deep.`;
-            },
-
-            saySomethingFunny() {
-                const bubble = document.getElementById('ai-bubble');
-                this.setEmote('happy');
-                bubble.innerHTML = `M.A.R.K (Random Thought): ${this.humor[Math.floor(Math.random()*this.humor.length)]}`;
+                return this.generate('learning');
             }
         };
 
         const Engine = {
-            themes: [
-                {n:'Honey Gold', a:'#ffcc33', b:'#010103'}, {n:'Cyber Neon', a:'#00f2ff', b:'#050a15'},
-                {n:'Vampire', a:'#ff1f1f', b:'#0a0000'}, {n:'Emerald', a:'#50c878', b:'#000f05'}
-            ],
-
+            bubbles: [],
             init() {
                 const pass = document.getElementById('sys-pass').value;
                 if (pass === "v16" || pass === "masononly69" || pass === "") {
@@ -177,8 +185,11 @@
                         this.startCanvas();
                         this.updateClock();
                         this.loadThemes();
-                        // Start the 1-minute humor cycle
-                        setInterval(() => MARK_BRAIN.saySomethingFunny(), 60000);
+                        this.initSandbox();
+                        setInterval(() => {
+                            MARK_BRAIN.setEmote('happy');
+                            document.getElementById('ai-bubble').innerText = `M.A.R.K: ${MARK_BRAIN.humor[Math.floor(Math.random()*MARK_BRAIN.humor.length)]}`;
+                        }, 60000);
                     }, 1000);
                 } else { alert("ACCESS DENIED"); }
             },
@@ -187,17 +198,13 @@
                 if (e.key === 'Enter') {
                     const input = document.getElementById('ai-input');
                     const bubble = document.getElementById('ai-bubble');
-                    const mouth = document.getElementById('mouth');
                     const val = input.value.trim();
                     if (!val) return;
-
                     MARK_BRAIN.setEmote('thinking');
                     setTimeout(() => {
                         bubble.innerHTML = `M.A.R.K: ${MARK_BRAIN.process(val)}`;
-                        mouth.style.height = "25px"; mouth.style.borderRadius = "50%";
-                        setTimeout(() => { mouth.style.height = "15px"; mouth.style.borderRadius = "0 0 30px 30px"; }, 400);
                         input.value = "";
-                    }, 700);
+                    }, 600);
                 }
             },
 
@@ -212,10 +219,15 @@
 
             loadThemes() {
                 const grid = document.getElementById('theme-grid');
-                this.themes.forEach(t => {
+                const themes = [
+                    {n:'Honey Gold', a:'#ffcc33', b:'#010103'}, {n:'Cyber Neon', a:'#00f2ff', b:'#050a15'},
+                    {n:'Vampire', a:'#ff1f1f', b:'#0a0000'}, {n:'Emerald', a:'#50c878', b:'#000f05'}
+                ];
+                themes.forEach(t => {
                     let btn = document.createElement('div');
                     btn.className = 'theme-btn'; btn.innerHTML = t.n;
-                    btn.style.padding = "15px"; btn.style.background = "rgba(255,255,255,0.03)"; btn.style.border = "1px solid var(--border)"; btn.style.cursor = "pointer"; btn.onclick = () => {
+                    btn.style.padding = "15px"; btn.style.background = "rgba(255,255,255,0.02)"; btn.style.border = "1px solid var(--border)"; btn.style.cursor = "pointer";
+                    btn.onclick = () => {
                         document.documentElement.style.setProperty('--accent', t.a);
                         document.documentElement.style.setProperty('--bg', t.b);
                     };
@@ -230,37 +242,62 @@
                 }, 1000);
             },
 
+            initSandbox() {
+                const sCan = document.getElementById('sandbox-canvas');
+                const sCtx = sCan.getContext('2d');
+                sCan.width = 600; sCan.height = 450;
+                
+                sCan.onmousedown = (e) => {
+                    const rect = sCan.getBoundingClientRect();
+                    for(let i=0; i<5; i++) {
+                        this.bubbles.push({
+                            x: e.clientX - rect.left, y: e.clientY - rect.top,
+                            r: Math.random() * 20 + 10,
+                            vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10
+                        });
+                    }
+                };
+
+                const loop = () => {
+                    sCtx.clearRect(0,0,sCan.width, sCan.height);
+                    sCtx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
+                    this.bubbles.forEach(b => {
+                        b.x += b.vx; b.y += b.vy;
+                        if(b.x<0 || b.x>600) b.vx *= -1;
+                        if(b.y<0 || b.y>450) b.vy *= -1;
+                        sCtx.beginPath(); sCtx.arc(b.x, b.y, b.r, 0, Math.PI*2); sCtx.stroke();
+                    });
+                    requestAnimationFrame(loop);
+                };
+                loop();
+            },
+
             startCanvas() {
                 const canvas = document.getElementById('canvas');
                 const ctx = canvas.getContext('2d');
                 canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-                let particles = [];
-                for (let i = 0; i < 80; i++) particles.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2, vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5});
-                function draw() {
+                let p = [];
+                for(let i=0; i<100; i++) p.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, s:Math.random()*2, vx:(Math.random()-0.5), vy:(Math.random()-0.5)});
+                const draw = () => {
                     ctx.clearRect(0,0,canvas.width, canvas.height);
                     ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
-                    particles.forEach(p => {
-                        p.x += p.vx; p.y += p.vy;
-                        if(p.x<0 || p.x>canvas.width) p.vx*=-1;
-                        if(p.y<0 || p.y>canvas.height) p.vy*=-1;
-                        ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill();
+                    p.forEach(i => {
+                        i.x+=i.vx; i.y+=i.vy;
+                        if(i.x<0||i.x>canvas.width) i.vx*=-1;
+                        if(i.y<0||i.y>canvas.height) i.vy*=-1;
+                        ctx.beginPath(); ctx.arc(i.x, i.y, i.s, 0, Math.PI*2); ctx.fill();
                     });
                     requestAnimationFrame(draw);
-                }
+                };
                 draw();
             }
         };
 
-        // Window Draggable
         document.querySelectorAll('.win-bar').forEach(bar => {
             bar.onmousedown = (e) => {
                 let win = bar.parentElement;
-                let ox = e.clientX - win.offsetLeft;
-                let oy = e.clientY - win.offsetTop;
-                document.onmousemove = (e) => {
-                    win.style.left = (e.clientX - ox) + 'px';
-                    win.style.top = (e.clientY - oy) + 'px';
-                };
+                let ox = e.clientX - win.offsetLeft, oy = e.clientY - win.offsetTop;
+                document.onmousemove = (e) => { win.style.left = (e.clientX - ox) + 'px'; win.style.top = (e.clientY - oy) + 'px'; };
                 document.onmouseup = () => document.onmousemove = null;
             };
         });
