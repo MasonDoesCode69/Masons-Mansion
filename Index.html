@@ -17,11 +17,22 @@
   --glow:rgba(125,249,255,.35);
 }
 
+/* HONEY THEME */
+body[data-theme="honey"]{
+  --accent:#ffcc66;
+  --glow:rgba(255,204,102,.35);
+}
+
+/* BLUE THEME */
+body[data-theme="blue"]{
+  --accent:#4da6ff;
+  --glow:rgba(77,166,255,.35);
+}
+
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:system-ui,-apple-system,sans-serif;
-  background:
-    radial-gradient(circle at top,#0c1a1d,#050505);
+  background:radial-gradient(circle at top,#0c1a1d,#050505);
   color:var(--text);
   min-height:100vh;
   overflow:hidden;
@@ -35,21 +46,27 @@ body{
   z-index:9999;
   border-radius:50%;
 }
-.cursor-core{
-  width:6px;height:6px;
-  background:#fff;
-}
+.cursor-core{width:6px;height:6px;background:#fff}
 .cursor-glow{
   width:120px;height:120px;
   background:radial-gradient(circle,var(--glow),transparent 70%);
   filter:blur(8px);
-  transition:transform .05s linear;
 }
 .cursor-trail{
   width:36px;height:36px;
   border:1px solid rgba(255,255,255,.35);
   opacity:.5;
-  transition:transform .12s ease-out;
+}
+
+/* ===== SECRET ADMIN BUTTON ===== */
+#secretAdmin{
+  position:fixed;
+  top:0;
+  left:0;
+  width:22px;
+  height:22px;
+  opacity:0;
+  z-index:10001;
 }
 
 /* ===== LOCK / ADMIN ===== */
@@ -70,11 +87,6 @@ body{
   padding:26px;
   width:300px;
   text-align:center;
-  box-shadow:0 0 50px #000;
-}
-.box h2{
-  letter-spacing:.18em;
-  margin-bottom:10px;
 }
 .box input{
   width:100%;
@@ -92,45 +104,26 @@ body{
   border:none;
   background:var(--accent);
   color:#000;
-  cursor:pointer;
   font-weight:600;
 }
 .error{display:none;color:#ff6a6a;font-size:11px}
 
 /* ===== MAIN UI ===== */
-.page{
-  max-width:1200px;
-  margin:0 auto;
-  padding:20px;
-}
+.page{max-width:1200px;margin:0 auto;padding:20px}
 header{
   display:flex;
   justify-content:space-between;
-  align-items:center;
   background:var(--panel);
-  border:1px solid var(--border);
   border-radius:24px;
   padding:16px 22px;
   margin-bottom:18px;
 }
-header h1{
-  font-size:20px;
-  letter-spacing:.25em;
-}
-header span{
-  font-size:11px;
-  color:var(--muted);
-}
+header h1{font-size:20px;letter-spacing:.25em}
+header span{font-size:11px;color:var(--muted)}
 
-.layout{
-  display:grid;
-  grid-template-columns:260px 1fr;
-  gap:18px;
-}
+.layout{display:grid;grid-template-columns:260px 1fr;gap:18px}
 .panel{
   background:var(--panel);
-  backdrop-filter:blur(14px);
-  border:1px solid var(--border);
   border-radius:20px;
   padding:14px;
 }
@@ -143,15 +136,13 @@ header span{
 
 .game{
   background:var(--card);
-  border:1px solid var(--border);
   border-radius:14px;
   padding:10px;
   margin-bottom:6px;
   cursor:pointer;
-  transition:.15s;
 }
 .game:hover{
-  border-color:var(--accent);
+  border:1px solid var(--accent);
   box-shadow:0 0 18px var(--glow);
 }
 
@@ -162,16 +153,26 @@ header span{
   margin-bottom:6px;
 }
 
+select{
+  background:var(--card);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:2px 8px;
+}
+
 iframe{
   width:100%;
   height:560px;
   border:none;
   border-radius:18px;
-  background:#000;
 }
 </style>
 </head>
+
 <body>
+
+<div id="secretAdmin"></div>
 
 <!-- CURSOR -->
 <div class="cursor-glow"></div>
@@ -203,8 +204,7 @@ iframe{
     <h2>ADMIN PANEL</h2>
     <input id="gName" placeholder="Game name">
     <input id="gUrl" placeholder="Game URL">
-    <button onclick="addGame()">Add Game</button>
-    <br><br>
+    <button onclick="addGame()">Add Game</button><br><br>
     <button onclick="closeAdmin()">Close</button>
   </div>
 </div>
@@ -216,19 +216,28 @@ iframe{
 </header>
 
 <div class="layout">
-  <aside class="panel">
-    <h3>GAMES</h3>
-    <div id="games"></div>
+<aside class="panel">
+  <h3>GAMES</h3>
+  <div id="games"></div>
 
-    <h3 style="margin-top:14px">SETTINGS</h3>
-    <div class="setting">Open in new tab <input type="checkbox" id="optTab"></div>
-    <div class="setting">Iframe sandbox <input type="checkbox" id="optSandbox" checked></div>
-    <div class="setting">About:Blank cloak <input type="checkbox" id="optCloak"></div>
-  </aside>
+  <h3 style="margin-top:14px">SETTINGS</h3>
+  <div class="setting">Open in new tab <input type="checkbox" id="optTab"></div>
+  <div class="setting">Iframe sandbox <input type="checkbox" id="optSandbox" checked></div>
+  <div class="setting">About:Blank cloak <input type="checkbox" id="optCloak"></div>
 
-  <section class="panel">
-    <iframe id="player"></iframe>
-  </section>
+  <div class="setting">
+    Theme
+    <select id="themeSelect">
+      <option value="default">Default</option>
+      <option value="honey">Honey</option>
+      <option value="blue">Blue</option>
+    </select>
+  </div>
+</aside>
+
+<section class="panel">
+  <iframe id="player"></iframe>
+</section>
 </div>
 </div>
 
@@ -280,16 +289,15 @@ function launch(g){
   if(optCloak.checked){
     const w=window.open();
     w.document.write(`<iframe src="${g.url}" style="border:none;width:100%;height:100%"></iframe>`);
+    w.document.close();
     return;
   }
-  player.src=g.url;
   player.sandbox=optSandbox.checked?"allow-scripts allow-same-origin allow-forms":"";
+  player.src=g.url;
 }
 
 /* ADMIN */
-document.addEventListener("keydown",e=>{
-  if(e.ctrlKey&&e.shiftKey&&e.key==="A") adminLogin.style.display="flex";
-});
+secretAdmin.onclick=()=>adminLogin.style.display="flex";
 
 function adminUnlock(){
   if(adminPass.value===ADMIN){
@@ -297,7 +305,6 @@ function adminUnlock(){
     adminPanel.style.display="flex";
   }else adminErr.style.display="block";
 }
-
 function closeAdmin(){adminPanel.style.display="none"}
 
 function addGame(){
@@ -307,6 +314,22 @@ function addGame(){
   render();
   gName.value=gUrl.value="";
 }
+
+/* THEMES */
+const themeSelect=document.getElementById("themeSelect");
+const savedTheme=localStorage.getItem("mm_theme")||"default";
+if(savedTheme!=="default") document.body.dataset.theme=savedTheme;
+themeSelect.value=savedTheme;
+
+themeSelect.onchange=()=>{
+  if(themeSelect.value==="default"){
+    delete document.body.dataset.theme;
+    localStorage.removeItem("mm_theme");
+  }else{
+    document.body.dataset.theme=themeSelect.value;
+    localStorage.setItem("mm_theme",themeSelect.value);
+  }
+};
 </script>
 </body>
 </html>
