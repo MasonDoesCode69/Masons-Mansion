@@ -15,7 +15,6 @@
   --accent:#7df9ff;
   --glow:rgba(125,249,255,.35);
 }
-
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:system-ui,-apple-system,sans-serif;
@@ -26,63 +25,32 @@ body{
   cursor:none;
   transition:background 0.5s;
 }
-
-/* cursor */
 .cursor-core,.cursor-glow,.cursor-trail{
   position:fixed;pointer-events:none;border-radius:50%;z-index:9999;
 }
 .cursor-core{width:6px;height:6px;background:var(--accent);transition:background 0.3s;}
 .cursor-glow{width:120px;height:120px;background:radial-gradient(circle,var(--glow),transparent 70%);filter:blur(8px);transition:transform .05s linear,background 0.3s;}
 .cursor-trail{width:36px;height:36px;border:1px solid rgba(255,255,255,.35);opacity:.5;transition:transform .12s ease-out;border-color:var(--accent);}
-
-/* overlays */
-.overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;z-index:10000;
-  opacity:0;pointer-events:none;transition:opacity 0.3s;
-}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;z-index:10000;opacity:0;pointer-events:none;transition:opacity 0.3s;}
 .overlay.active{opacity:1;pointer-events:auto;}
-.box{
-  background:linear-gradient(135deg,#111 0%,#222 100%);
-  backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:20px;
-  padding:26px;width:320px;text-align:center;box-shadow:0 0 50px #000;transition:background 0.5s;
-}
-.box h2{letter-spacing:.18em;margin-bottom:10px;}
+.box{background:linear-gradient(135deg,#111 0%,#222 100%);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:20px;padding:26px;width:340px;text-align:center;box-shadow:0 0 50px #000;transition:background 0.5s;}
+.box h2{letter-spacing:.18em;margin-bottom:12px;}
 .box input{width:100%;padding:10px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);text-align:center;margin-bottom:10px;transition:background 0.3s;}
 .box button{padding:10px 18px;border-radius:999px;border:none;background:var(--accent);color:#000;cursor:pointer;font-weight:600;margin:5px;transition:background 0.3s,transform 0.2s;}
 .box button:hover{transform:scale(1.08);}
 .error{display:none;color:#ff6a6a;font-size:11px;}
-
-/* page layout */
 .page{max-width:1200px;margin:0 auto;padding:20px;transition:color 0.3s;}
-header{
-  display:flex;justify-content:space-between;align-items:center;
-  background:linear-gradient(135deg,#111 0%,#222 100%);
-  border:1px solid var(--border);border-radius:24px;padding:16px 22px;margin-bottom:18px;
-  box-shadow:0 0 20px #000;
-  transition:background 0.5s;
-}
+header{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,#111 0%,#222 100%);border:1px solid var(--border);border-radius:24px;padding:16px 22px;margin-bottom:18px;box-shadow:0 0 20px #000;transition:background 0.5s;}
 header h1{font-size:20px;letter-spacing:.25em;}
 header span{font-size:11px;color:var(--muted);}
 .layout{display:grid;grid-template-columns:280px 1fr;gap:18px;}
-.panel{
-  background:linear-gradient(145deg,#111 0%,#222 100%);
-  backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:20px;padding:14px;
-  box-shadow:0 0 20px #000;transition:background 0.5s;
-}
+.panel{background:linear-gradient(145deg,#111 0%,#222 100%);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:20px;padding:14px;box-shadow:0 0 20px #000;transition:background 0.5s;}
 .panel h3{font-size:12px;letter-spacing:.18em;color:var(--muted);margin-bottom:8px;}
-.game{
-  background:linear-gradient(135deg,#222 0%,#111 100%);
-  border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .25s;
-}
+.game{background:linear-gradient(135deg,#222 0%,#111 100%);border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .25s;}
 .game:hover{border-color:var(--accent);box-shadow:0 0 18px var(--glow);transform:scale(1.03);}
 .setting{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;}
 iframe{width:100%;height:calc(100vh - 160px);border:none;border-radius:18px;background:#000;transition:all 0.3s;}
-
-/* theme buttons */
-.theme-btn{
-  padding:8px 16px;margin:4px;border-radius:12px;border:none;cursor:pointer;font-weight:600;color:#fff;
-  background:var(--accent);transition:background 0.3s,transform 0.2s;
-}
+.theme-btn{padding:8px 16px;margin:4px;border-radius:12px;border:none;cursor:pointer;font-weight:600;color:#fff;background:var(--accent);transition:background 0.3s,transform 0.2s;}
 .theme-btn:hover{transform:scale(1.08);}
 </style>
 </head>
@@ -128,13 +96,34 @@ iframe{width:100%;height:calc(100vh - 160px);border:none;border-radius:18px;back
     <input id="gUrl" placeholder="Game URL">
     <button onclick="addGame()">Add Game</button>
     <button onclick="closeAdmin()">Close</button>
+    <div style="margin-top:10px">
+      <button onclick="adminCommand1()">Admin Cmd 1</button>
+      <button onclick="adminCommand2()">Admin Cmd 2</button>
+      <button onclick="adminCommand3()">Admin Cmd 3</button>
+      <button onclick="adminCommand4()">Admin Cmd 4</button>
+      <button onclick="adminCommand5()">Admin Cmd 5</button>
+      <button onclick="adminCommand6()">Admin Cmd 6</button>
+      <button onclick="adminCommand7()">Admin Cmd 7</button>
+      <button onclick="adminCommand8()">Admin Cmd 8</button>
+      <button onclick="adminCommand9()">Admin Cmd 9</button>
+      <button onclick="adminCommand10()">Admin Cmd 10</button>
+    </div>
   </div>
 </div>
 
 <div class="overlay" id="vipPanel">
   <div class="box">
     <h2>VIP PANEL</h2>
-    <button onclick="alert('VIP silly button!')">Silly Button</button>
+    <button onclick="vipCommand1()">VIP Cmd 1</button>
+    <button onclick="vipCommand2()">VIP Cmd 2</button>
+    <button onclick="vipCommand3()">VIP Cmd 3</button>
+    <button onclick="vipCommand4()">VIP Cmd 4</button>
+    <button onclick="vipCommand5()">VIP Cmd 5</button>
+    <button onclick="vipCommand6()">VIP Cmd 6</button>
+    <button onclick="vipCommand7()">VIP Cmd 7</button>
+    <button onclick="vipCommand8()">VIP Cmd 8</button>
+    <button onclick="vipCommand9()">VIP Cmd 9</button>
+    <button onclick="vipCommand10()">VIP Cmd 10</button>
     <button onclick="closeVIP()">Close</button>
   </div>
 </div>
@@ -142,7 +131,16 @@ iframe{width:100%;height:calc(100vh - 160px);border:none;border-radius:18px;back
 <div class="overlay" id="ownerPanel">
   <div class="box">
     <h2>OWNER PANEL</h2>
-    <button onclick="alert('Owner powerful button!')">Owner Button</button>
+    <button onclick="ownerCommand1()">Owner Cmd 1</button>
+    <button onclick="ownerCommand2()">Owner Cmd 2</button>
+    <button onclick="ownerCommand3()">Owner Cmd 3</button>
+    <button onclick="ownerCommand4()">Owner Cmd 4</button>
+    <button onclick="ownerCommand5()">Owner Cmd 5</button>
+    <button onclick="ownerCommand6()">Owner Cmd 6</button>
+    <button onclick="ownerCommand7()">Owner Cmd 7</button>
+    <button onclick="ownerCommand8()">Owner Cmd 8</button>
+    <button onclick="ownerCommand9()">Owner Cmd 9</button>
+    <button onclick="ownerCommand10()">Owner Cmd 10</button>
     <button onclick="closeOwner()">Close</button>
   </div>
 </div>
@@ -192,30 +190,13 @@ let games=[
   {name:"Proxy",url:"https://ultraviolet-node.netlify.app/"}
 ];
 
-/* 20 new dark public themes */
+/* Themes */
 const themeList=[
-  {name:"Honey",type:"public",bg:"#1a0a00",panel:"linear-gradient(145deg,#221100,#442200)",accent:"#ffbf00",glow:"rgba(255,191,0,.35)"},
-  {name:"Blue",type:"public",bg:"#00131a",panel:"linear-gradient(145deg,#002233,#004466)",accent:"#00bfff",glow:"rgba(0,191,255,.35)"},
-  {name:"Galaxy",type:"public",bg:"#0b0015",panel:"linear-gradient(145deg,#200040,#440080)",accent:"#bb88ff",glow:"rgba(187,136,255,.35)"},
-  {name:"Aurora",type:"public",bg:"#05050d",panel:"linear-gradient(145deg,#0a0a22,#1a1a55)",accent:"#33ffcc",glow:"rgba(51,255,204,.35)"},
-  {name:"Crimson",type:"public",bg:"#1a0000",panel:"linear-gradient(145deg,#330000,#550000)",accent:"#ff4444",glow:"rgba(255,68,68,.35)"},
-  {name:"Emerald",type:"public",bg:"#001a0a",panel:"linear-gradient(145deg,#003322,#005533)",accent:"#00ff88",glow:"rgba(0,255,136,.35)"},
-  {name:"Violet",type:"public",bg:"#0a0015",panel:"linear-gradient(145deg,#1a0033,#330066)",accent:"#cc33ff",glow:"rgba(204,51,255,.35)"},
-  {name:"Midnight",type:"public",bg:"#00000f",panel:"linear-gradient(145deg,#111133,#222266)",accent:"#8888ff",glow:"rgba(136,136,255,.35)"},
-  {name:"Obsidian",type:"public",bg:"#050505",panel:"linear-gradient(145deg,#111111,#333333)",accent:"#aaaaaa",glow:"rgba(170,170,170,.35)"},
-  {name:"Neon Red",type:"public",bg:"#1a0000",panel:"linear-gradient(145deg,#330000,#550000)",accent:"#ff0055",glow:"rgba(255,0,85,.35)"},
-  {name:"Neon Blue",type:"public",bg:"#00001a",panel:"linear-gradient(145deg,#000033,#000055)",accent:"#0055ff",glow:"rgba(0,85,255,.35)"},
-  {name:"Neon Green",type:"public",bg:"#001a00",panel:"linear-gradient(145deg,#003300,#005500)",accent:"#00ff55",glow:"rgba(0,255,85,.35)"},
-  {name:"Solar",type:"public",bg:"#1a1400",panel:"linear-gradient(145deg,#332800,#554400)",accent:"#ffaa00",glow:"rgba(255,170,0,.35)"},
-  {name:"Deep Sea",type:"public",bg:"#00141a",panel:"linear-gradient(145deg,#002833,#004455)",accent:"#00aaff",glow:"rgba(0,170,255,.35)"},
-  {name:"Twilight",type:"public",bg:"#0a0a1a",panel:"linear-gradient(145deg,#1a1a33,#2a2a55)",accent:"#8888ff",glow:"rgba(136,136,255,.35)"},
-  {name:"Steel",type:"public",bg:"#111116",panel:"linear-gradient(145deg,#222233,#333344)",accent:"#bbbbff",glow:"rgba(187,187,255,.35)"},
-  {name:"Amber",type:"public",bg:"#1a1000",panel:"linear-gradient(145deg,#332200,#554400)",accent:"#ffbb33",glow:"rgba(255,187,51,.35)"},
-  {name:"Ruby",type:"public",bg:"#1a000a",panel:"linear-gradient(145deg,#330015,#550033)",accent:"#ff33aa",glow:"rgba(255,51,170,.35)"},
-  {name:"Sapphire",type:"public",bg:"#00001a",panel:"linear-gradient(145deg,#000033,#000055)",accent:"#3399ff",glow:"rgba(51,153,255,.35)"},
-  {name:"Onyx",type:"public",bg:"#050505",panel:"linear-gradient(145deg,#111111,#222222)",accent:"#999999",glow:"rgba(153,153,153,.35)"},
-  // VIP/Owner themes
-  {name:"Supernova",type:"owner",bg:"#2b0000",panel:"rgba(255,85,0,.75)",accent:"#ff5500",glow:"rgba(255,85,0,.35)"},
+  {name:"Dark Red",type:"public",bg:"#1a0000",panel:"linear-gradient(145deg,#330000,#550000)",accent:"#ff4444",glow:"rgba(255,68,68,.35)"},
+  {name:"Dark Blue",type:"public",bg:"#00001a",panel:"linear-gradient(145deg,#000033,#000055)",accent:"#4455ff",glow:"rgba(68,85,255,.35)"},
+  {name:"Purple Night",type:"public",bg:"#0a0015",panel:"linear-gradient(145deg,#1a0033,#330066)",accent:"#bb33ff",glow:"rgba(187,51,255,.35)"},
+  {name:"Emerald Deep",type:"public",bg:"#001a0a",panel:"linear-gradient(145deg,#003322,#005533)",accent:"#33ff88",glow:"rgba(51,255,136,.35)"},
+  {name:"Owner RGB",type:"owner",bg:"linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet)",panel:"linear-gradient(145deg,#111111,#333333)",accent:"#fff",glow:"rgba(255,255,255,.5)"},
   {name:"VIP Pink",type:"vip",bg:"#ffe5f0",panel:"rgba(255,51,153,.5)",accent:"#ff3399",glow:"rgba(255,51,153,.35)"}
 ];
 
@@ -247,13 +228,16 @@ function renderThemes(){
     const b=document.createElement("button");
     b.className="theme-btn";
     b.textContent=t.name;
-    b.onclick=()=>applyTheme(t);
+    b.onclick=()=>{
+      if(t.type==="vip"){alert("Permission Declined"); return;}
+      if(t.type==="owner"){alert("Permission Declined"); return;}
+      if(t.type==="admin"){alert("Permission Declined"); return;}
+      applyTheme(t);
+    }
     themes.appendChild(b);
   });
 }
 function applyTheme(t){
-  if(t.type==="vip"){showOverlay(vipLogin);return;}
-  if(t.type==="owner"){showOverlay(ownerLogin);return;}
   document.body.style.background=t.bg;
   document.querySelectorAll(".panel,.box,header").forEach(el=>el.style.background=t.panel);
   document.querySelectorAll(".theme-btn").forEach(el=>el.style.background=t.accent);
@@ -261,11 +245,11 @@ function applyTheme(t){
   document.documentElement.style.setProperty("--glow",t.glow);
 }
 
-/* Overlay Helpers */
+/* Overlay helpers */
 function showOverlay(el){el.classList.add("active");}
 function hideOverlay(el){el.classList.remove("active");}
 
-/* Login functions */
+/* Login */
 function unlock(){if(userPass.value===USER){hideOverlay(lock);renderGames();renderThemes();}else userErr.style.display="block";}
 function vipUnlock(){if(vipPass.value===VIP){hideOverlay(vipLogin);showOverlay(vipPanel);}else vipErr.style.display="block";}
 function ownerUnlock(){if(ownerPass.value===OWNER){hideOverlay(ownerLogin);showOverlay(ownerPanel);}else ownerErr.style.display="block";}
@@ -276,6 +260,27 @@ function addGame(){if(!gName.value||!gUrl.value)return;games.push({name:gName.va
 function closeAdmin(){hideOverlay(adminPanel);}
 function closeVIP(){hideOverlay(vipPanel);}
 function closeOwner(){hideOverlay(ownerPanel);}
+
+/* VIP Commands */
+function vipCommand1(){alert("VIP Cmd 1 executed");} function vipCommand2(){alert("VIP Cmd 2 executed");}
+function vipCommand3(){alert("VIP Cmd 3 executed");} function vipCommand4(){alert("VIP Cmd 4 executed");}
+function vipCommand5(){alert("VIP Cmd 5 executed");} function vipCommand6(){alert("VIP Cmd 6 executed");}
+function vipCommand7(){alert("VIP Cmd 7 executed");} function vipCommand8(){alert("VIP Cmd 8 executed");}
+function vipCommand9(){alert("VIP Cmd 9 executed");} function vipCommand10(){alert("VIP Cmd 10 executed");}
+
+/* Owner Commands */
+function ownerCommand1(){alert("Owner Cmd 1 executed");} function ownerCommand2(){alert("Owner Cmd 2 executed");}
+function ownerCommand3(){alert("Owner Cmd 3 executed");} function ownerCommand4(){alert("Owner Cmd 4 executed");}
+function ownerCommand5(){alert("Owner Cmd 5 executed");} function ownerCommand6(){alert("Owner Cmd 6 executed");}
+function ownerCommand7(){alert("Owner Cmd 7 executed");} function ownerCommand8(){alert("Owner Cmd 8 executed");}
+function ownerCommand9(){alert("Owner Cmd 9 executed");} function ownerCommand10(){alert("Owner Cmd 10 executed");}
+
+/* Admin Commands */
+function adminCommand1(){alert("Admin Cmd 1 executed");} function adminCommand2(){alert("Admin Cmd 2 executed");}
+function adminCommand3(){alert("Admin Cmd 3 executed");} function adminCommand4(){alert("Admin Cmd 4 executed");}
+function adminCommand5(){alert("Admin Cmd 5 executed");} function adminCommand6(){alert("Admin Cmd 6 executed");}
+function adminCommand7(){alert("Admin Cmd 7 executed");} function adminCommand8(){alert("Admin Cmd 8 executed");}
+function adminCommand9(){alert("Admin Cmd 9 executed");} function adminCommand10(){alert("Admin Cmd 10 executed");}
 
 /* Init */
 renderGames();
