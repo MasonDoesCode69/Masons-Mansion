@@ -3,326 +3,449 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mason’s Mansion | Omega Edition 2026</title>
+    <title>Mason’s Mansion | V16 Singularity</title>
+    <link href="fonts.googleapis.com" rel="stylesheet">
     <style>
         :root {
-            --bg: #030305;
+            --bg: #010102;
             --accent: #ffcc33;
+            --vip: #00f2ff;
+            --owner: #ff3333;
             --glow: rgba(255, 204, 51, 0.4);
-            --glass: rgba(10, 10, 15, 0.92);
-            --border: rgba(255, 255, 255, 0.1);
-            --text: #f0f0f0;
-            --font: 'Outfit', 'Segoe UI', system-ui, sans-serif;
-            --window-shadow: 0 25px 60px rgba(0,0,0,0.8);
+            --glass: rgba(5, 5, 8, 0.98);
+            --border: rgba(255, 255, 255, 0.05);
+            --font-main: 'Orbitron', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-title: 'Syncopate', sans-serif;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font); cursor: crosshair; touch-action: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: #fff; font-family: var(--font-main); cursor: crosshair; }
 
-        #bg-canvas { position: fixed; inset: 0; z-index: 0; filter: contrast(1.1) brightness(1.1); }
+        canvas { position: fixed; inset: 0; z-index: 0; }
+        #overlay-canvas { pointer-events: none; z-index: 5000; }
 
-        /* --- AUTH SYSTEM --- */
-        #auth-overlay {
+        /* --- ADVANCED LOGIN SYSTEM --- */
+        #auth-wrap {
             position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center;
-            background: radial-gradient(circle at center, #111, #000); transition: 1.5s cubic-bezier(0.8, 0, 0.2, 1);
+            background: radial-gradient(circle at center, #0a0a0f, #000); transition: 1.5s cubic-bezier(1, 0, 0, 1);
         }
-        .login-card {
-            background: var(--glass); padding: 50px; border-radius: 40px; border: 1px solid var(--accent);
-            text-align: center; width: 400px; backdrop-filter: blur(30px); box-shadow: 0 0 100px rgba(255, 204, 51, 0.1);
+        .login-box {
+            position: relative; width: 480px; padding: 60px; background: var(--glass);
+            border: 1px solid var(--border); overflow: hidden; box-shadow: 0 0 150px rgba(0,0,0,1);
         }
-        .login-card h1 { font-size: 32px; letter-spacing: 12px; margin-bottom: 10px; color: var(--accent); text-shadow: 0 0 20px var(--glow); }
-        .login-card input { width: 100%; background: #000; border: 1px solid var(--border); padding: 18px; border-radius: 15px; color: #fff; margin-bottom: 15px; text-align: center; font-size: 16px; transition: 0.3s; }
-        .login-card input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--glow); }
-        .login-card button { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--accent); color: #000; font-weight: 900; cursor: pointer; transition: 0.4s; letter-spacing: 2px; }
-        .login-card button:hover { transform: scale(1.02); box-shadow: 0 10px 30px var(--glow); }
+        .login-box::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        
+        .login-box h1 { font-family: var(--font-title); font-weight: 700; letter-spacing: 12px; font-size: 28px; color: var(--accent); margin-bottom: 40px; text-align: center; }
+        .input-group { position: relative; margin-bottom: 25px; }
+        .input-group input {
+            width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+            padding: 20px; color: #fff; font-family: var(--font-mono); font-size: 14px;
+            letter-spacing: 5px; text-align: center; transition: 0.4s;
+        }
+        .input-group input:focus { border-color: var(--accent); background: rgba(255,204,51,0.05); }
+        
+        .login-btn {
+            width: 100%; padding: 20px; background: var(--accent); color: #000; font-weight: 900;
+            border: none; cursor: pointer; font-family: var(--font-title); letter-spacing: 4px;
+            transition: 0.5s; clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+        }
+        .login-btn:hover { background: #fff; letter-spacing: 8px; transform: scale(1.02); }
 
-        /* --- SIDEBAR & MADNESS --- */
+        /* --- HUD & CLOCK --- */
+        #hud { position: fixed; top: 40px; left: 40px; z-index: 1000; pointer-events: none; }
+        .hud-line { font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 2px; margin-bottom: 5px; opacity: 0.7; }
+        
+        #chronos-wrap { position: fixed; top: 40px; right: 40px; text-align: right; z-index: 1000; }
+        #time-main { font-size: 56px; font-weight: 900; color: var(--accent); letter-spacing: 8px; font-family: var(--font-title); }
+        #date-sub { font-size: 12px; font-family: var(--font-mono); opacity: 0.5; letter-spacing: 3px; }
+
+        /* --- M.A.V.I.S. AI HELPER --- */
+        #mavis-container {
+            position: fixed; bottom: 120px; right: 50px; z-index: 2000;
+            width: 280px; transition: 0.5s;
+        }
+        #mavis-orb {
+            width: 80px; height: 80px; background: radial-gradient(circle, var(--accent), transparent);
+            border-radius: 50%; margin: 0 auto 20px; animation: float 4s ease-in-out infinite;
+            filter: blur(5px); opacity: 0.8; border: 2px solid #fff;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        #mavis-dialog {
+            background: var(--glass); border: 1px solid var(--border); padding: 15px;
+            border-radius: 10px; font-size: 11px; font-family: var(--font-mono); line-height: 1.6;
+            color: #ddd; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none;
+        }
+
+        /* --- SIDEBAR CONTROLS --- */
         #sidebar {
-            position: fixed; left: -280px; top: 50%; transform: translateY(-50%); width: 280px;
-            background: var(--glass); border: 1px solid var(--border); padding: 25px; border-radius: 0 30px 30px 0;
-            z-index: 2000; transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); backdrop-filter: blur(20px);
+            position: fixed; left: -350px; top: 0; bottom: 0; width: 350px;
+            background: var(--glass); border-right: 1px solid var(--border); padding: 50px 30px;
+            z-index: 4000; transition: 0.8s cubic-bezier(0.85, 0, 0.15, 1);
         }
-        #sidebar.open { left: 0; border-right: 3px solid var(--accent); box-shadow: 30px 0 60px rgba(0,0,0,0.6); }
-        #sidebar-tab {
-            position: absolute; right: -50px; top: 50%; transform: translateY(-50%);
-            background: var(--accent); color: #000; padding: 20px 12px; border-radius: 0 15px 15px 0;
-            cursor: pointer; font-weight: 900; writing-mode: vertical-rl; font-size: 12px; letter-spacing: 3px;
+        #sidebar.active { left: 0; }
+        #sidebar-trigger {
+            position: absolute; right: -50px; top: 50%; width: 50px; height: 100px;
+            background: var(--accent); color: #000; display: flex; align-items: center; justify-content: center;
+            writing-mode: vertical-rl; cursor: pointer; font-weight: 900; letter-spacing: 5px;
         }
 
-        .section-label { font-size: 10px; color: var(--accent); margin: 15px 0 8px; letter-spacing: 3px; text-transform: uppercase; font-weight: bold; opacity: 0.8; }
-        .option-btn { width: 100%; padding: 12px; margin: 4px 0; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: #ddd; border-radius: 12px; font-size: 11px; cursor: pointer; text-align: left; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; }
-        .option-btn:hover { background: rgba(255,255,255,0.08); border-color: var(--accent); transform: translateX(5px); }
-        .option-btn.active { background: var(--accent); color: #000; font-weight: 900; box-shadow: 0 0 15px var(--glow); }
-
-        /* --- DESKTOP WINDOWS --- */
-        #desktop { position: relative; width: 100vw; height: 100vh; z-index: 10; display: none; }
-        .window {
-            position: absolute; background: var(--glass); border: 1px solid var(--border); border-radius: 25px;
-            backdrop-filter: blur(25px); overflow: hidden; display: flex; flex-direction: column; 
-            box-shadow: var(--window-shadow); min-width: 400px; min-height: 300px; z-index: 100;
+        .category { font-size: 10px; color: var(--accent); letter-spacing: 4px; margin: 30px 0 10px; font-weight: 900; }
+        .control-row {
+            width: 100%; padding: 15px; margin-bottom: 8px; background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border); color: #fff; cursor: pointer; font-size: 11px;
+            font-family: var(--font-mono); text-align: left; transition: 0.3s; display: flex; justify-content: space-between;
         }
-        .win-header { padding: 15px 25px; background: rgba(255,255,255,0.03); cursor: move; display: flex; justify-content: space-between; align-items: center; }
-        .win-title { font-size: 12px; font-weight: 900; color: var(--accent); letter-spacing: 2px; }
-        .win-close { cursor: pointer; color: #ff5f56; font-size: 24px; transition: 0.2s; }
-        .win-close:hover { transform: scale(1.2); }
-        .win-content { flex: 1; padding: 20px; overflow-y: auto; scrollbar-width: none; }
+        .control-row:hover { background: rgba(255,255,255,0.08); border-color: var(--accent); padding-left: 25px; }
+        .control-row.on { border-left: 5px solid var(--accent); background: rgba(255,204,51,0.05); }
 
-        /* --- GRID LAYOUTS --- */
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .theme-node { height: 80px; border-radius: 15px; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; text-align: center; padding: 5px; }
-        .theme-node:hover { transform: scale(1.05); border-color: #fff; z-index: 10; }
+        /* --- WINDOWING ENGINE --- */
+        .win {
+            position: absolute; background: var(--glass); border: 1px solid var(--border);
+            border-radius: 2px; width: 1000px; height: 650px; display: none; flex-direction: column;
+            box-shadow: 0 50px 150px rgba(0,0,0,0.9); z-index: 1000;
+        }
+        .win-bar {
+            padding: 18px 25px; background: rgba(255,255,255,0.03); cursor: move;
+            display: flex; justify-content: space-between; align-items: center;
+            font-family: var(--font-title); font-size: 10px; letter-spacing: 4px; border-bottom: 1px solid var(--border);
+        }
+        .win-body { flex: 1; overflow: hidden; background: #000; }
+
+        /* --- GRID UI --- */
+        .dash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 30px; }
+        .dash-item {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 30px 20px;
+            text-align: center; cursor: pointer; transition: 0.4s;
+        }
+        .dash-item:hover { border-color: var(--accent); transform: translateY(-10px); background: rgba(255,255,200,0.05); }
+        .dash-item span { display: block; margin-top: 15px; font-size: 11px; letter-spacing: 2px; color: #888; }
 
         /* --- TASKBAR --- */
-        #taskbar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--glass); border: 1px solid var(--border); padding: 15px 30px; border-radius: 30px; display: flex; gap: 25px; z-index: 1000; backdrop-filter: blur(15px); }
-        .t-icon { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 20px; cursor: pointer; font-size: 28px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .t-icon:hover { transform: translateY(-15px) rotate(8deg); background: var(--accent); color: #000; box-shadow: 0 15px 30px var(--glow); }
+        #taskbar {
+            position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%);
+            background: var(--glass); border: 1px solid var(--border); padding: 15px 40px;
+            border-radius: 100px; display: flex; gap: 30px; z-index: 5000; backdrop-filter: blur(20px);
+        }
+        .nav-icon {
+            width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;
+            font-size: 30px; cursor: pointer; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 50%; filter: grayscale(1);
+        }
+        .nav-icon:hover { transform: translateY(-25px) scale(1.2); filter: grayscale(0); background: var(--accent); color: #000; box-shadow: 0 15px 35px var(--glow); }
 
-        iframe { width: 100%; height: 100%; border: none; background: #000; }
+        iframe { width: 100%; height: 100%; border: none; }
         .hidden { display: none !important; }
+        .vip-only { color: var(--vip) !important; }
+        .owner-only { color: var(--owner) !important; font-weight: 900; }
     </style>
 </head>
 <body>
 
-    <canvas id="bg-canvas"></canvas>
+    <canvas id="main-canvas"></canvas>
+    <canvas id="overlay-canvas"></canvas>
 
-    <div id="auth-overlay">
-        <div class="login-card">
+    <!-- Authentication Screen -->
+    <div id="auth-wrap">
+        <div class="login-box">
             <h1>MASON V16</h1>
-            <p style="font-size: 9px; opacity: 0.6; letter-spacing: 4px; margin-bottom: 25px;">OMEGA ARCHITECTURE 2026</p>
-            <input type="password" id="sys-pass" placeholder="PASSWORD">
-            <button onclick="Mansion.init()">ACCESS TERMINAL</button>
+            <div class="input-group">
+                <input type="password" id="access-key" placeholder="SECURE KEY">
+            </div>
+            <button class="login-btn" onclick="Core.init()">AUTHORIZE</button>
+            <div style="margin-top: 30px; display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 8px; opacity: 0.4;">
+                <span>ENCRYPTION: AES-512</span>
+                <span>STATUS: READY</span>
+            </div>
         </div>
     </div>
 
-    <div id="desktop">
-        <div id="sidebar">
-            <div id="sidebar-tab" onclick="document.getElementById('sidebar').classList.toggle('open')">OMEGA CONTROLS</div>
-            
-            <div class="section-label">Simulation</div>
-            <button class="option-btn active" id="m-float" onclick="Mansion.toggle('float')">Fluid Drift <span>ON</span></button>
-            <button class="option-btn" id="m-rgb" onclick="Mansion.toggle('rgb')">Neural RGB <span>OFF</span></button>
-            <button class="option-btn" id="m-pulse" onclick="Mansion.toggle('pulse')">Size Resonance <span>OFF</span></button>
-            <button class="option-btn" id="m-magnet" onclick="Mansion.toggle('magnet')">Pointer Magnet <span>OFF</span></button>
-            
-            <div class="section-label">Shape Engine</div>
-            <button class="option-btn active" id="s-circle" onclick="Mansion.setShape('circle')">Spheres</button>
-            <button class="option-btn" id="s-square" onclick="Mansion.setShape('square')">Cubes</button>
-            <button class="option-btn" id="s-star" onclick="Mansion.setShape('star')">Stars</button>
-            <button class="option-btn" id="s-meme" onclick="Mansion.setShape('meme')">Meme Swarm (⚠️)</button>
-            
-            <div class="section-label">Actions</div>
-            <button class="option-btn" onclick="Mansion.chaosBurst()">Hyper Swarm</button>
-            <button class="option-btn" onclick="Mansion.clearOrbs()" style="color:#ff5f56">Purge Simulation</button>
+    <!-- Main Desktop HUD -->
+    <div id="desktop" class="hidden">
+        <div id="hud">
+            <div class="hud-line">SYS_VERSION: 16.0.4.SINGULARITY</div>
+            <div class="hud-line">UI_ENGINE: HONEY_2026</div>
+            <div id="rank-display" class="hud-line">AUTH_LEVEL: GUEST</div>
         </div>
 
-        <div id="win-layer"></div>
+        <div id="chronos-wrap">
+            <div id="time-main">00:00:00</div>
+            <div id="date-sub">LOADING_COSMOS</div>
+        </div>
 
+        <!-- M.A.V.I.S -->
+        <div id="mavis-container">
+            <div id="mavis-orb"></div>
+            <div id="mavis-dialog">Hello Mason. All systems are currently nominal. Ready for your command.</div>
+        </div>
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div id="sidebar-trigger" onclick="document.getElementById('sidebar').classList.toggle('active')">SYSTEM</div>
+            
+            <div class="category">SIMULATION MODES</div>
+            <div class="control-row on" id="m-float" onclick="Core.toggle('float')">Fluid Particle Drift <span>ON</span></div>
+            <div class="control-row" id="m-rgb" onclick="Core.toggle('rgb')">Neural RGB Cycle <span>OFF</span></div>
+            <div class="control-row" id="m-magnet" onclick="Core.toggle('magnet')">Gravity Well (Mouse) <span>OFF</span></div>
+            
+            <div class="category">PARTICLE GEOMETRY</div>
+            <div class="control-row on" id="s-bubble" onclick="Core.setShape('bubble')">Quantum Bubbles</div>
+            <div class="control-row" id="s-shard" onclick="Core.setShape('shard')">Crystal Shards</div>
+            <div class="control-row" id="s-poly" onclick="Core.setShape('poly')">Complex Polygons</div>
+            <div class="control-row" id="s-meme" onclick="Core.setShape('meme')">Meme Reality</div>
+
+            <div class="category">SYSTEM PURGE</div>
+            <button class="control-row" onclick="Core.burst(150)">Inject 150 Entities</button>
+            <button class="control-row" onclick="Core.purge()" style="color:var(--owner)">Execute Force Clear</button>
+        </div>
+
+        <!-- Windows -->
+        <div id="win-games" class="win">
+            <div class="win-bar"><span>REPOSITORY / GAMES</span><span onclick="Core.close('games')" style="cursor:pointer">×</span></div>
+            <div class="win-body" id="game-portal"></div>
+        </div>
+
+        <div id="win-themes" class="win" style="width: 700px; height: 500px;">
+            <div class="win-bar"><span>THEME / ENGINE</span><span onclick="Core.close('themes')" style="cursor:pointer">×</span></div>
+            <div class="win-body"><div class="dash-grid" id="theme-grid"></div></div>
+        </div>
+
+        <div id="win-owner" class="win" style="width: 900px; height: 600px;">
+            <div class="win-bar"><span>ROOT / ACCESS</span><span onclick="Core.close('owner')" style="cursor:pointer">×</span></div>
+            <div class="win-body"><div class="dash-grid" id="owner-grid"></div></div>
+        </div>
+
+        <!-- Navigation -->
         <div id="taskbar">
-            <div class="t-icon" title="Themes" onclick="Mansion.spawn('themes')">🎨</div>
-            <div class="t-icon" title="Applications" onclick="Mansion.spawn('apps')">🧩</div>
-            <div class="t-icon" title="Games" onclick="Mansion.spawn('games')">🕹️</div>
-            <div class="t-icon hidden" id="owner-icon" onclick="Mansion.spawn('owner')">👑</div>
+            <div class="nav-icon" title="Games" onclick="Core.open('games')">🎮</div>
+            <div class="nav-icon" title="Themes" onclick="Core.open('themes')">🎨</div>
+            <div class="nav-icon hidden" id="vip-tab" title="VIP Area" onclick="Core.open('vip')">💎</div>
+            <div class="nav-icon hidden" id="owner-tab" title="Root Terminal" onclick="Core.open('owner')">👑</div>
         </div>
     </div>
 
     <script>
-        const Mansion = {
-            rank: 'guest', orbs: [], canvas: null, ctx: null, mouse: { x: -1000, y: -1000 },
-            mods: { float: true, rgb: false, pulse: false, magnet: false, shape: 'circle' },
-            memeImgs: [],
+        const Core = {
+            rank: 'GUEST', entities: [], canvas: null, ctx: null, mouse: {x: -2000, y: -2000},
+            mods: { float: true, rgb: false, magnet: false, shape: 'bubble' },
+            
             themes: [
-                { n: 'Honey', a: '#ffcc33', g: 'rgba(255, 204, 51, 0.4)', b: '#050400' },
-                { n: 'Cyber', a: '#00f2ff', g: 'rgba(0, 242, 255, 0.4)', b: '#020b12' },
-                { n: 'Blood', a: '#ff1f1f', g: 'rgba(255, 31, 31, 0.4)', b: '#0a0000' },
-                { n: 'Venom', a: '#39ff14', g: 'rgba(57, 255, 20, 0.4)', b: '#030800' },
-                { n: 'Matrix', a: '#00ff41', g: 'rgba(0, 255, 65, 0.4)', b: '#000000' },
-                { n: 'Sakura', a: '#ffb3ba', g: 'rgba(255, 179, 186, 0.4)', b: '#0d0a0a' },
-                { n: 'Amethyst', a: '#9d50bb', g: 'rgba(157, 80, 187, 0.4)', b: '#08000f' },
-                { n: 'Gold', a: '#ffd700', g: 'rgba(255, 215, 0, 0.4)', b: '#0a0a00' },
-                { n: 'Ice', a: '#e0ffff', g: 'rgba(224, 255, 255, 0.4)', b: '#000a0a' },
-                { n: 'Inferno', a: '#ff4500', g: 'rgba(255, 69, 0, 0.4)', b: '#0a0200' }
+                { n: 'Gold Void', a: '#ffcc33', b: '#010103' },
+                { n: 'Tokyo Neon', a: '#00f2ff', b: '#050515' },
+                { n: 'Blood Lust', a: '#ff1f1f', b: '#0a0000' },
+                { n: 'Forest Grid', a: '#39ff14', b: '#000800' },
+                { n: 'Deep Matrix', a: '#00ff41', b: '#000000' },
+                { n: 'Vapor Wave', a: '#ff00ff', b: '#0d0012' },
+                { n: 'Event Horizon', a: '#ffffff', b: '#000000' },
+                { n: 'Amber Dust', a: '#ff8c00', b: '#0a0500' },
+                { n: 'Cobalt', a: '#2e5bff', b: '#00020a' },
+                { n: 'Nuclear', a: '#ccff00', b: '#050a00' }
+            ],
+
+            vipThemes: [
+                { n: 'Diamond Heart', a: '#b9f2ff', b: '#0d1218' },
+                { n: 'Luxury Ruby', a: '#e0115f', b: '#120101' },
+                { n: 'Emerald VIP', a: '#50c878', b: '#000f05' },
+                { n: 'Obsidian Root', a: '#1a1a1a', b: '#000000' },
+                { n: 'Platinum Star', a: '#e5e4e2', b: '#050505' },
+                { n: 'Rose Quartz', a: '#f7cac9', b: '#100a0a' },
+                { n: 'Serenity', a: '#92a8d1', b: '#0a0a15' },
+                { n: 'Mars Dust', a: '#e2725b', b: '#150500' },
+                { n: 'Deep Space', a: '#191970', b: '#000005' },
+                { n: 'Golden Era', a: '#ffd700', b: '#080800' }
+            ],
+
+            games: [
+                { n: 'Gladihoppers', u: 'usernamegth.github.io' },
+                { n: 'Slope 3D', u: '96f.github.io' },
+                { n: 'Minecraft', u: 'classic.minecraft.net' },
+                { n: 'Retro Bowl', u: 'game316009.konggames.com' }
             ],
 
             init() {
-                const p = document.getElementById('sys-pass').value;
-                if(p === "masononly69") { this.rank = "OWNER"; document.getElementById('owner-icon').classList.remove('hidden'); }
-                else if(p === "honey") { this.rank = "MEMBER"; }
-                else { alert("INVALID CREDENTIALS"); return; }
+                const k = document.getElementById('access-key').value;
+                if(k === "masononly69") { this.rank = "OWNER"; this.showUI(['owner-tab', 'vip-tab']); }
+                else if(k === "vip420") { this.rank = "VIP"; this.showUI(['vip-tab']); }
+                else if(k === "honey") { this.rank = "USER"; }
+                else { alert("ERROR: UNAUTHORIZED ACCESS ATTEMPT"); return; }
 
-                document.getElementById('auth-overlay').style.transform = 'translateY(-100%)';
+                document.getElementById('auth-wrap').style.transform = 'translateY(-100%) scale(1.1)';
                 setTimeout(() => {
-                    document.getElementById('auth-overlay').style.display = 'none';
-                    document.getElementById('desktop').style.display = 'block';
-                    this.bootCanvas();
-                    this.loadMemes();
+                    document.getElementById('auth-wrap').style.display = 'none';
+                    document.getElementById('desktop').classList.remove('hidden');
+                    document.getElementById('rank-display').innerText = `AUTH_LEVEL: ${this.rank}`;
+                    this.bootSystems();
                 }, 1200);
             },
 
-            loadMemes() {
-                const urls = [
-                    'w7.pngwing.com',
-                    'e7.pngegg.com'
-                ];
-                urls.forEach(u => { const img = new Image(); img.src = u; this.memeImgs.push(img); });
-            },
+            showUI(ids) { ids.forEach(id => document.getElementById(id).classList.remove('hidden')); },
 
-            bootCanvas() {
-                this.canvas = document.getElementById('bg-canvas');
+            bootSystems() {
+                this.canvas = document.getElementById('main-canvas');
                 this.ctx = this.canvas.getContext('2d');
-                window.addEventListener('resize', () => this.resize());
-                window.addEventListener('mousemove', (e) => { this.mouse.x = e.clientX; this.mouse.y = e.clientY; });
-                this.resize();
-                for(let i=0; i<25; i++) this.spawnOrb();
-                this.animate();
+                window.onresize = () => { this.canvas.width = innerWidth; this.canvas.height = innerHeight; };
+                window.onmousemove = (e) => { this.mouse.x = e.clientX; this.mouse.y = e.clientY; };
+                window.onresize();
+                
+                this.runClock();
+                this.prepGrids();
+                this.mavisSpeak("Welcome back, Mason. System version 16.0.4 is active. Your current rank is " + this.rank + ".");
+                
+                for(let i=0; i<50; i++) this.addEntity();
+                this.loop();
             },
 
-            resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; },
+            runClock() {
+                setInterval(() => {
+                    const d = new Date();
+                    document.getElementById('time-main').innerText = d.toLocaleTimeString('en-GB', {hour12: false});
+                    document.getElementById('date-sub').innerText = d.toLocaleDateString(undefined, {weekday:'long', month:'long', day:'numeric'}).toUpperCase();
+                }, 1000);
+            },
 
-            spawnOrb() {
-                this.orbs.push({
+            mavisSpeak(txt) {
+                const box = document.getElementById('mavis-dialog');
+                box.style.display = 'block';
+                box.innerText = txt;
+                setTimeout(() => { box.style.display = 'none'; }, 6000);
+            },
+
+            prepGrids() {
+                const tg = document.getElementById('theme-grid');
+                this.themes.forEach((t, i) => {
+                    tg.innerHTML += `<div class="dash-item" onclick="Core.setTheme(${i}, false)">${t.n}</div>`;
+                });
+                if(this.rank === 'VIP' || this.rank === 'OWNER') {
+                    this.vipThemes.forEach((t, i) => {
+                        tg.innerHTML += `<div class="dash-item vip-only" onclick="Core.setTheme(${i}, true)">${t.n}<span>VIP ACCESS</span></div>`;
+                    });
+                }
+                
+                const og = document.getElementById('owner-grid');
+                if(this.rank === 'OWNER') {
+                    for(let i=1; i<=12; i++) {
+                        og.innerHTML += `<div class="dash-item owner-only" onclick="Core.burst(${i*100})">INJECT_PHASE_${i*100}<span>ROOT COMMAND</span></div>`;
+                    }
+                }
+            },
+
+            addEntity() {
+                this.entities.push({
                     x: Math.random() * innerWidth, y: Math.random() * innerHeight,
                     vx: (Math.random() - 0.5) * 2.5, vy: (Math.random() - 0.5) * 2.5,
-                    r: 25 + Math.random() * 35, hue: Math.random() * 360,
-                    rot: Math.random() * Math.PI, rs: (Math.random() - 0.5) * 0.05
+                    sz: 20 + Math.random() * 40, rot: Math.random() * 360,
+                    hue: Math.random() * 360, id: Math.random()
                 });
             },
 
             toggle(m) {
                 this.mods[m] = !this.mods[m];
                 const btn = document.getElementById(`m-${m}`);
-                btn.classList.toggle('active');
+                btn.classList.toggle('on');
                 btn.querySelector('span').innerText = this.mods[m] ? 'ON' : 'OFF';
+                this.mavisSpeak(`System variable '${m}' modified to ${this.mods[m]}.`);
             },
 
             setShape(s) {
                 this.mods.shape = s;
-                ['circle','square','star','meme'].forEach(sh => document.getElementById(`s-${sh}`).classList.remove('active'));
-                document.getElementById(`s-${s}`).classList.add('active');
+                document.querySelectorAll('.control-row').forEach(r => r.classList.remove('on'));
+                document.getElementById(`s-${s}`).classList.add('on');
+                this.mavisSpeak("Rendering geometry switched to: " + s.toUpperCase());
             },
 
-            chaosBurst() { for(let i=0; i<80; i++) this.spawnOrb(); },
-            clearOrbs() { this.orbs = []; },
-
-            applyTheme(idx) {
-                const t = this.themes[idx];
-                document.documentElement.style.setProperty('--accent', t.a);
-                document.documentElement.style.setProperty('--glow', t.g);
-                document.documentElement.style.setProperty('--bg', t.b);
-            },
-
-            spawn(type) {
-                const win = document.createElement('div');
-                win.className = 'window';
-                win.style.top = '150px'; win.style.left = '350px';
-                win.innerHTML = `
-                    <div class="win-header"><span class="win-title">${type.toUpperCase()}</span><span class="win-close" onclick="this.parentElement.parentElement.remove()">×</span></div>
-                    <div class="win-content" id="content-${type}"></div>
-                `;
-                document.getElementById('win-layer').appendChild(win);
-                this.drag(win);
-                this.fillWin(type);
-            },
-
-            fillWin(type) {
-                const target = document.getElementById(`content-${type}`);
-                if(type === 'themes') {
-                    target.className = 'win-content grid-3';
-                    this.themes.forEach((t, i) => {
-                        target.innerHTML += `<div class="theme-node" onclick="Mansion.applyTheme(${i})" style="background:${t.b}; border-bottom: 4px solid ${t.a}">${t.n}</div>`;
+            open(id) {
+                const win = document.getElementById('win-' + id);
+                win.style.display = 'flex';
+                win.style.top = '100px'; win.style.left = '200px';
+                this.draggable(win);
+                if(id === 'games') {
+                    const portal = document.getElementById('game-portal');
+                    portal.innerHTML = `<div class="dash-grid"></div>`;
+                    this.games.forEach(g => {
+                        portal.firstChild.innerHTML += `<div class="dash-item" onclick="Core.launchGame('${g.u}')">${g.n}</div>`;
                     });
-                } else if(type === 'games') {
-                    target.className = 'win-content grid-3';
-                    const gs = [['Slope','96f.github.io'],['Sans','jcw87.github.io'],['Minecraft','classic.minecraft.net']];
-                    gs.forEach(g => {
-                        target.innerHTML += `<div class="theme-node" onclick="Mansion.play('${g[1]}')">${g[0]}</div>`;
-                    });
-                } else if(type === 'owner') {
-                    target.innerHTML = `
-                        <div style="text-align:center; padding:20px;">
-                            <h2 style="color:var(--accent); letter-spacing:5px;">OWNER TERMINAL</h2>
-                            <p style="font-size:10px; opacity:0.5; margin-bottom:20px;">ACCESS LEVEL: ROOT</p>
-                            <div class="grid-3">
-                                <button class="option-btn" onclick="Mansion.chaosBurst()">Swarm All</button>
-                                <button class="option-btn" onclick="Mansion.clearOrbs()">Clear Field</button>
-                                <button class="option-btn" onclick="location.reload()">Reset Sys</button>
-                            </div>
-                        </div>
-                    `;
                 }
             },
 
-            play(url) {
-                const wins = document.querySelectorAll('.win-content');
-                wins[wins.length-1].innerHTML = `<iframe src="${url}"></iframe>`;
-                wins[wins.length-1].style.padding = '0';
+            launchGame(url) {
+                document.getElementById('game-portal').innerHTML = `<iframe src="${url}"></iframe>`;
+                this.mavisSpeak("Launching application mirror...");
             },
 
-            drag(el) {
-                let p1 = 0, p2 = 0, p3 = 0, p4 = 0;
-                el.querySelector('.win-header').onmousedown = (e) => {
-                    p3 = e.clientX; p4 = e.clientY;
+            close(id) { document.getElementById('win-' + id).style.display = 'none'; },
+
+            setTheme(i, isVip) {
+                const t = isVip ? this.vipThemes[i] : this.themes[i];
+                document.documentElement.style.setProperty('--accent', t.a);
+                document.documentElement.style.setProperty('--bg', t.b);
+                document.documentElement.style.setProperty('--glow', t.a + '55');
+            },
+
+            burst(n) { for(let i=0; i<n; i++) this.addEntity(); },
+            purge() { this.entities = []; this.mavisSpeak("Simulation purged. All entities destroyed."); },
+
+            draggable(el) {
+                let p1=0, p2=0, p3=0, p4=0;
+                el.querySelector('.win-bar').onmousedown = (e) => {
+                    p3=e.clientX; p4=e.clientY;
                     document.onmouseup = () => { document.onmouseup = null; document.onmousemove = null; };
                     document.onmousemove = (e) => {
-                        p1 = p3 - e.clientX; p2 = p4 - e.clientY;
-                        p3 = e.clientX; p4 = e.clientY;
-                        el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px";
+                        p1=p3-e.clientX; p2=p4-e.clientY; p3=e.clientX; p4=e.clientY;
+                        el.style.top = (el.offsetTop-p2)+"px"; el.style.left = (el.offsetLeft-p1)+"px";
                     };
                 };
             },
 
-            drawStar(x, y, r, p, m) {
-                this.ctx.beginPath();
-                for (let i = 0; i < p * 2; i++) {
-                    const radius = i % 2 === 0 ? r : r * m;
-                    const angle = (i * Math.PI) / p;
-                    this.ctx.lineTo(x + radius * Math.sin(angle), y + radius * Math.cos(angle));
-                }
-                this.ctx.closePath();
-                this.ctx.fill();
-            },
-
-            animate() {
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            loop() {
+                this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg');
+                this.ctx.fillRect(0,0,innerWidth,innerHeight);
                 const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent');
 
-                this.orbs.forEach(o => {
-                    if(this.mods.float) { o.x += o.vx; o.y += o.vy; o.rot += o.rs; }
+                this.entities.forEach(e => {
+                    if(this.mods.float) { e.x += e.vx; e.y += e.vy; e.rot += 0.8; }
                     if(this.mods.magnet) {
-                        const dx = this.mouse.x - o.x, dy = this.mouse.y - o.y;
-                        const dist = Math.sqrt(dx*dx + dy*dy);
-                        if(dist < 300) { o.x += dx * 0.02; o.y += dy * 0.02; }
+                        const dx = this.mouse.x - e.x, dy = this.mouse.y - e.y;
+                        const d = Math.sqrt(dx*dx + dy*dy);
+                        if(d < 400) { e.x += dx * 0.03; e.y += dy * 0.03; }
                     }
 
-                    if(o.x < 0 || o.x > innerWidth) o.vx *= -1;
-                    if(o.y < 0 || o.y > innerHeight) o.vy *= -1;
+                    if(e.x < 0 || e.x > innerWidth) e.vx *= -1;
+                    if(e.y < 0 || e.y > innerHeight) e.vy *= -1;
 
-                    const rad = o.r + (this.mods.pulse ? Math.sin(Date.now()*0.005)*10 : 0);
-                    const color = this.mods.rgb ? `hsla(${o.hue}, 80%, 60%, 0.7)` : accent;
+                    this.ctx.save();
+                    this.ctx.translate(e.x, e.y);
+                    this.ctx.rotate(e.rot * Math.PI / 180);
                     
-                    // COMPLEX GRADIENT ENGINE
-                    const grad = this.ctx.createRadialGradient(o.x - rad*0.3, o.y - rad*0.3, rad*0.1, o.x, o.y, rad);
-                    grad.addColorStop(0, '#fff');
-                    grad.addColorStop(0.2, color);
-                    grad.addColorStop(1, 'transparent');
-                    this.ctx.fillStyle = grad;
+                    const clr = this.mods.rgb ? `hsl(${e.hue}, 100%, 50%)` : accent;
+                    this.ctx.strokeStyle = clr;
+                    this.ctx.lineWidth = 1.5;
+                    this.ctx.beginPath();
 
-                    if(this.mods.shape === 'circle') {
-                        this.ctx.beginPath(); this.ctx.arc(o.x, o.y, rad, 0, Math.PI*2); this.ctx.fill();
-                    } else if(this.mods.shape === 'square') {
-                        this.ctx.save(); this.ctx.translate(o.x, o.y); this.ctx.rotate(o.rot);
-                        this.ctx.fillRect(-rad, -rad, rad*2, rad*2); this.ctx.restore();
-                    } else if(this.mods.shape === 'star') {
-                        this.drawStar(o.x, o.y, rad, 5, 0.5);
+                    if(this.mods.shape === 'bubble') {
+                        const grad = this.ctx.createRadialGradient(-e.sz*0.3, -e.sz*0.3, 2, 0, 0, e.sz);
+                        grad.addColorStop(0, '#fff'); grad.addColorStop(1, clr);
+                        this.ctx.strokeStyle = grad;
+                        this.ctx.arc(0, 0, e.sz, 0, Math.PI*2);
+                    } else if(this.mods.shape === 'shard') {
+                        this.ctx.moveTo(0, -e.sz); this.ctx.lineTo(e.sz/4, 0); this.ctx.lineTo(0, e.sz); this.ctx.lineTo(-e.sz/4, 0);
+                    } else if(this.mods.shape === 'poly') {
+                        for(let i=0; i<8; i++) this.ctx.lineTo(e.sz * Math.cos(i*2*Math.PI/8), e.sz * Math.sin(i*2*Math.PI/8));
                     } else if(this.mods.shape === 'meme') {
-                        const img = this.memeImgs[Math.floor(o.hue % this.memeImgs.length)];
-                        if(img && img.complete) {
-                            this.ctx.save(); this.ctx.translate(o.x, o.y); this.ctx.rotate(o.rot);
-                            this.ctx.drawImage(img, -rad, -rad, rad*2, rad*2); this.ctx.restore();
-                        }
+                        this.ctx.font = `${e.sz}px sans-serif`;
+                        this.ctx.fillText("👽", -e.sz/2, e.sz/2);
                     }
-                    if(this.mods.rgb) o.hue += 1;
+
+                    this.ctx.closePath();
+                    this.ctx.stroke();
+                    this.ctx.restore();
+                    if(this.mods.rgb) e.hue += 1;
                 });
-                requestAnimationFrame(() => this.animate());
+                requestAnimationFrame(() => this.loop());
             }
         };
     </script>
