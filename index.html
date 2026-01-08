@@ -3,393 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mason’s Mansion | V16 Singularity</title>
+    <title>Mason’s Mansion | V16 Singularity + Pixel Studio</title>
     <link href="fonts.googleapis.com" rel="stylesheet">
     <style>
         :root {
-            --bg: #010102;
-            --accent: #ffcc33;
-            --vip: #00f2ff;
-            --owner: #ff3333;
-            --glow: rgba(255, 204, 51, 0.4);
-            --glass: rgba(5, 5, 8, 0.98);
-            --border: rgba(255, 255, 255, 0.05);
-            --font-main: 'Orbitron', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-            --font-title: 'Syncopate', sans-serif;
+            --bg: #010103; --accent: #ffcc33; --glow: rgba(255, 204, 51, 0.4);
+            --glass: rgba(8, 8, 12, 0.98); --border: rgba(255, 255, 255, 0.05);
+            --vip: #00f2ff; --owner: #ff3333; --font-main: 'Orbitron', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace; --font-title: 'Syncopate', sans-serif;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         body, html { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: #fff; font-family: var(--font-main); cursor: crosshair; }
 
         canvas { position: fixed; inset: 0; z-index: 0; }
-        #overlay-canvas { pointer-events: none; z-index: 5000; }
 
-        /* --- ADVANCED LOGIN SYSTEM --- */
+        /* --- LOGIN --- */
         #auth-wrap {
             position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center;
-            background: radial-gradient(circle at center, #0a0a0f, #000); transition: 1.5s cubic-bezier(1, 0, 0, 1);
+            background: #000; transition: 1.5s cubic-bezier(1, 0, 0, 1);
         }
-        .login-box {
-            position: relative; width: 480px; padding: 60px; background: var(--glass);
-            border: 1px solid var(--border); overflow: hidden; box-shadow: 0 0 150px rgba(0,0,0,1);
+        .login-box { width: 500px; padding: 70px; background: var(--glass); border-top: 4px solid var(--accent); text-align: center; }
+        .login-box h1 { font-family: 'Syncopate'; letter-spacing: 15px; font-size: 24px; color: var(--accent); margin-bottom: 50px; }
+        .login-box input { width: 100%; background: #080808; border: 1px solid var(--border); padding: 20px; color: #fff; text-align: center; font-family: var(--font-mono); margin-bottom: 20px; }
+        .login-btn { width: 100%; padding: 20px; background: var(--accent); font-weight: 900; border: none; cursor: pointer; letter-spacing: 5px; }
+
+        /* --- HUD --- */
+        #hud-wrap { position: fixed; top: 40px; right: 40px; text-align: right; z-index: 1000; pointer-events: none; }
+        #time-main { font-size: 64px; font-weight: 900; color: var(--accent); letter-spacing: 10px; line-height: 1; }
+        #date-sub { font-size: 14px; opacity: 0.5; letter-spacing: 5px; font-family: var(--font-mono); }
+
+        /* --- PIXEL STUDIO UI --- */
+        #pixel-canvas-container {
+            display: grid; background: #111; border: 1px solid var(--border);
+            margin: 20px auto; width: 512px; height: 512px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8); cursor: cell;
         }
-        .login-box::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-            animation: scan 3s linear infinite;
-        }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        .pixel { border: 1px solid rgba(255,255,255,0.03); width: 100%; height: 100%; }
+        .pixel:hover { background: rgba(255,255,255,0.1); }
+        .studio-controls { display: flex; gap: 10px; padding: 20px; justify-content: center; background: rgba(255,255,255,0.02); }
+        .color-dot { width: 30px; height: 30px; border-radius: 5px; cursor: pointer; border: 2px solid transparent; }
+        .color-dot.active { border-color: #fff; transform: scale(1.1); }
+
+        /* --- AI --- */
+        #ai-wrap { position: fixed; bottom: 120px; left: 50px; z-index: 2000; width: 350px; }
+        #ai-dialog { background: var(--glass); border: 1px solid var(--border); padding: 20px; border-radius: 10px; font-size: 11px; font-family: var(--font-mono); margin-bottom: 15px; color: #aaa; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        #ai-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 12px; color: var(--accent); font-family: var(--font-mono); border-radius: 5px; }
+
+        /* --- WINDOWS --- */
+        .window { position: absolute; background: var(--glass); border: 1px solid var(--border); width: 1000px; height: 750px; display: none; flex-direction: column; box-shadow: 0 50px 150px rgba(0,0,0,1); z-index: 3000; overflow: hidden; }
+        .win-bar { padding: 20px; background: rgba(255,255,255,0.05); cursor: move; display: flex; justify-content: space-between; font-weight: 900; font-size: 12px; letter-spacing: 5px; }
         
-        .login-box h1 { font-family: var(--font-title); font-weight: 700; letter-spacing: 12px; font-size: 28px; color: var(--accent); margin-bottom: 40px; text-align: center; }
-        .input-group { position: relative; margin-bottom: 25px; }
-        .input-group input {
-            width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border);
-            padding: 20px; color: #fff; font-family: var(--font-mono); font-size: 14px;
-            letter-spacing: 5px; text-align: center; transition: 0.4s;
-        }
-        .input-group input:focus { border-color: var(--accent); background: rgba(255,204,51,0.05); }
-        
-        .login-btn {
-            width: 100%; padding: 20px; background: var(--accent); color: #000; font-weight: 900;
-            border: none; cursor: pointer; font-family: var(--font-title); letter-spacing: 4px;
-            transition: 0.5s; clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
-        }
-        .login-btn:hover { background: #fff; letter-spacing: 8px; transform: scale(1.02); }
-
-        /* --- HUD & CLOCK --- */
-        #hud { position: fixed; top: 40px; left: 40px; z-index: 1000; pointer-events: none; }
-        .hud-line { font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: 2px; margin-bottom: 5px; opacity: 0.7; }
-        
-        #chronos-wrap { position: fixed; top: 40px; right: 40px; text-align: right; z-index: 1000; }
-        #time-main { font-size: 56px; font-weight: 900; color: var(--accent); letter-spacing: 8px; font-family: var(--font-title); }
-        #date-sub { font-size: 12px; font-family: var(--font-mono); opacity: 0.5; letter-spacing: 3px; }
-
-        /* --- M.A.V.I.S. AI HELPER --- */
-        #mavis-container {
-            position: fixed; bottom: 120px; right: 50px; z-index: 2000;
-            width: 280px; transition: 0.5s;
-        }
-        #mavis-orb {
-            width: 80px; height: 80px; background: radial-gradient(circle, var(--accent), transparent);
-            border-radius: 50%; margin: 0 auto 20px; animation: float 4s ease-in-out infinite;
-            filter: blur(5px); opacity: 0.8; border: 2px solid #fff;
-        }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        #mavis-dialog {
-            background: var(--glass); border: 1px solid var(--border); padding: 15px;
-            border-radius: 10px; font-size: 11px; font-family: var(--font-mono); line-height: 1.6;
-            color: #ddd; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none;
-        }
-
-        /* --- SIDEBAR CONTROLS --- */
-        #sidebar {
-            position: fixed; left: -350px; top: 0; bottom: 0; width: 350px;
-            background: var(--glass); border-right: 1px solid var(--border); padding: 50px 30px;
-            z-index: 4000; transition: 0.8s cubic-bezier(0.85, 0, 0.15, 1);
-        }
-        #sidebar.active { left: 0; }
-        #sidebar-trigger {
-            position: absolute; right: -50px; top: 50%; width: 50px; height: 100px;
-            background: var(--accent); color: #000; display: flex; align-items: center; justify-content: center;
-            writing-mode: vertical-rl; cursor: pointer; font-weight: 900; letter-spacing: 5px;
-        }
-
-        .category { font-size: 10px; color: var(--accent); letter-spacing: 4px; margin: 30px 0 10px; font-weight: 900; }
-        .control-row {
-            width: 100%; padding: 15px; margin-bottom: 8px; background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border); color: #fff; cursor: pointer; font-size: 11px;
-            font-family: var(--font-mono); text-align: left; transition: 0.3s; display: flex; justify-content: space-between;
-        }
-        .control-row:hover { background: rgba(255,255,255,0.08); border-color: var(--accent); padding-left: 25px; }
-        .control-row.on { border-left: 5px solid var(--accent); background: rgba(255,204,51,0.05); }
-
-        /* --- WINDOWING ENGINE --- */
-        .win {
-            position: absolute; background: var(--glass); border: 1px solid var(--border);
-            border-radius: 2px; width: 1000px; height: 650px; display: none; flex-direction: column;
-            box-shadow: 0 50px 150px rgba(0,0,0,0.9); z-index: 1000;
-        }
-        .win-bar {
-            padding: 18px 25px; background: rgba(255,255,255,0.03); cursor: move;
-            display: flex; justify-content: space-between; align-items: center;
-            font-family: var(--font-title); font-size: 10px; letter-spacing: 4px; border-bottom: 1px solid var(--border);
-        }
-        .win-body { flex: 1; overflow: hidden; background: #000; }
-
-        /* --- GRID UI --- */
-        .dash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 30px; }
-        .dash-item {
-            background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 30px 20px;
-            text-align: center; cursor: pointer; transition: 0.4s;
-        }
-        .dash-item:hover { border-color: var(--accent); transform: translateY(-10px); background: rgba(255,255,200,0.05); }
-        .dash-item span { display: block; margin-top: 15px; font-size: 11px; letter-spacing: 2px; color: #888; }
-
         /* --- TASKBAR --- */
-        #taskbar {
-            position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%);
-            background: var(--glass); border: 1px solid var(--border); padding: 15px 40px;
-            border-radius: 100px; display: flex; gap: 30px; z-index: 5000; backdrop-filter: blur(20px);
-        }
-        .nav-icon {
-            width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;
-            font-size: 30px; cursor: pointer; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border-radius: 50%; filter: grayscale(1);
-        }
-        .nav-icon:hover { transform: translateY(-25px) scale(1.2); filter: grayscale(0); background: var(--accent); color: #000; box-shadow: 0 15px 35px var(--glow); }
+        #taskbar { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: var(--glass); border: 1px solid var(--border); padding: 15px 50px; border-radius: 100px; display: flex; gap: 30px; z-index: 5000; backdrop-filter: blur(20px); }
+        .nav-icon { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; transition: 0.4s; border-radius: 50%; }
+        .nav-icon:hover { transform: translateY(-20px); background: var(--accent); color: #000; }
 
-        iframe { width: 100%; height: 100%; border: none; }
         .hidden { display: none !important; }
-        .vip-only { color: var(--vip) !important; }
-        .owner-only { color: var(--owner) !important; font-weight: 900; }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
-    <canvas id="main-canvas"></canvas>
-    <canvas id="overlay-canvas"></canvas>
+    <canvas id="canvas"></canvas>
 
-    <!-- Authentication Screen -->
     <div id="auth-wrap">
         <div class="login-box">
-            <h1>MASON V16</h1>
-            <div class="input-group">
-                <input type="password" id="access-key" placeholder="SECURE KEY">
-            </div>
-            <button class="login-btn" onclick="Core.init()">AUTHORIZE</button>
-            <div style="margin-top: 30px; display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 8px; opacity: 0.4;">
-                <span>ENCRYPTION: AES-512</span>
-                <span>STATUS: READY</span>
-            </div>
+            <h1>SINGULARITY</h1>
+            <input type="password" id="sys-key" placeholder="ACCESS KEY">
+            <button class="login-btn" onclick="Core.init()">LOGIN</button>
         </div>
     </div>
 
-    <!-- Main Desktop HUD -->
     <div id="desktop" class="hidden">
-        <div id="hud">
-            <div class="hud-line">SYS_VERSION: 16.0.4.SINGULARITY</div>
-            <div class="hud-line">UI_ENGINE: HONEY_2026</div>
-            <div id="rank-display" class="hud-line">AUTH_LEVEL: GUEST</div>
-        </div>
-
-        <div id="chronos-wrap">
+        <div id="hud-wrap">
             <div id="time-main">00:00:00</div>
-            <div id="date-sub">LOADING_COSMOS</div>
+            <div id="date-sub">SYNCING_2026_TIME</div>
         </div>
 
-        <!-- M.A.V.I.S -->
-        <div id="mavis-container">
-            <div id="mavis-orb"></div>
-            <div id="mavis-dialog">Hello Mason. All systems are currently nominal. Ready for your command.</div>
+        <div id="ai-wrap">
+            <div id="ai-dialog">M.A.V.I.S: Studio Online. Awaiting your creative input.</div>
+            <input type="text" id="ai-input" placeholder="COMMAND MAVIS..." onkeypress="Core.aiTalk(event)">
         </div>
 
-        <!-- Sidebar -->
-        <div id="sidebar">
-            <div id="sidebar-trigger" onclick="document.getElementById('sidebar').classList.toggle('active')">SYSTEM</div>
-            
-            <div class="category">SIMULATION MODES</div>
-            <div class="control-row on" id="m-float" onclick="Core.toggle('float')">Fluid Particle Drift <span>ON</span></div>
-            <div class="control-row" id="m-rgb" onclick="Core.toggle('rgb')">Neural RGB Cycle <span>OFF</span></div>
-            <div class="control-row" id="m-magnet" onclick="Core.toggle('magnet')">Gravity Well (Mouse) <span>OFF</span></div>
-            
-            <div class="category">PARTICLE GEOMETRY</div>
-            <div class="control-row on" id="s-bubble" onclick="Core.setShape('bubble')">Quantum Bubbles</div>
-            <div class="control-row" id="s-shard" onclick="Core.setShape('shard')">Crystal Shards</div>
-            <div class="control-row" id="s-poly" onclick="Core.setShape('poly')">Complex Polygons</div>
-            <div class="control-row" id="s-meme" onclick="Core.setShape('meme')">Meme Reality</div>
-
-            <div class="category">SYSTEM PURGE</div>
-            <button class="control-row" onclick="Core.burst(150)">Inject 150 Entities</button>
-            <button class="control-row" onclick="Core.purge()" style="color:var(--owner)">Execute Force Clear</button>
+        <!-- Pixel Studio Window -->
+        <div id="win-pixel" class="window" style="width:600px; height:780px;">
+            <div class="win-bar"><span>🖌️ PIXEL_STUDIO_V1</span><span onclick="Core.close('pixel')" style="cursor:pointer">×</span></div>
+            <div class="studio-controls">
+                <div class="color-dot active" style="background:#ffcc33" onclick="Core.setBrush('#ffcc33', this)"></div>
+                <div class="color-dot" style="background:#ff3333" onclick="Core.setBrush('#ff3333', this)"></div>
+                <div class="color-dot" style="background:#00f2ff" onclick="Core.setBrush('#00f2ff', this)"></div>
+                <div class="color-dot" style="background:#ffffff" onclick="Core.setBrush('#ffffff', this)"></div>
+                <div class="color-dot" style="background:#000000" onclick="Core.setBrush('#000000', this)"></div>
+                <button onclick="Core.clearArt()" style="background:none; border:1px solid #666; color:#fff; padding:5px 10px; cursor:pointer; font-family:var(--font-mono); font-size:10px;">PURGE_ART</button>
+            </div>
+            <div id="pixel-canvas-container"></div>
         </div>
 
-        <!-- Windows -->
-        <div id="win-games" class="win">
-            <div class="win-bar"><span>REPOSITORY / GAMES</span><span onclick="Core.close('games')" style="cursor:pointer">×</span></div>
-            <div class="win-body" id="game-portal"></div>
+        <div id="win-games" class="window">
+            <div class="win-bar"><span>⚔️ GAME_CENTRAL</span><span onclick="Core.close('games')" style="cursor:pointer">×</span></div>
+            <div id="game-portal" style="flex:1"></div>
         </div>
 
-        <div id="win-themes" class="win" style="width: 700px; height: 500px;">
-            <div class="win-bar"><span>THEME / ENGINE</span><span onclick="Core.close('themes')" style="cursor:pointer">×</span></div>
-            <div class="win-body"><div class="dash-grid" id="theme-grid"></div></div>
-        </div>
-
-        <div id="win-owner" class="win" style="width: 900px; height: 600px;">
-            <div class="win-bar"><span>ROOT / ACCESS</span><span onclick="Core.close('owner')" style="cursor:pointer">×</span></div>
-            <div class="win-body"><div class="dash-grid" id="owner-grid"></div></div>
-        </div>
-
-        <!-- Navigation -->
         <div id="taskbar">
-            <div class="nav-icon" title="Games" onclick="Core.open('games')">🎮</div>
-            <div class="nav-icon" title="Themes" onclick="Core.open('themes')">🎨</div>
-            <div class="nav-icon hidden" id="vip-tab" title="VIP Area" onclick="Core.open('vip')">💎</div>
-            <div class="nav-icon hidden" id="owner-tab" title="Root Terminal" onclick="Core.open('owner')">👑</div>
+            <div class="nav-icon" title="Pixel Studio" onclick="Core.open('pixel')">🖌️</div>
+            <div class="nav-icon" title="Gladihoppers" onclick="Core.open('games', 'usernamegth.github.io')">⚔️</div>
+            <div class="nav-icon" title="Slope" onclick="Core.open('games', '96f.github.io')">⛷️</div>
+            <div id="owner-icon" class="nav-icon hidden">👑</div>
         </div>
     </div>
 
     <script>
         const Core = {
-            rank: 'GUEST', entities: [], canvas: null, ctx: null, mouse: {x: -2000, y: -2000},
-            mods: { float: true, rgb: false, magnet: false, shape: 'bubble' },
+            entities: [], brushColor: '#ffcc33', resolution: 32,
             
-            themes: [
-                { n: 'Gold Void', a: '#ffcc33', b: '#010103' },
-                { n: 'Tokyo Neon', a: '#00f2ff', b: '#050515' },
-                { n: 'Blood Lust', a: '#ff1f1f', b: '#0a0000' },
-                { n: 'Forest Grid', a: '#39ff14', b: '#000800' },
-                { n: 'Deep Matrix', a: '#00ff41', b: '#000000' },
-                { n: 'Vapor Wave', a: '#ff00ff', b: '#0d0012' },
-                { n: 'Event Horizon', a: '#ffffff', b: '#000000' },
-                { n: 'Amber Dust', a: '#ff8c00', b: '#0a0500' },
-                { n: 'Cobalt', a: '#2e5bff', b: '#00020a' },
-                { n: 'Nuclear', a: '#ccff00', b: '#050a00' }
-            ],
-
-            vipThemes: [
-                { n: 'Diamond Heart', a: '#b9f2ff', b: '#0d1218' },
-                { n: 'Luxury Ruby', a: '#e0115f', b: '#120101' },
-                { n: 'Emerald VIP', a: '#50c878', b: '#000f05' },
-                { n: 'Obsidian Root', a: '#1a1a1a', b: '#000000' },
-                { n: 'Platinum Star', a: '#e5e4e2', b: '#050505' },
-                { n: 'Rose Quartz', a: '#f7cac9', b: '#100a0a' },
-                { n: 'Serenity', a: '#92a8d1', b: '#0a0a15' },
-                { n: 'Mars Dust', a: '#e2725b', b: '#150500' },
-                { n: 'Deep Space', a: '#191970', b: '#000005' },
-                { n: 'Golden Era', a: '#ffd700', b: '#080800' }
-            ],
-
-            games: [
-                { n: 'Gladihoppers', u: 'usernamegth.github.io' },
-                { n: 'Slope 3D', u: '96f.github.io' },
-                { n: 'Minecraft', u: 'classic.minecraft.net' },
-                { n: 'Retro Bowl', u: 'game316009.konggames.com' }
-            ],
-
             init() {
-                const k = document.getElementById('access-key').value;
-                if(k === "masononly69") { this.rank = "OWNER"; this.showUI(['owner-tab', 'vip-tab']); }
-                else if(k === "vip420") { this.rank = "VIP"; this.showUI(['vip-tab']); }
-                else if(k === "honey") { this.rank = "USER"; }
-                else { alert("ERROR: UNAUTHORIZED ACCESS ATTEMPT"); return; }
-
-                document.getElementById('auth-wrap').style.transform = 'translateY(-100%) scale(1.1)';
-                setTimeout(() => {
-                    document.getElementById('auth-wrap').style.display = 'none';
-                    document.getElementById('desktop').classList.remove('hidden');
-                    document.getElementById('rank-display').innerText = `AUTH_LEVEL: ${this.rank}`;
-                    this.bootSystems();
-                }, 1200);
+                const k = document.getElementById('sys-key').value;
+                if(k === "masononly69") { document.getElementById('owner-icon').classList.remove('hidden'); }
+                else if(k !== "honey" && k !== "vip420") { alert("DENIED"); return; }
+                
+                document.getElementById('auth-wrap').style.display = 'none';
+                document.getElementById('desktop').classList.remove('hidden');
+                this.boot();
+                this.initPixelStudio();
             },
 
-            showUI(ids) { ids.forEach(id => document.getElementById(id).classList.remove('hidden')); },
-
-            bootSystems() {
-                this.canvas = document.getElementById('main-canvas');
-                this.ctx = this.canvas.getContext('2d');
-                window.onresize = () => { this.canvas.width = innerWidth; this.canvas.height = innerHeight; };
-                window.onmousemove = (e) => { this.mouse.x = e.clientX; this.mouse.y = e.clientY; };
-                window.onresize();
-                
-                this.runClock();
-                this.prepGrids();
-                this.mavisSpeak("Welcome back, Mason. System version 16.0.4 is active. Your current rank is " + this.rank + ".");
-                
-                for(let i=0; i<50; i++) this.addEntity();
-                this.loop();
-            },
-
-            runClock() {
+            boot() {
+                this.c = document.getElementById('canvas'); this.ctx = this.c.getContext('2d');
+                window.onresize = () => { this.c.width = innerWidth; this.c.height = innerHeight; }; window.onresize();
                 setInterval(() => {
-                    const d = new Date();
-                    document.getElementById('time-main').innerText = d.toLocaleTimeString('en-GB', {hour12: false});
-                    document.getElementById('date-sub').innerText = d.toLocaleDateString(undefined, {weekday:'long', month:'long', day:'numeric'}).toUpperCase();
+                    document.getElementById('time-main').innerText = new Date().toLocaleTimeString([], {hour12:false});
+                    document.getElementById('date-sub').innerText = new Date().toLocaleDateString(undefined, {weekday:'long', month:'long', day:'numeric'}).toUpperCase();
                 }, 1000);
+                for(let i=0; i<50; i++) this.spawn();
+                this.render();
             },
 
-            mavisSpeak(txt) {
-                const box = document.getElementById('mavis-dialog');
-                box.style.display = 'block';
-                box.innerText = txt;
-                setTimeout(() => { box.style.display = 'none'; }, 6000);
-            },
-
-            prepGrids() {
-                const tg = document.getElementById('theme-grid');
-                this.themes.forEach((t, i) => {
-                    tg.innerHTML += `<div class="dash-item" onclick="Core.setTheme(${i}, false)">${t.n}</div>`;
-                });
-                if(this.rank === 'VIP' || this.rank === 'OWNER') {
-                    this.vipThemes.forEach((t, i) => {
-                        tg.innerHTML += `<div class="dash-item vip-only" onclick="Core.setTheme(${i}, true)">${t.n}<span>VIP ACCESS</span></div>`;
-                    });
-                }
-                
-                const og = document.getElementById('owner-grid');
-                if(this.rank === 'OWNER') {
-                    for(let i=1; i<=12; i++) {
-                        og.innerHTML += `<div class="dash-item owner-only" onclick="Core.burst(${i*100})">INJECT_PHASE_${i*100}<span>ROOT COMMAND</span></div>`;
-                    }
+            initPixelStudio() {
+                const container = document.getElementById('pixel-canvas-container');
+                container.style.gridTemplateColumns = `repeat(${this.resolution}, 1fr)`;
+                container.innerHTML = '';
+                for(let i=0; i < this.resolution * this.resolution; i++) {
+                    const p = document.createElement('div');
+                    p.className = 'pixel';
+                    p.onmousedown = () => p.style.background = this.brushColor;
+                    p.onmouseover = (e) => { if(e.buttons === 1) p.style.background = this.brushColor; };
+                    container.appendChild(p);
                 }
             },
 
-            addEntity() {
+            setBrush(color, el) {
+                this.brushColor = color;
+                document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+                el.classList.add('active');
+            },
+
+            clearArt() { document.querySelectorAll('.pixel').forEach(p => p.style.background = 'none'); },
+
+            aiTalk(e) {
+                if(e.key === 'Enter') {
+                    const v = e.target.value.toLowerCase();
+                    const d = document.getElementById('ai-dialog');
+                    if(v.includes('clear')) { this.clearArt(); d.innerText = "MAVIS: Pixel canvas cleared."; }
+                    else if(v.includes('red')) { this.brushColor = '#ff3333'; d.innerText = "MAVIS: Brush set to Crimson."; }
+                    else { d.innerText = "MAVIS: Command noted. Continuing surveillance."; }
+                    e.target.value = '';
+                }
+            },
+
+            spawn() {
                 this.entities.push({
-                    x: Math.random() * innerWidth, y: Math.random() * innerHeight,
-                    vx: (Math.random() - 0.5) * 2.5, vy: (Math.random() - 0.5) * 2.5,
-                    sz: 20 + Math.random() * 40, rot: Math.random() * 360,
-                    hue: Math.random() * 360, id: Math.random()
+                    x: Math.random()*innerWidth, y: Math.random()*innerHeight,
+                    vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2,
+                    sz: 20+Math.random()*30, rot: Math.random()*360
                 });
             },
 
-            toggle(m) {
-                this.mods[m] = !this.mods[m];
-                const btn = document.getElementById(`m-${m}`);
-                btn.classList.toggle('on');
-                btn.querySelector('span').innerText = this.mods[m] ? 'ON' : 'OFF';
-                this.mavisSpeak(`System variable '${m}' modified to ${this.mods[m]}.`);
-            },
-
-            setShape(s) {
-                this.mods.shape = s;
-                document.querySelectorAll('.control-row').forEach(r => r.classList.remove('on'));
-                document.getElementById(`s-${s}`).classList.add('on');
-                this.mavisSpeak("Rendering geometry switched to: " + s.toUpperCase());
-            },
-
-            open(id) {
+            open(id, url) {
                 const win = document.getElementById('win-' + id);
-                win.style.display = 'flex';
-                win.style.top = '100px'; win.style.left = '200px';
-                this.draggable(win);
-                if(id === 'games') {
-                    const portal = document.getElementById('game-portal');
-                    portal.innerHTML = `<div class="dash-grid"></div>`;
-                    this.games.forEach(g => {
-                        portal.firstChild.innerHTML += `<div class="dash-item" onclick="Core.launchGame('${g.u}')">${g.n}</div>`;
-                    });
-                }
+                win.style.display = 'flex'; win.style.top = '50px'; win.style.left = '350px';
+                if(url) document.getElementById('game-portal').innerHTML = `<iframe src="${url}"></iframe>`;
+                this.drag(win);
             },
-
-            launchGame(url) {
-                document.getElementById('game-portal').innerHTML = `<iframe src="${url}"></iframe>`;
-                this.mavisSpeak("Launching application mirror...");
-            },
-
             close(id) { document.getElementById('win-' + id).style.display = 'none'; },
 
-            setTheme(i, isVip) {
-                const t = isVip ? this.vipThemes[i] : this.themes[i];
-                document.documentElement.style.setProperty('--accent', t.a);
-                document.documentElement.style.setProperty('--bg', t.b);
-                document.documentElement.style.setProperty('--glow', t.a + '55');
-            },
-
-            burst(n) { for(let i=0; i<n; i++) this.addEntity(); },
-            purge() { this.entities = []; this.mavisSpeak("Simulation purged. All entities destroyed."); },
-
-            draggable(el) {
+            drag(el) {
                 let p1=0, p2=0, p3=0, p4=0;
                 el.querySelector('.win-bar').onmousedown = (e) => {
                     p3=e.clientX; p4=e.clientY;
@@ -401,51 +199,17 @@
                 };
             },
 
-            loop() {
-                this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg');
-                this.ctx.fillRect(0,0,innerWidth,innerHeight);
-                const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent');
-
+            render() {
+                this.ctx.fillStyle = '#010103'; this.ctx.fillRect(0,0,innerWidth,innerHeight);
                 this.entities.forEach(e => {
-                    if(this.mods.float) { e.x += e.vx; e.y += e.vy; e.rot += 0.8; }
-                    if(this.mods.magnet) {
-                        const dx = this.mouse.x - e.x, dy = this.mouse.y - e.y;
-                        const d = Math.sqrt(dx*dx + dy*dy);
-                        if(d < 400) { e.x += dx * 0.03; e.y += dy * 0.03; }
-                    }
-
-                    if(e.x < 0 || e.x > innerWidth) e.vx *= -1;
-                    if(e.y < 0 || e.y > innerHeight) e.vy *= -1;
-
-                    this.ctx.save();
-                    this.ctx.translate(e.x, e.y);
-                    this.ctx.rotate(e.rot * Math.PI / 180);
-                    
-                    const clr = this.mods.rgb ? `hsl(${e.hue}, 100%, 50%)` : accent;
-                    this.ctx.strokeStyle = clr;
-                    this.ctx.lineWidth = 1.5;
-                    this.ctx.beginPath();
-
-                    if(this.mods.shape === 'bubble') {
-                        const grad = this.ctx.createRadialGradient(-e.sz*0.3, -e.sz*0.3, 2, 0, 0, e.sz);
-                        grad.addColorStop(0, '#fff'); grad.addColorStop(1, clr);
-                        this.ctx.strokeStyle = grad;
-                        this.ctx.arc(0, 0, e.sz, 0, Math.PI*2);
-                    } else if(this.mods.shape === 'shard') {
-                        this.ctx.moveTo(0, -e.sz); this.ctx.lineTo(e.sz/4, 0); this.ctx.lineTo(0, e.sz); this.ctx.lineTo(-e.sz/4, 0);
-                    } else if(this.mods.shape === 'poly') {
-                        for(let i=0; i<8; i++) this.ctx.lineTo(e.sz * Math.cos(i*2*Math.PI/8), e.sz * Math.sin(i*2*Math.PI/8));
-                    } else if(this.mods.shape === 'meme') {
-                        this.ctx.font = `${e.sz}px sans-serif`;
-                        this.ctx.fillText("👽", -e.sz/2, e.sz/2);
-                    }
-
-                    this.ctx.closePath();
-                    this.ctx.stroke();
-                    this.ctx.restore();
-                    if(this.mods.rgb) e.hue += 1;
+                    e.x += e.vx; e.y += e.vy; e.rot += 0.5;
+                    if(e.x<0 || e.x>innerWidth) e.vx*=-1; if(e.y<0 || e.y>innerHeight) e.vy*=-1;
+                    this.ctx.save(); this.ctx.translate(e.x, e.y); this.ctx.rotate(e.rot*Math.PI/180);
+                    this.ctx.strokeStyle = '#ffcc33'; this.ctx.lineWidth = 1;
+                    this.ctx.beginPath(); this.ctx.moveTo(0,-e.sz); this.ctx.lineTo(e.sz/2,e.sz/2); this.ctx.lineTo(-e.sz/2,e.sz/2);
+                    this.ctx.closePath(); this.ctx.stroke(); this.ctx.restore();
                 });
-                requestAnimationFrame(() => this.loop());
+                requestAnimationFrame(() => this.render());
             }
         };
     </script>
