@@ -11,33 +11,28 @@
         body, html { margin: 0; padding: 0; background: var(--bg); overflow: hidden; font-family: 'Orbitron', sans-serif; cursor: none; color: white; }
         canvas#bg-layer { position: fixed; inset: 0; z-index: -1; }
         
-        /* THE NEURAL HAND */
         #neural-hand { width: 14px; height: 14px; background: var(--accent); position: fixed; border-radius: 50%; pointer-events: none; z-index: 10000; box-shadow: 0 0 20px var(--accent); transition: transform 0.05s linear; }
 
-        /* M.A.R.K INTERFACE (EXPRESSIVE) */
         #ai-interface { position: fixed; top: 40px; left: 40px; width: 300px; z-index: 2000; }
-        #mark-face { width: 80px; height: 80px; border: 2px solid var(--accent); border-radius: 50%; margin-bottom: 15px; position: relative; box-shadow: 0 0 30px var(--glow); background: #000; }
+        #mark-face { width: 80px; height: 80px; border: 2px solid var(--accent); border-radius: 50%; margin-bottom: 15px; position: relative; box-shadow: 0 0 30px var(--glow); background: #000; transition: 0.3s; }
         .eye { width: 20px; height: 4px; background: var(--accent); position: absolute; top: 30px; transition: 0.3s; }
         .eye.left { left: 15px; } .eye.right { right: 15px; }
         #mouth { width: 30px; height: 2px; background: var(--accent); position: absolute; bottom: 20px; left: 25px; transition: 0.3s; }
         
-        /* MOODS */
+        /* EXPRESSIONS */
         .thinking .eye { height: 10px; border-radius: 50%; }
         .happy #mouth { height: 10px; border-radius: 0 0 20px 20px; background: transparent; border-bottom: 3px solid var(--accent); }
         .win #mark-face { box-shadow: 0 0 50px #ff4444; border-color: #ff4444; }
 
-        /* WINDOWS & GRIDS */
         .window { position: absolute; background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; backdrop-filter: blur(15px); display: none; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 5000; }
         .win-header { padding: 10px 15px; background: rgba(255,255,255,0.05); cursor: move; display: flex; justify-content: space-between; font-size: 10px; color: var(--accent); letter-spacing: 2px; }
         .game-grid { display: grid; padding: 15px; gap: 8px; background: #000; }
         .ttt-grid { grid-template-columns: repeat(3, 80px); }
         .cell { width: 80px; height: 80px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--accent); transition: 0.2s; }
-        .cell:hover { background: rgba(255, 204, 51, 0.05); }
 
-        /* MONOPOLY SPECIFIC */
         .mono-board { display: grid; grid-template-columns: repeat(4, 60px); grid-template-rows: repeat(4, 60px); gap: 4px; padding: 10px; background: #000; }
         .m-tile { border: 1px solid #222; font-size: 8px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .p-token { width: 8px; height: 8px; border-radius: 50%; position: absolute; }
+        .p-token { width: 10px; height: 10px; border-radius: 50%; position: absolute; box-shadow: 0 0 10px currentColor; }
 
         #taskbar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--glass); padding: 10px 30px; border-radius: 50px; display: flex; gap: 20px; border: 1px solid rgba(255,255,255,0.1); }
         .icon { font-size: 24px; cursor: none; filter: grayscale(1); transition: 0.3s; }
@@ -60,8 +55,8 @@
     </div>
 
     <div id="win-overlay">
-        <h1 id="win-text" style="color:var(--accent); letter-spacing:10px;">CORE BREACH</h1>
-        <button onclick="location.reload()" style="background:none; border:1px solid var(--accent); color:var(--accent); padding:10px 30px; margin-top:20px; font-family: 'Orbitron';">REBOOT_SYSTEM</button>
+        <h1 id="win-text" style="color:var(--accent); letter-spacing:10px; text-align:center;">CORE BREACH</h1>
+        <button onclick="location.reload()" style="background:none; border:1px solid var(--accent); color:var(--accent); padding:10px 30px; margin-top:20px; font-family: 'Orbitron'; cursor: none;">REBOOT_SYSTEM</button>
     </div>
 
     <div id="win-ttt" class="window" style="top:150px; left:400px;">
@@ -72,8 +67,10 @@
     <div id="win-mono" class="window" style="top:200px; left:500px;">
         <div class="win-header"><span>CYBER_MONO</span><span onclick="System.close('mono')">×</span></div>
         <div class="mono-board" id="mono-board"></div>
-        <div style="padding: 10px; font-size: 10px; color: var(--accent);" id="mono-stats">BAL: $1500</div>
-        <button onclick="System.monoMove()" style="background: var(--accent); border: none; padding: 10px; font-weight: bold;">ROLL_NEURAL_DICE</button>
+        <div style="padding: 10px; font-size: 10px; color: var(--accent); display: flex; justify-content: space-between;" id="mono-stats">
+            <span>MASON: $1500</span><span>AI: $1500</span>
+        </div>
+        <button onclick="System.monoMove()" style="background: var(--accent); border: none; padding: 12px; font-weight: bold; cursor: none; font-family: 'Orbitron';">EXECUTE_ROLL</button>
     </div>
 
     <div id="taskbar">
@@ -82,7 +79,6 @@
     </div>
 
     <script>
-        // 1. BACKGROUND ENGINE
         class ParticleSystem {
             constructor() {
                 this.canvas = document.getElementById('bg-layer');
@@ -107,7 +103,6 @@
             }
         }
 
-        // 2. UNBEATABLE TTT AI
         class TicTacToeAI {
             constructor() { this.board = Array(9).fill(null); }
             checkWinner(b) {
@@ -148,10 +143,9 @@
             }
         }
 
-        // 3. SYSTEM CORE
         const System = {
             ttt: new TicTacToeAI(),
-            mono: { pos: 0, bal: 1500, owners: Array(12).fill(null) },
+            mono: { pPos: 0, aiPos: 0, pBal: 1500, aiBal: 1500, owners: Array(12).fill(null) },
             
             init() {
                 new ParticleSystem().draw();
@@ -161,6 +155,7 @@
                     const h = document.getElementById('neural-hand');
                     h.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
                 });
+                this.open('ttt');
             },
 
             setMood(mood, status) {
@@ -169,7 +164,6 @@
                 document.getElementById('ai-status').innerText = status;
             },
 
-            // TTT Logic
             renderTTT() {
                 const container = document.getElementById('ttt-board');
                 container.innerHTML = '';
@@ -180,50 +174,68 @@
                     container.appendChild(c);
                 });
             },
+
             playerMove(i) {
-                if(this.ttt.board[i]) return;
+                if(this.ttt.board[i] || this.ttt.checkWinner(this.ttt.board)) return;
                 this.ttt.board[i] = 'X'; this.renderTTT();
-                this.setMood('thinking', 'CALCULATING_COUNTER');
+                this.setMood('thinking', 'SIMULATING_TIMELINES');
                 if(this.ttt.checkWinner(this.ttt.board)) return this.endGame();
                 
                 setTimeout(() => {
                     const aiMove = this.ttt.getBestMove();
-                    this.ttt.board[aiMove] = 'O'; this.renderTTT();
-                    this.setMood('', 'AWAITING_INPUT');
+                    if(aiMove !== -1) this.ttt.board[aiMove] = 'O';
+                    this.renderTTT();
+                    this.setMood('', 'OPTIMAL_PATH_FOUND');
                     if(this.ttt.checkWinner(this.ttt.board)) this.endGame();
                 }, 600);
             },
 
-            // Monopoly Logic
             renderMono() {
                 const b = document.getElementById('mono-board'); b.innerHTML = '';
                 for(let i=0; i<12; i++) {
                     const t = document.createElement('div');
                     t.className = 'm-tile';
-                    t.style.borderColor = this.mono.owners[i] === 'AI' ? '#ff4444' : '#222';
-                    if(this.mono.pos === i) t.innerHTML = '<div class="p-token" style="background:var(--accent)"></div>';
+                    if(this.mono.owners[i] === 'P') t.style.boxShadow = "inset 0 0 10px var(--accent)";
+                    if(this.mono.owners[i] === 'AI') t.style.boxShadow = "inset 0 0 10px #ff4444";
+                    
+                    if(this.mono.pPos === i) t.innerHTML += '<div class="p-token" style="background:var(--accent); left:2px; color:var(--accent)"></div>';
+                    if(this.mono.aiPos === i) t.innerHTML += '<div class="p-token" style="background:#ff4444; right:2px; color:#ff4444"></div>';
                     b.appendChild(t);
                 }
-                document.getElementById('mono-stats').innerText = `BALANCE: $${this.mono.bal}`;
+                document.getElementById('mono-stats').innerHTML = `<span>MASON: $${this.mono.pBal}</span><span>AI: $${this.mono.aiBal}</span>`;
             },
+
             monoMove() {
-                this.mono.pos = (this.mono.pos + Math.floor(Math.random()*6)+1) % 12;
-                if(this.mono.owners[this.mono.pos] === 'AI') {
-                    this.mono.bal -= 200;
-                    this.setMood('happy', 'RENT_COLLECTED');
-                } else {
-                    this.mono.owners[this.mono.pos] = 'AI';
-                    this.mono.bal -= 100;
-                    this.setMood('thinking', 'ASSET_ACQUIRED');
+                // Player Turn
+                this.mono.pPos = (this.mono.pPos + Math.floor(Math.random()*6)+1) % 12;
+                this.handleTile(this.mono.pPos, 'P');
+                
+                // AI Turn
+                setTimeout(() => {
+                    this.mono.aiPos = (this.mono.aiPos + Math.floor(Math.random()*6)+1) % 12;
+                    this.handleTile(this.mono.aiPos, 'AI');
+                    this.renderMono();
+                    if(this.mono.pBal <= 0 || this.mono.aiBal <= 0) this.endGame("BANKRUPTCY_PROTOCOL");
+                }, 500);
+            },
+
+            handleTile(pos, user) {
+                const rent = 200, price = 300;
+                if(this.mono.owners[pos] === null) {
+                    if(user === 'AI' || confirm("BUY PROPERTY for $300?")) {
+                        if(user === 'P') { this.mono.pBal -= price; this.mono.owners[pos] = 'P'; }
+                        else { this.mono.aiBal -= price; this.mono.owners[pos] = 'AI'; this.setMood('thinking', 'ASSET_ACQUIRED'); }
+                    }
+                } else if(this.mono.owners[pos] !== user) {
+                    if(user === 'P') { this.mono.pBal -= rent; this.mono.aiBal += rent; this.setMood('happy', 'COLLECTING_TAX'); }
+                    else { this.mono.aiBal -= rent; this.mono.pBal += rent; }
                 }
-                this.renderMono();
-                if(this.mono.bal <= 0) this.endGame("BANKRUPTCY");
             },
 
             endGame(reason) {
                 const res = this.ttt.checkWinner(this.ttt.board);
-                this.setMood('win', 'TERMINATED');
-                document.getElementById('win-text').innerText = reason || (res === 'X' ? "MASON_WIN" : "AI_DOMINANCE");
+                this.setMood('win', 'SESSION_TERMINATED');
+                document.getElementById('win-text').innerText = reason || (res === 'X' ? "MASON_WINS" : "AI_DOMINANCE");
                 document.getElementById('win-overlay').style.display = 'flex';
             },
 
