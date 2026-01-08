@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mason’s Mansion | V16 Singularity + Pixel Studio</title>
+    <title>Mason’s Mansion | Infinite Singularity V16</title>
     <link href="fonts.googleapis.com" rel="stylesheet">
     <style>
         :root {
@@ -16,160 +16,208 @@
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         body, html { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: #fff; font-family: var(--font-main); cursor: crosshair; }
 
-        canvas { position: fixed; inset: 0; z-index: 0; }
+        canvas#particle-canvas { position: fixed; inset: 0; z-index: 0; }
 
-        /* --- LOGIN --- */
+        /* --- ADVANCED LOGIN --- */
         #auth-wrap {
             position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center;
             background: #000; transition: 1.5s cubic-bezier(1, 0, 0, 1);
         }
-        .login-box { width: 500px; padding: 70px; background: var(--glass); border-top: 4px solid var(--accent); text-align: center; }
-        .login-box h1 { font-family: 'Syncopate'; letter-spacing: 15px; font-size: 24px; color: var(--accent); margin-bottom: 50px; }
-        .login-box input { width: 100%; background: #080808; border: 1px solid var(--border); padding: 20px; color: #fff; text-align: center; font-family: var(--font-mono); margin-bottom: 20px; }
-        .login-btn { width: 100%; padding: 20px; background: var(--accent); font-weight: 900; border: none; cursor: pointer; letter-spacing: 5px; }
+        .login-box { width: 450px; padding: 60px; background: var(--glass); border: 1px solid var(--border); position: relative; }
+        .login-box::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--accent); animation: scan 3s infinite; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        .login-box h1 { font-family: 'Syncopate'; letter-spacing: 12px; font-size: 20px; color: var(--accent); margin-bottom: 40px; text-align: center; }
+        .login-box input { width: 100%; background: #080808; border: 1px solid var(--border); padding: 18px; color: #fff; text-align: center; font-family: var(--font-mono); margin-bottom: 20px; }
+        .login-btn { width: 100%; padding: 18px; background: var(--accent); font-weight: 900; border: none; cursor: pointer; letter-spacing: 5px; }
 
-        /* --- HUD --- */
-        #hud-wrap { position: fixed; top: 40px; right: 40px; text-align: right; z-index: 1000; pointer-events: none; }
-        #time-main { font-size: 64px; font-weight: 900; color: var(--accent); letter-spacing: 10px; line-height: 1; }
-        #date-sub { font-size: 14px; opacity: 0.5; letter-spacing: 5px; font-family: var(--font-mono); }
-
-        /* --- PIXEL STUDIO UI --- */
-        #pixel-canvas-container {
-            display: grid; background: #111; border: 1px solid var(--border);
-            margin: 20px auto; width: 512px; height: 512px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8); cursor: cell;
+        /* --- M.A.V.I.S. AI ENTITY --- */
+        #mavis-entity {
+            position: fixed; bottom: 120px; left: 50px; z-index: 2000;
+            display: flex; flex-direction: column; align-items: center; width: 300px;
         }
-        .pixel { border: 1px solid rgba(255,255,255,0.03); width: 100%; height: 100%; }
-        .pixel:hover { background: rgba(255,255,255,0.1); }
-        .studio-controls { display: flex; gap: 10px; padding: 20px; justify-content: center; background: rgba(255,255,255,0.02); }
-        .color-dot { width: 30px; height: 30px; border-radius: 5px; cursor: pointer; border: 2px solid transparent; }
-        .color-dot.active { border-color: #fff; transform: scale(1.1); }
+        .mavis-orb {
+            width: 80px; height: 80px; background: var(--glass); border: 2px solid var(--accent);
+            border-radius: 50%; position: relative; box-shadow: 0 0 30px var(--glow);
+            display: flex; align-items: center; justify-content: center; animation: float 4s infinite;
+        }
+        .mavis-eyes { width: 40px; display: flex; justify-content: space-between; position: absolute; top: 25px; }
+        .eye { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
+        .mavis-smile {
+            width: 30px; height: 15px; border-bottom: 3px solid var(--accent);
+            border-radius: 0 0 50px 50px; position: absolute; bottom: 20px;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        #mavis-chat {
+            background: var(--glass); border: 1px solid var(--border); padding: 15px; margin-top: 20px;
+            font-size: 11px; font-family: var(--font-mono); color: var(--accent); border-radius: 5px;
+            text-align: center; min-height: 50px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
 
-        /* --- AI --- */
-        #ai-wrap { position: fixed; bottom: 120px; left: 50px; z-index: 2000; width: 350px; }
-        #ai-dialog { background: var(--glass); border: 1px solid var(--border); padding: 20px; border-radius: 10px; font-size: 11px; font-family: var(--font-mono); margin-bottom: 15px; color: #aaa; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        #ai-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 12px; color: var(--accent); font-family: var(--font-mono); border-radius: 5px; }
+        /* --- PIXEL STUDIO ENGINE --- */
+        #win-draw { width: 650px; height: 820px; }
+        #pixel-grid {
+            display: grid; background: #111; border: 1px solid var(--border);
+            margin: 20px auto; width: 512px; height: 512px; cursor: crosshair;
+        }
+        .px { border: 0.1px solid rgba(255,255,255,0.02); }
+        .palette { display: flex; gap: 10px; justify-content: center; padding: 20px; background: rgba(0,0,0,0.3); }
+        .swatch { width: 35px; height: 35px; border-radius: 4px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .swatch.active { border-color: #fff; transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 
-        /* --- WINDOWS --- */
-        .window { position: absolute; background: var(--glass); border: 1px solid var(--border); width: 1000px; height: 750px; display: none; flex-direction: column; box-shadow: 0 50px 150px rgba(0,0,0,1); z-index: 3000; overflow: hidden; }
-        .win-bar { padding: 20px; background: rgba(255,255,255,0.05); cursor: move; display: flex; justify-content: space-between; font-weight: 900; font-size: 12px; letter-spacing: 5px; }
-        
         /* --- TASKBAR --- */
-        #taskbar { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: var(--glass); border: 1px solid var(--border); padding: 15px 50px; border-radius: 100px; display: flex; gap: 30px; z-index: 5000; backdrop-filter: blur(20px); }
-        .nav-icon { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; transition: 0.4s; border-radius: 50%; }
-        .nav-icon:hover { transform: translateY(-20px); background: var(--accent); color: #000; }
+        #taskbar {
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
+            background: var(--glass); border: 1px solid var(--border); padding: 15px 50px;
+            border-radius: 100px; display: flex; gap: 30px; z-index: 5000; backdrop-filter: blur(20px);
+        }
+        .t-icon { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; transition: 0.4s; border-radius: 50%; }
+        .t-icon:hover { transform: translateY(-20px) scale(1.1); background: var(--accent); color: #000; }
 
+        /* --- CHRONOS HUD --- */
+        #hud { position: fixed; top: 50px; right: 60px; text-align: right; z-index: 1000; }
+        #time { font-size: 64px; font-weight: 900; color: var(--accent); letter-spacing: 10px; font-family: var(--font-title); }
+        #date { font-size: 14px; opacity: 0.5; letter-spacing: 5px; font-family: var(--font-mono); }
+
+        .window { position: absolute; background: var(--glass); border: 1px solid var(--border); display: none; flex-direction: column; box-shadow: 0 50px 150px #000; z-index: 3000; overflow: hidden; backdrop-filter: blur(30px); }
+        .win-bar { padding: 20px; background: rgba(255,255,255,0.05); cursor: move; display: flex; justify-content: space-between; font-weight: 900; font-size: 11px; letter-spacing: 4px; }
         .hidden { display: none !important; }
         iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
-    <canvas id="canvas"></canvas>
+    <canvas id="particle-canvas"></canvas>
 
     <div id="auth-wrap">
         <div class="login-box">
             <h1>SINGULARITY</h1>
-            <input type="password" id="sys-key" placeholder="ACCESS KEY">
-            <button class="login-btn" onclick="Core.init()">LOGIN</button>
+            <input type="password" id="pass-key" placeholder="SECURE_ACCESS_KEY">
+            <button class="login-btn" onclick="Mansion.init()">INITIALIZE</button>
         </div>
     </div>
 
     <div id="desktop" class="hidden">
-        <div id="hud-wrap">
-            <div id="time-main">00:00:00</div>
-            <div id="date-sub">SYNCING_2026_TIME</div>
+        <div id="hud">
+            <div id="time">00:00:00</div>
+            <div id="date">SYNCING_CORE...</div>
         </div>
 
-        <div id="ai-wrap">
-            <div id="ai-dialog">M.A.V.I.S: Studio Online. Awaiting your creative input.</div>
-            <input type="text" id="ai-input" placeholder="COMMAND MAVIS..." onkeypress="Core.aiTalk(event)">
-        </div>
-
-        <!-- Pixel Studio Window -->
-        <div id="win-pixel" class="window" style="width:600px; height:780px;">
-            <div class="win-bar"><span>🖌️ PIXEL_STUDIO_V1</span><span onclick="Core.close('pixel')" style="cursor:pointer">×</span></div>
-            <div class="studio-controls">
-                <div class="color-dot active" style="background:#ffcc33" onclick="Core.setBrush('#ffcc33', this)"></div>
-                <div class="color-dot" style="background:#ff3333" onclick="Core.setBrush('#ff3333', this)"></div>
-                <div class="color-dot" style="background:#00f2ff" onclick="Core.setBrush('#00f2ff', this)"></div>
-                <div class="color-dot" style="background:#ffffff" onclick="Core.setBrush('#ffffff', this)"></div>
-                <div class="color-dot" style="background:#000000" onclick="Core.setBrush('#000000', this)"></div>
-                <button onclick="Core.clearArt()" style="background:none; border:1px solid #666; color:#fff; padding:5px 10px; cursor:pointer; font-family:var(--font-mono); font-size:10px;">PURGE_ART</button>
+        <!-- M.A.V.I.S. Entity -->
+        
+            <div class="mavis-orb">
+                <div class="mavis-eyes">
+                    <div class="eye"></div>
+                    <div class="eye"></div>
+                </div>
+                <div class="mavis-smile"></div>
             </div>
-            <div id="pixel-canvas-container"></div>
+            <div id="mavis-chat">M.A.V.I.S: Systems Nominal. Hello, Mason.</div>
         </div>
 
-        <div id="win-games" class="window">
-            <div class="win-bar"><span>⚔️ GAME_CENTRAL</span><span onclick="Core.close('games')" style="cursor:pointer">×</span></div>
+        <!-- Pixel Art Window -->
+        <div id="win-draw" class="window">
+            <div class="win-bar"><span>🖌️ PIXEL_STUDIO_V16</span><span onclick="Mansion.close('draw')" style="cursor:pointer">×</span></div>
+            <div class="palette" id="swatch-container"></div>
+            <div id="pixel-grid"></div>
+            <div style="padding: 20px; text-align: center;">
+                <button onclick="Mansion.clearCanvas()" style="background:none; border:1px solid var(--accent); color:var(--accent); padding:10px 20px; cursor:pointer; font-family:var(--font-mono); font-size:10px;">PURGE_LAYER_0</button>
+            </div>
+        </div>
+
+        <div id="win-games" class="window" style="width:1100px; height:700px;">
+            <div class="win-bar"><span>⚔️ GAME_REPOSITORY</span><span onclick="Mansion.close('games')" style="cursor:pointer">×</span></div>
             <div id="game-portal" style="flex:1"></div>
         </div>
 
         <div id="taskbar">
-            <div class="nav-icon" title="Pixel Studio" onclick="Core.open('pixel')">🖌️</div>
-            <div class="nav-icon" title="Gladihoppers" onclick="Core.open('games', 'usernamegth.github.io')">⚔️</div>
-            <div class="nav-icon" title="Slope" onclick="Core.open('games', '96f.github.io')">⛷️</div>
-            <div id="owner-icon" class="nav-icon hidden">👑</div>
+            <div class="t-icon" onclick="Mansion.open('draw')">🖌️</div>
+            <div class="t-icon" onclick="Mansion.open('games', 'usernamegth.github.io')">⚔️</div>
+            <div class="t-icon" onclick="Mansion.open('games', '96f.github.io')">⛷️</div>
+            <div id="owner-icon" class="t-icon hidden">👑</div>
         </div>
     </div>
 
     <script>
-        const Core = {
-            entities: [], brushColor: '#ffcc33', resolution: 32,
-            
+        /**
+         * MASON V16: INFINITE SINGULARITY ENGINE
+         * Architected for 2026 Hybrid Web Environments
+         */
+        const Mansion = {
+            brush: '#ffcc33', res: 32, entities: [],
+            mavisLines: [
+                "The simulation is running at 99.8% efficiency.",
+                "Did you know? My smile is rendered in pure CSS.",
+                "I've detected a slight anomaly in the void. It's beautiful.",
+                "Mason, the Gladihoppers are waiting for your command.",
+                "Entropy is just a state of mind, don't you think?",
+                "I'm currently recalculating the meaning of life. Please wait...",
+                "The yellow pixels look particularly vibrant today.",
+                "Shall we purge the reality field once more?"
+            ],
+
             init() {
-                const k = document.getElementById('sys-key').value;
+                const k = document.getElementById('pass-key').value;
                 if(k === "masononly69") { document.getElementById('owner-icon').classList.remove('hidden'); }
-                else if(k !== "honey" && k !== "vip420") { alert("DENIED"); return; }
+                else if(k !== "honey" && k !== "vip420") { alert("UNAUTHORIZED_ACCESS_DENIED"); return; }
                 
-                document.getElementById('auth-wrap').style.display = 'none';
-                document.getElementById('desktop').classList.remove('hidden');
-                this.boot();
-                this.initPixelStudio();
+                document.getElementById('auth-wrap').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('auth-wrap').style.display = 'none';
+                    document.getElementById('desktop').classList.remove('hidden');
+                    this.boot();
+                }, 1200);
             },
 
             boot() {
-                this.c = document.getElementById('canvas'); this.ctx = this.c.getContext('2d');
-                window.onresize = () => { this.c.width = innerWidth; this.c.height = innerHeight; }; window.onresize();
+                this.c = document.getElementById('particle-canvas'); 
+                this.ctx = this.c.getContext('2d');
+                window.onresize = () => { this.c.width = innerWidth; this.c.height = innerHeight; }; 
+                window.onresize();
+                
                 setInterval(() => {
-                    document.getElementById('time-main').innerText = new Date().toLocaleTimeString([], {hour12:false});
-                    document.getElementById('date-sub').innerText = new Date().toLocaleDateString(undefined, {weekday:'long', month:'long', day:'numeric'}).toUpperCase();
+                    const d = new Date();
+                    document.getElementById('time').innerText = d.toLocaleTimeString([], {hour12:false});
+                    document.getElementById('date').innerText = d.toLocaleDateString(undefined, {weekday:'long', month:'long', day:'numeric'}).toUpperCase();
                 }, 1000);
-                for(let i=0; i<50; i++) this.spawn();
+
+                setInterval(() => this.mavisChat(), 8000);
+                this.initStudio();
+                for(let i=0; i<60; i++) this.spawn();
                 this.render();
             },
 
-            initPixelStudio() {
-                const container = document.getElementById('pixel-canvas-container');
-                container.style.gridTemplateColumns = `repeat(${this.resolution}, 1fr)`;
-                container.innerHTML = '';
-                for(let i=0; i < this.resolution * this.resolution; i++) {
-                    const p = document.createElement('div');
-                    p.className = 'pixel';
-                    p.onmousedown = () => p.style.background = this.brushColor;
-                    p.onmouseover = (e) => { if(e.buttons === 1) p.style.background = this.brushColor; };
-                    container.appendChild(p);
+            mavisChat() {
+                const line = this.mavisLines[Math.floor(Math.random() * this.mavisLines.length)];
+                document.getElementById('mavis-chat').innerText = "M.A.V.I.S: " + line;
+            },
+
+            initStudio() {
+                const g = document.getElementById('pixel-grid');
+                g.style.gridTemplateColumns = `repeat(${this.res}, 1fr)`;
+                for(let i=0; i<this.res*this.res; i++) {
+                    const px = document.createElement('div');
+                    px.className = 'px';
+                    px.onmousedown = () => px.style.background = this.brush;
+                    px.onmouseover = (e) => { if(e.buttons === 1) px.style.background = this.brush; };
+                    g.appendChild(px);
                 }
+
+                const colors = ['#ffcc33', '#ff3333', '#00f2ff', '#ffffff', '#50c878', '#000000'];
+                const sc = document.getElementById('swatch-container');
+                colors.forEach(c => {
+                    const s = document.createElement('div');
+                    s.className = 'swatch' + (c === this.brush ? ' active' : '');
+                    s.style.background = c;
+                    s.onclick = () => {
+                        this.brush = c;
+                        document.querySelectorAll('.swatch').forEach(sw => sw.classList.remove('active'));
+                        s.classList.add('active');
+                    };
+                    sc.appendChild(s);
+                });
             },
 
-            setBrush(color, el) {
-                this.brushColor = color;
-                document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
-                el.classList.add('active');
-            },
-
-            clearArt() { document.querySelectorAll('.pixel').forEach(p => p.style.background = 'none'); },
-
-            aiTalk(e) {
-                if(e.key === 'Enter') {
-                    const v = e.target.value.toLowerCase();
-                    const d = document.getElementById('ai-dialog');
-                    if(v.includes('clear')) { this.clearArt(); d.innerText = "MAVIS: Pixel canvas cleared."; }
-                    else if(v.includes('red')) { this.brushColor = '#ff3333'; d.innerText = "MAVIS: Brush set to Crimson."; }
-                    else { d.innerText = "MAVIS: Command noted. Continuing surveillance."; }
-                    e.target.value = '';
-                }
-            },
+            clearCanvas() { document.querySelectorAll('.px').forEach(p => p.style.background = 'none'); },
 
             spawn() {
                 this.entities.push({
@@ -181,7 +229,7 @@
 
             open(id, url) {
                 const win = document.getElementById('win-' + id);
-                win.style.display = 'flex'; win.style.top = '50px'; win.style.left = '350px';
+                win.style.display = 'flex'; win.style.top = '100px'; win.style.left = '350px';
                 if(url) document.getElementById('game-portal').innerHTML = `<iframe src="${url}"></iframe>`;
                 this.drag(win);
             },
@@ -205,8 +253,9 @@
                     e.x += e.vx; e.y += e.vy; e.rot += 0.5;
                     if(e.x<0 || e.x>innerWidth) e.vx*=-1; if(e.y<0 || e.y>innerHeight) e.vy*=-1;
                     this.ctx.save(); this.ctx.translate(e.x, e.y); this.ctx.rotate(e.rot*Math.PI/180);
-                    this.ctx.strokeStyle = '#ffcc33'; this.ctx.lineWidth = 1;
-                    this.ctx.beginPath(); this.ctx.moveTo(0,-e.sz); this.ctx.lineTo(e.sz/2,e.sz/2); this.ctx.lineTo(-e.sz/2,e.sz/2);
+                    this.ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
+                    this.ctx.lineWidth = 1; this.ctx.beginPath();
+                    this.ctx.moveTo(0,-e.sz); this.ctx.lineTo(e.sz/2,e.sz/2); this.ctx.lineTo(-e.sz/2,e.sz/2);
                     this.ctx.closePath(); this.ctx.stroke(); this.ctx.restore();
                 });
                 requestAnimationFrame(() => this.render());
