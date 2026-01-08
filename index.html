@@ -13,7 +13,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: #fff; font-family: var(--font-main); cursor: crosshair; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: #fff; font-family: var(--font-main); cursor: crosshair; transition: background 0.5s ease; }
         canvas { position: fixed; inset: 0; z-index: 0; }
 
         /* --- MASON BRANDING --- */
@@ -25,18 +25,18 @@
         #auth-wrap { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: #000; transition: 1.2s; }
         .login-box { width: 450px; padding: 60px; background: var(--glass); border: 1px solid var(--border); text-align: center; border-radius: 4px; }
         .login-box h1 { font-family: 'Syncopate'; letter-spacing: 12px; font-size: 18px; color: var(--accent); margin-bottom: 40px; }
-        .login-box input { width: 100%; background: #050505; border: 1px solid var(--border); padding: 18px; color: #fff; text-align: center; margin-bottom: 20px; }
-        .login-btn { width: 100%; padding: 18px; background: var(--accent); color: #000; font-weight: 900; border: none; cursor: pointer; letter-spacing: 5px; }
+        .login-box input { width: 100%; background: #050505; border: 1px solid var(--border); padding: 18px; color: #fff; text-align: center; margin-bottom: 20px; font-family: var(--font-mono); }
+        .login-btn { width: 100%; padding: 18px; background: var(--accent); color: #000; font-weight: 900; border: none; cursor: pointer; letter-spacing: 5px; font-family: var(--font-main); }
 
         /* --- M.A.V.I.S AI SYSTEM --- */
         #ai-interface { position: fixed; top: 180px; left: 40px; width: 350px; z-index: 2000; }
-        #mavis-face { width: 80px; height: 80px; border: 2px solid var(--accent); border-radius: 50%; margin-bottom: 20px; position: relative; box-shadow: 0 0 30px var(--glow); animation: float 4s infinite; }
+        #mavis-face { width: 80px; height: 80px; border: 2px solid var(--accent); border-radius: 50%; margin-bottom: 20px; position: relative; box-shadow: 0 0 30px var(--glow); animation: float 4s infinite; transition: 0.3s; }
         .eye-row { display: flex; justify-content: space-around; width: 30px; position: absolute; top: 25px; left: 23px; }
         .eye { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
         #mouth { width: 25px; height: 10px; border-bottom: 3px solid var(--accent); border-radius: 0 0 20px 20px; position: absolute; bottom: 20px; left: 26px; transition: 0.2s; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         
-        #ai-bubble { background: var(--glass); border: 1px solid var(--border); padding: 20px; border-radius: 10px; font-size: 11px; font-family: var(--font-mono); color: #ccc; margin-bottom: 15px; border-left: 4px solid var(--accent); }
+        #ai-bubble { background: var(--glass); border: 1px solid var(--border); padding: 20px; border-radius: 10px; font-size: 11px; font-family: var(--font-mono); color: #ccc; margin-bottom: 15px; border-left: 4px solid var(--accent); min-height: 60px; line-height: 1.6; }
         #ai-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 12px; color: var(--accent); font-family: var(--font-mono); border-radius: 5px; }
 
         /* --- CHRONOS HUD --- */
@@ -45,12 +45,12 @@
         #date { font-size: 12px; opacity: 0.5; letter-spacing: 4px; font-family: var(--font-mono); margin-top: 10px; }
 
         /* --- WINDOWS --- */
-        .window { position: absolute; background: var(--glass); border: 1px solid var(--border); display: none; flex-direction: column; box-shadow: 0 50px 150px #000; z-index: 3000; overflow: hidden; backdrop-filter: blur(25px); }
+        .window { position: absolute; background: var(--glass); border: 1px solid var(--border); display: none; flex-direction: column; box-shadow: 0 50px 150px #000; z-index: 3000; overflow: hidden; backdrop-filter: blur(25px); border-radius: 8px; }
         .win-bar { padding: 18px 25px; background: rgba(255,255,255,0.05); cursor: move; display: flex; justify-content: space-between; font-weight: 900; font-size: 11px; letter-spacing: 4px; }
         
         /* --- THEME LIST --- */
         .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; }
-        .theme-btn { padding: 15px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); color: #fff; cursor: pointer; font-family: var(--font-mono); font-size: 10px; text-align: left; }
+        .theme-btn { padding: 15px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); color: #fff; cursor: pointer; font-family: var(--font-mono); font-size: 10px; text-align: left; transition: 0.2s; }
         .theme-btn:hover { border-color: var(--accent); background: rgba(255,255,255,0.08); }
 
         /* --- TASKBAR --- */
@@ -85,7 +85,6 @@
             <div id="date">JANUARY 08, 2026</div>
         </div>
 
-        <!-- M.A.V.I.S AI Interface -->
         <div id="ai-interface">
             <div id="mavis-face">
                 <div class="eye-row"><div class="eye"></div><div class="eye"></div></div>
@@ -95,7 +94,6 @@
             <input type="text" id="ai-input" placeholder="TALK TO M.A.V.I.S..." onkeypress="Engine.talk(event)">
         </div>
 
-        <!-- Theme Window -->
         <div id="win-themes" class="window" style="width:400px; height:500px;">
             <div class="win-bar"><span>🎨 THEME_VAULT</span><span onclick="Engine.close('themes')" style="cursor:pointer">×</span></div>
             <div class="theme-grid" id="theme-grid"></div>
@@ -110,143 +108,151 @@
             <div class="icon" title="Themes" onclick="Engine.open('themes')">🎨</div>
             <div class="icon" title="Gladihoppers" onclick="Engine.open('games', 'usernamegth.github.io')">⚔️</div>
             <div class="icon" title="Slope" onclick="Engine.open('games', '96f.github.io')">⛷️</div>
-            <div id="owner-icon" class="icon hidden">👑</div>
         </div>
     </div>
 
     <script>
-        /**
-         * Mason V16: Architect Edition
-         * Scripting by Mason Porrazzo
-         */
+        const MAVIS_BRAIN = {
+            nerdEmoji: "🤓",
+            restricted: ["fuck", "shit", "bitch", "ass", "hell", "damn", "crap"],
+            
+            getResponse(input) {
+                const query = input.toLowerCase();
+                
+                if (this.restricted.some(word => query.includes(word))) {
+                    return `I must insist on a more professional vernacular within the Mansion walls, sir. Let's keep it friendly! ${this.nerdEmoji}`;
+                }
+
+                if (query.includes("who are you")) return "I am M.A.V.I.S., your Advanced Virtual Intelligence System. I manage the Mansion's protocols while you oversee the architecture.";
+                if (query.includes("hello") || query.includes("hey")) return "Greetings, sir. It is a pleasure to see you. All systems are green.";
+                if (query.includes("status")) return "The V16 Architect core is stable. Power levels at 100%. Your mansion is currently impenetrable.";
+                if (query.includes("time")) return `The current time is ${document.getElementById('time').innerText}. Precision is key.`;
+                if (query.includes("theme")) return "To alter the visual aesthetics, please access the Theme Vault via the taskbar below.";
+                if (query.includes("mason")) return "Mason Porrazzo is the Architect. I am merely the ghost in the machine that keeps his vision running.";
+                
+                return "Interesting request. I shall log that into my neural database for future processing. Is there anything else I can assist with?";
+            }
+        };
+
         const Engine = {
-            parts: [], mx: 0, my: 0,
             themes: [
-                {n:'Honey Gold', a:'#ffcc33', b:'#010103'}, {n:'Cyber Neon', a:'#00f2ff', b:'#050a15'},
-                {n:'Vampire', a:'#ff1f1f', b:'#0a0000'}, {n:'Emerald', a:'#50c878', b:'#000f05'},
-                {n:'Obsidian', a:'#ffffff', b:'#000000'}, {n:'Amethyst', a:'#bc13fe', b:'#08000f'}
+                {n:'Honey Gold', a:'#ffcc33', b:'#010103'}, 
+                {n:'Cyber Neon', a:'#00f2ff', b:'#050a15'},
+                {n:'Vampire', a:'#ff1f1f', b:'#0a0000'}, 
+                {n:'Emerald', a:'#50c878', b:'#000f05'},
+                {n:'Obsidian', a:'#ffffff', b:'#000000'}, 
+                {n:'Amethyst', a:'#bc13fe', b:'#08000f'}
             ],
-            dialogue: {
-                hello: "Hello Mason Porrazzo. The mansion is operating at peak efficiency.",
-                theme: "Of course. Reconfiguring visual protocols now.",
-                clear: "Purging all active entities from the simulation.",
-                gladihoppers: "The Gladihoppers mirror is ready for combat.",
-                unknown: "My apologies, Mason. That command is not in my database yet.",
-                time: "Current temporal sync is verified with the 2026 world clock.",
-                creator: "You are my creator, Mason Porrazzo. I am your V16 Singularity."
-            },
 
             init() {
-                const k = document.getElementById('sys-pass').value;
-                if(k === "masononly69") document.getElementById('owner-icon').classList.remove('hidden');
-                else if(k !== "honey" && k !== "vip420") return alert("INVALID KEY");
-                
-                document.getElementById('auth-wrap').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('auth-wrap').style.display = 'none';
-                    document.getElementById('desktop').classList.remove('hidden');
-                    this.boot();
-                }, 1000);
-            },
-
-            boot() {
-                this.c = document.getElementById('canvas'); this.ctx = this.c.getContext('2d');
-                window.onresize = () => { this.c.width = innerWidth; this.c.height = innerHeight; }; window.onresize();
-                window.onmousemove = (e) => { this.mx = e.clientX; this.my = e.clientY; };
-                
-                setInterval(() => {
-                    const d = new Date();
-                    document.getElementById('time').innerText = d.toLocaleTimeString([], {hour12:false});
-                    document.getElementById('date').innerText = d.toLocaleDateString(undefined, {weekday:'long', month:'long', day:'numeric'}).toUpperCase();
-                }, 1000);
-
-                this.loadThemes();
-                for(let i=0; i<60; i++) this.spawn();
-                this.render();
-            },
-
-            loadThemes() {
-                const tg = document.getElementById('theme-grid');
-                this.themes.forEach((t, i) => {
-                    const btn = document.createElement('button'); btn.className = 'theme-btn';
-                    btn.innerText = `INIT_${t.n.toUpperCase()}`;
-                    btn.onclick = () => {
-                        document.documentElement.style.setProperty('--accent', t.a);
-                        document.documentElement.style.setProperty('--bg', t.b);
-                        this.mavisSpeak(this.dialogue.theme);
-                    };
-                    tg.appendChild(btn);
-                });
-            },
-
-            talk(e) {
-                if(e.key === 'Enter') {
-                    const input = e.target.value.toLowerCase();
-                    const bubble = document.getElementById('ai-bubble');
-                    
-                    if(input.includes('hello') || input.includes('mason')) this.mavisSpeak(this.dialogue.hello);
-                    else if(input.includes('clear') || input.includes('purge')) { this.parts = []; this.mavisSpeak(this.dialogue.clear); }
-                    else if(input.includes('time')) this.mavisSpeak(this.dialogue.time);
-                    else if(input.includes('who made you')) this.mavisSpeak(this.dialogue.creator);
-                    else if(input.includes('theme')) this.open('themes');
-                    else this.mavisSpeak(this.dialogue.unknown);
-                    
-                    e.target.value = '';
+                const pass = document.getElementById('sys-pass').value;
+                if (pass === "v16" || pass === "") { // Default key is v16
+                    document.getElementById('auth-wrap').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('auth-wrap').classList.add('hidden');
+                        document.getElementById('desktop').classList.remove('hidden');
+                        this.startCanvas();
+                        this.updateClock();
+                        this.loadThemes();
+                    }, 1000);
+                } else {
+                    alert("ACCESS DENIED");
                 }
             },
 
-            mavisSpeak(txt) {
-                document.getElementById('ai-bubble').innerText = "M.A.V.I.S: " + txt;
-                const mouth = document.getElementById('mouth');
-                mouth.style.height = "15px"; mouth.style.borderRadius = "50%";
-                setTimeout(() => { mouth.style.height = "10px"; mouth.style.borderRadius = "0 0 20px 20px"; }, 600);
+            talk(e) {
+                if (e.key === 'Enter') {
+                    const input = document.getElementById('ai-input');
+                    const bubble = document.getElementById('ai-bubble');
+                    const mouth = document.getElementById('mouth');
+                    const val = input.value.trim();
+                    if(!val) return;
+
+                    mouth.style.height = "18px"; // Speak animation
+                    mouth.style.borderRadius = "50%";
+                    
+                    setTimeout(() => {
+                        const response = MAVIS_BRAIN.getResponse(val);
+                        bubble.innerHTML = `M.A.V.I.S: ${response}`;
+                        mouth.style.height = "10px";
+                        mouth.style.borderRadius = "0 0 20px 20px";
+                        input.value = "";
+                    }, 500);
+                }
             },
 
-            spawn() {
-                this.parts.push({
-                    x: Math.random()*innerWidth, y: Math.random()*innerHeight,
-                    vx: (Math.random()-0.5)*3, vy: (Math.random()-0.5)*3,
-                    sz: 20+Math.random()*40, rot: Math.random()*360
-                });
+            open(win, url = null) {
+                const target = document.getElementById(`win-${win}`);
+                target.style.display = 'flex';
+                target.style.top = '15%';
+                target.style.left = '25%';
+                if(url) {
+                    document.getElementById('game-frame').innerHTML = `<iframe src="https://${url}"></iframe>`;
+                }
             },
 
-            open(id, url) {
-                const w = document.getElementById('win-' + id); w.style.display = 'flex';
-                w.style.top = '100px'; w.style.left = '450px';
-                if(url) document.getElementById('game-frame').innerHTML = `<iframe src="${url}"></iframe>`;
-                this.drag(w);
+            close(win) {
+                document.getElementById(`win-${win}`).style.display = 'none';
             },
-            close(id) { document.getElementById('win-' + id).style.display = 'none'; },
 
-            drag(el) {
-                let p1=0, p2=0, p3=0, p4=0;
-                el.querySelector('.win-bar').onmousedown = (e) => {
-                    p3=e.clientX; p4=e.clientY;
-                    document.onmouseup = () => { document.onmouseup=null; document.onmousemove=null; };
-                    document.onmousemove = (e) => {
-                        p1=p3-e.clientX; p2=p4-e.clientY; p3=e.clientX; p4=e.clientY;
-                        el.style.top = (el.offsetTop-p2)+"px"; el.style.left = (el.offsetLeft-p1)+"px";
+            loadThemes() {
+                const grid = document.getElementById('theme-grid');
+                this.themes.forEach(t => {
+                    let btn = document.createElement('div');
+                    btn.className = 'theme-btn';
+                    btn.innerHTML = t.n;
+                    btn.onclick = () => {
+                        document.documentElement.style.setProperty('--accent', t.a);
+                        document.documentElement.style.setProperty('--bg', t.b);
+                        document.documentElement.style.setProperty('--glow', t.a + '66');
                     };
-                };
+                    grid.appendChild(btn);
+                });
             },
 
-            render() {
-                const acc = getComputedStyle(document.documentElement).getPropertyValue('--accent');
-                this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg');
-                this.ctx.fillRect(0,0,innerWidth,innerHeight);
+            updateClock() {
+                setInterval(() => {
+                    const now = new Date();
+                    document.getElementById('time').innerText = now.toLocaleTimeString('en-US', { hour12: false });
+                }, 1000);
+            },
 
-                this.parts.forEach(p => {
-                    p.x += p.vx; p.y += p.vy; p.rot += 0.5;
-                    if(p.x<0 || p.x>innerWidth) p.vx*=-1; if(p.y<0 || p.y>innerHeight) p.vy*=-1;
-
-                    this.ctx.save(); this.ctx.translate(p.x, p.y); this.ctx.rotate(p.rot*Math.PI/180);
-                    this.ctx.strokeStyle = acc; this.ctx.lineWidth = 1.5; this.ctx.beginPath();
-                    this.ctx.moveTo(0,-p.sz); this.ctx.lineTo(p.sz/2,p.sz/2); this.ctx.lineTo(-p.sz/2,p.sz/2);
-                    this.ctx.closePath(); this.ctx.stroke(); this.ctx.restore();
-                });
-                requestAnimationFrame(() => this.render());
+            startCanvas() {
+                const canvas = document.getElementById('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                let particles = [];
+                for(let i=0; i<80; i++) particles.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2, vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5});
+                
+                function draw() {
+                    ctx.clearRect(0,0,canvas.width, canvas.height);
+                    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
+                    particles.forEach(p => {
+                        p.x += p.vx; p.y += p.vy;
+                        if(p.x<0 || p.x>canvas.width) p.vx*=-1;
+                        if(p.y<0 || p.y>canvas.height) p.vy*=-1;
+                        ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill();
+                    });
+                    requestAnimationFrame(draw);
+                }
+                draw();
             }
         };
+
+        // Draggable windows
+        document.querySelectorAll('.win-bar').forEach(bar => {
+            bar.onmousedown = (e) => {
+                let win = bar.parentElement;
+                let ox = e.clientX - win.offsetLeft;
+                let oy = e.clientY - win.offsetTop;
+                document.onmousemove = (e) => {
+                    win.style.left = (e.clientX - ox) + 'px';
+                    win.style.top = (e.clientY - oy) + 'px';
+                };
+                document.onmouseup = () => document.onmousemove = null;
+            };
+        });
     </script>
 </body>
 </html>
