@@ -62,6 +62,7 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;}
 
 /* theme buttons */
 .theme-btn{padding:6px 12px;margin:4px;border-radius:12px;border:none;cursor:pointer;font-weight:600;color:#fff;}
+.login-btn{padding:6px 12px;margin:4px;border-radius:12px;border:none;cursor:pointer;font-weight:600;color:#fff;background:#777;}
 </style>
 </head>
 <body>
@@ -157,6 +158,14 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;}
 
     <h3 style="margin-top:14px">THEMES</h3>
     <div id="themes"></div>
+
+    <h3 style="margin-top:14px">LOGINS</h3>
+    <div style="margin-bottom:6px;">
+      <button class="login-btn" onclick="showVIPLogin()">VIP Login</button>
+    </div>
+    <div style="margin-bottom:6px;">
+      <button class="login-btn" onclick="showOwnerLogin()">Owner Login</button>
+    </div>
   </aside>
 
   <section class="panel">
@@ -192,7 +201,7 @@ const themeList=[
 {name:"Galaxy",type:"public",bg:"#1b0033",panel:"linear-gradient(145deg,#3a0033,#1b0033)",accent:"#bb88ff",glow:"rgba(187,136,255,.35)"},
 {name:"Supernova",type:"owner",bg:"#2b0000",panel:"linear-gradient(145deg,#4b0000,#2b0000)",accent:"#ff5500",glow:"rgba(255,85,0,.35)"},
 {name:"VIP Pink",type:"vip",bg:"#1a001a",panel:"linear-gradient(145deg,#330033,#550055)",accent:"#ff3399",glow:"rgba(255,51,153,.35)"},
-// Add 20 more dark gradient public themes here
+// Add 20+ more dark gradient public themes
 {name:"Nightfall",type:"public",bg:"#0a0a0a",panel:"linear-gradient(145deg,#111111,#222222)",accent:"#ff4444",glow:"rgba(255,68,68,.35)"},
 {name:"Deep Space",type:"public",bg:"#0a0a1a",panel:"linear-gradient(145deg,#0c0c2c,#1f1f3f)",accent:"#44ffdd",glow:"rgba(68,255,221,.35)"},
 {name:"Shadow",type:"public",bg:"#050505",panel:"linear-gradient(145deg,#080808,#1a1a1a)",accent:"#aaaaaa",glow:"rgba(170,170,170,.35)"},
@@ -239,12 +248,8 @@ function renderThemes(){
   });
 }
 function applyTheme(t){
-  if(t.type==="vip"){ 
-    if(!vipUsers.includes(USER)){alert("Permission Declined"); return;}
-  }
-  if(t.type==="owner"){ 
-    if(USER!==OWNER){alert("Permission Declined"); return;}
-  }
+  if(t.type==="vip" && !vipUsers.includes(USER)){alert("Permission Declined"); return;}
+  if(t.type==="owner" && USER!==OWNER){alert("Permission Declined"); return;}
   document.body.style.background=t.bg;
   document.querySelectorAll(".panel,.box").forEach(el=>el.style.background=t.panel);
   document.querySelectorAll(".theme-btn").forEach(el=>el.style.background=t.accent);
@@ -289,6 +294,10 @@ function ownerUnlock(){
   }
 }
 
+/* Show login overlays */
+function showVIPLogin(){ vipLogin.style.display="flex"; }
+function showOwnerLogin(){ ownerLogin.style.display="flex"; }
+
 /* Admin panel */
 document.addEventListener("keydown",e=>{if(e.ctrlKey&&e.shiftKey&&e.key==="A")adminPanel.style.display="flex";});
 function addGame(){if(!gName.value||!gUrl.value)return;games.push({name:gName.value,url:gUrl.value});renderGames();gName.value=gUrl.value="";}
@@ -297,27 +306,6 @@ function closeVIP(){vipPanel.style.display="none";}
 function closeOwner(){ownerPanel.style.display="none";}
 
 /* Owner actions */
-function grantVIP(){
-  const u=prompt("Enter username to grant VIP:");if(u && !vipUsers.includes(u)){vipUsers.push(u);alert(u+" is now VIP!");}
-}
-function revokeVIP(){
-  const u=prompt("Enter username to revoke VIP:");const idx=vipUsers.indexOf(u);if(idx>-1){vipUsers.splice(idx,1);alert(u+" VIP revoked!");}
-}
-function startRGBTheme(){
-  let hue=0;clearInterval(window.rgbInterval);
-  window.rgbInterval=setInterval(()=>{
-    document.body.style.background=`hsl(${hue},80%,15%)`;
-    document.querySelectorAll(".panel,.box").forEach(el=>el.style.background=`hsla(${hue},80%,25%,.8)`);
-    document.querySelectorAll(".theme-btn").forEach(el=>el.style.background=`hsl(${hue},80%,50%)`);
-    core.style.background=`hsl(${hue},80%,50%)`;trail.style.borderColor=`hsl(${hue},80%,50%)`;
-    document.documentElement.style.setProperty("--glow",`hsla(${hue},80%,50%,.35)`);
-    hue=(hue+1)%360;
-  },40);
-}
-
-/* Init */
-renderGames();
-renderThemes();
-</script>
-</body>
-</html>
+function grantVIP(){const u=prompt("Enter username to grant VIP:");if(u && !vipUsers.includes(u)){vipUsers.push(u);alert(u+" is now VIP!");}}
+function revokeVIP(){const u=prompt("Enter username to revoke VIP:");const idx=vipUsers.indexOf(u);if(idx>-1){vipUsers.splice(idx,1);alert(u+" VIP revoked!");}}
+function startRGBTheme(){let hue=0;clearInterval(window.rgbInterval);window.rgbInterval=setInterval(()=>{document.body.style.background=`hsl(${hue},80%,15%)`;document.querySelectorAll(".panel,.box").forEach(el=>el.style.background=`hsla(${hue},80%,25%,.8)`);document.querySelectorAll(".theme-btn").forEach(el=>el.style.background=`hsl(${hue},80%,50%)`);core.style.background=`hsl(${hue},80%,50%)`;trail.style.borderColor=`hsl(${hue},80%,50%)`;document.documentElement.style.setProperty("--glow",`hsla(${hue},80%,50%,
