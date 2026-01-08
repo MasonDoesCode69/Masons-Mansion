@@ -118,6 +118,15 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;}
   <div class="box">
     <h2>VIP PANEL</h2>
     <button onclick="alert('VIP silly button!')">Silly Button</button>
+    <button onclick="alert('VIP button 2!')">Button 2</button>
+    <button onclick="alert('VIP button 3!')">Button 3</button>
+    <button onclick="alert('VIP button 4!')">Button 4</button>
+    <button onclick="alert('VIP button 5!')">Button 5</button>
+    <button onclick="alert('VIP button 6!')">Button 6</button>
+    <button onclick="alert('VIP button 7!')">Button 7</button>
+    <button onclick="alert('VIP button 8!')">Button 8</button>
+    <button onclick="alert('VIP button 9!')">Button 9</button>
+    <button onclick="alert('VIP button 10!')">Button 10</button>
     <button onclick="closeVIP()">Close</button>
   </div>
 </div>
@@ -136,6 +145,9 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;}
     <button onclick="alert('Owner Button 5')">Owner Btn 5</button>
     <button onclick="alert('Owner Button 6')">Owner Btn 6</button>
     <button onclick="alert('Owner Button 7')">Owner Btn 7</button>
+    <button onclick="alert('Owner Button 8')">Owner Btn 8</button>
+    <button onclick="alert('Owner Button 9')">Owner Btn 9</button>
+    <button onclick="alert('Owner Button 10')">Owner Btn 10</button>
     <button onclick="closeOwner()">Close</button>
   </div>
 </div>
@@ -186,7 +198,7 @@ document.addEventListener("mousemove",e=>{
 });
 
 /* Users */
-const USER="Honey",VIP="VIP67",OWNER="masononly69",ADMIN="Hubbard330!";
+const USER="Honey",VIP="VIP67",OWNER="masononly69";
 let vipUsers=[];
 let games=[
 {name:"Gladihoppers",url:"https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html"},
@@ -201,7 +213,6 @@ const themeList=[
 {name:"Galaxy",type:"public",bg:"#1b0033",panel:"linear-gradient(145deg,#3a0033,#1b0033)",accent:"#bb88ff",glow:"rgba(187,136,255,.35)"},
 {name:"Supernova",type:"owner",bg:"#2b0000",panel:"linear-gradient(145deg,#4b0000,#2b0000)",accent:"#ff5500",glow:"rgba(255,85,0,.35)"},
 {name:"VIP Pink",type:"vip",bg:"#1a001a",panel:"linear-gradient(145deg,#330033,#550055)",accent:"#ff3399",glow:"rgba(255,51,153,.35)"},
-// Add 20+ more dark gradient public themes
 {name:"Nightfall",type:"public",bg:"#0a0a0a",panel:"linear-gradient(145deg,#111111,#222222)",accent:"#ff4444",glow:"rgba(255,68,68,.35)"},
 {name:"Deep Space",type:"public",bg:"#0a0a1a",panel:"linear-gradient(145deg,#0c0c2c,#1f1f3f)",accent:"#44ffdd",glow:"rgba(68,255,221,.35)"},
 {name:"Shadow",type:"public",bg:"#050505",panel:"linear-gradient(145deg,#080808,#1a1a1a)",accent:"#aaaaaa",glow:"rgba(170,170,170,.35)"},
@@ -214,98 +225,3 @@ const themeList=[
 {name:"Phantom",type:"public",bg:"#05000a",panel:"linear-gradient(145deg,#0a0015,#15002a)",accent:"#ff4466",glow:"rgba(255,68,102,.35)"},
 {name:"Titan",type:"public",bg:"#0a0a0a",panel:"linear-gradient(145deg,#1a1a1a,#333333)",accent:"#ffaa00",glow:"rgba(255,170,0,.35)"}
 ];
-
-/* Render games */
-const list=document.getElementById("games"),player=document.getElementById("player"),themes=document.getElementById("themes");
-function renderGames(){
-  list.innerHTML="";
-  games.forEach(g=>{
-    const d=document.createElement("div");
-    d.className="game";d.textContent=g.name;
-    d.onclick=()=>launch(g);list.appendChild(d);
-  });
-}
-function launch(g){
-  if(optTab.checked){window.open(g.url,"_blank");return;}
-  if(optCloak.checked){
-    const w=window.open();
-    w.document.write(`<iframe src="${g.url}" style="border:none;width:100%;height:100%"></iframe>`);
-    return;
-  }
-  player.src=g.url;
-  player.sandbox=optSandbox.checked?"allow-scripts allow-same-origin allow-forms":"";
-}
-
-/* Render themes */
-function renderThemes(){
-  themes.innerHTML="";
-  themeList.forEach(t=>{
-    const b=document.createElement("button");
-    b.className="theme-btn";
-    b.textContent=t.name;
-    b.onclick=()=>applyTheme(t);
-    themes.appendChild(b);
-  });
-}
-function applyTheme(t){
-  if(t.type==="vip" && !vipUsers.includes(USER)){alert("Permission Declined"); return;}
-  if(t.type==="owner" && USER!==OWNER){alert("Permission Declined"); return;}
-  document.body.style.background=t.bg;
-  document.querySelectorAll(".panel,.box").forEach(el=>el.style.background=t.panel);
-  document.querySelectorAll(".theme-btn").forEach(el=>el.style.background=t.accent);
-  core.style.background=t.accent;trail.style.borderColor=t.accent;
-  document.documentElement.style.setProperty("--glow",t.glow);
-}
-
-/* Login System */
-function unlock(){
-  const val=document.getElementById("userPass").value;
-  if(val===USER){
-    lock.style.display="none";
-    renderGames();
-    renderThemes();
-    alert("Welcome! Thank you for using Mason’s Mansion – Credits to Mason Porrazzo");
-  } else {
-    document.getElementById("userErr").style.display="block";
-  }
-}
-
-function vipUnlock(){
-  const val=document.getElementById("vipPass").value;
-  if(val===VIP){
-    vipLogin.style.display="none";
-    vipPanel.style.display="flex";
-    alert("Welcome VIP! Thank you for using Mason’s Mansion – Credits to Mason Porrazzo");
-    renderThemes();
-  } else {
-    document.getElementById("vipErr").style.display="block";
-  }
-}
-
-function ownerUnlock(){
-  const val=document.getElementById("ownerPass").value;
-  if(val===OWNER){
-    ownerLogin.style.display="none";
-    ownerPanel.style.display="flex";
-    alert("Welcome Owner! Thank you for using Mason’s Mansion – Credits to Mason Porrazzo");
-    renderThemes();
-  } else {
-    document.getElementById("ownerErr").style.display="block";
-  }
-}
-
-/* Show login overlays */
-function showVIPLogin(){ vipLogin.style.display="flex"; }
-function showOwnerLogin(){ ownerLogin.style.display="flex"; }
-
-/* Admin panel */
-document.addEventListener("keydown",e=>{if(e.ctrlKey&&e.shiftKey&&e.key==="A")adminPanel.style.display="flex";});
-function addGame(){if(!gName.value||!gUrl.value)return;games.push({name:gName.value,url:gUrl.value});renderGames();gName.value=gUrl.value="";}
-function closeAdmin(){adminPanel.style.display="none";}
-function closeVIP(){vipPanel.style.display="none";}
-function closeOwner(){ownerPanel.style.display="none";}
-
-/* Owner actions */
-function grantVIP(){const u=prompt("Enter username to grant VIP:");if(u && !vipUsers.includes(u)){vipUsers.push(u);alert(u+" is now VIP!");}}
-function revokeVIP(){const u=prompt("Enter username to revoke VIP:");const idx=vipUsers.indexOf(u);if(idx>-1){vipUsers.splice(idx,1);alert(u+" VIP revoked!");}}
-function startRGBTheme(){let hue=0;clearInterval(window.rgbInterval);window.rgbInterval=setInterval(()=>{document.body.style.background=`hsl(${hue},80%,15%)`;document.querySelectorAll(".panel,.box").forEach(el=>el.style.background=`hsla(${hue},80%,25%,.8)`);document.querySelectorAll(".theme-btn").forEach(el=>el.style.background=`hsl(${hue},80%,50%)`);core.style.background=`hsl(${hue},80%,50%)`;trail.style.borderColor=`hsl(${hue},80%,50%)`;document.documentElement.style.setProperty("--glow",`hsla(${hue},80%,50%,
