@@ -6,7 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* ================= THEMES ================= */
+/* ===================================== */
+/* ROOT VARIABLES / THEMES */
+/* ===================================== */
 :root{
   --bg:radial-gradient(circle at top,#0c1a1d,#050505);
   --panel:rgba(20,20,20,.75);
@@ -18,35 +20,58 @@
   --glow:rgba(125,249,255,.35);
 }
 
-/* HONEY */
+/* HONEY THEME */
 body[data-theme="honey"]{
   --bg:radial-gradient(circle at top,#2b1d00,#0b0700);
   --accent:#ffcc66;
   --glow:rgba(255,204,102,.35);
+  --panel:rgba(40,20,0,.75);
+  --card:rgba(60,30,0,.9);
+  --border:#553300;
+  --text:#fff2e6;
+  --muted:#c9b68c;
 }
 
-/* BLUE */
+/* BLUE THEME */
 body[data-theme="blue"]{
   --bg:radial-gradient(circle at top,#001b33,#000814);
   --accent:#4da6ff;
   --glow:rgba(77,166,255,.35);
+  --panel:rgba(10,20,40,.75);
+  --card:rgba(15,25,45,.9);
+  --border:#222244;
+  --text:#e6f0ff;
+  --muted:#9ab0cc;
 }
 
-/* VIP */
+/* VIP THEME */
 body[data-theme="vip"]{
   --bg:radial-gradient(circle at top,#1a002b,#050008);
   --accent:#d46bff;
   --glow:rgba(212,107,255,.4);
+  --panel:rgba(40,10,60,.75);
+  --card:rgba(60,20,80,.9);
+  --border:#440066;
+  --text:#f2e6ff;
+  --muted:#c9b3e6;
 }
 
-/* ADMIN */
+/* ADMIN THEME */
 body[data-theme="admin"]{
   --bg:radial-gradient(circle at top,#330000,#080000);
   --accent:#ff4d4d;
   --glow:rgba(255,77,77,.45);
+  --panel:rgba(60,0,0,.75);
+  --card:rgba(80,0,0,.9);
+  --border:#660000;
+  --text:#ffd6d6;
+  --muted:#ff9999;
 }
 
-*{box-sizing:border-box;margin:0;padding:0}
+/* ===================================== */
+/* GLOBAL STYLES */
+/* ===================================== */
+*{box-sizing:border-box;margin:0;padding:0;}
 body{
   font-family:system-ui,-apple-system,sans-serif;
   background:var(--bg);
@@ -56,7 +81,9 @@ body{
   cursor:none;
 }
 
-/* ================= CURSOR ================= */
+/* ===================================== */
+/* CURSOR EFFECTS */
+/* ===================================== */
 .cursor-core,.cursor-glow,.cursor-trail{
   position:fixed;
   pointer-events:none;
@@ -68,14 +95,18 @@ body{
   width:120px;height:120px;
   background:radial-gradient(circle,var(--glow),transparent 70%);
   filter:blur(8px);
+  transition:transform .05s linear;
 }
 .cursor-trail{
   width:36px;height:36px;
   border:1px solid rgba(255,255,255,.35);
   opacity:.5;
+  transition:transform .12s ease-out;
 }
 
-/* ================= ADMIN BUTTON ================= */
+/* ===================================== */
+/* ADMIN BUTTON TOP LEFT */
+/* ===================================== */
 #adminBtn{
   position:fixed;
   top:10px;
@@ -88,9 +119,12 @@ body{
   font-weight:700;
   cursor:pointer;
   z-index:10001;
+  box-shadow:0 0 8px var(--glow);
 }
 
-/* ================= OVERLAYS ================= */
+/* ===================================== */
+/* OVERLAYS / LOCK / ADMIN PANEL */
+/* ===================================== */
 .overlay{
   position:fixed;
   inset:0;
@@ -103,10 +137,16 @@ body{
 .box{
   background:var(--panel);
   backdrop-filter:blur(14px);
+  border:1px solid var(--border);
   border-radius:20px;
   padding:26px;
-  width:300px;
+  width:320px;
   text-align:center;
+  box-shadow:0 0 50px #000;
+}
+.box h2{
+  letter-spacing:.18em;
+  margin-bottom:10px;
 }
 .box input{
   width:100%;
@@ -124,26 +164,48 @@ body{
   border:none;
   background:var(--accent);
   color:#000;
+  cursor:pointer;
   font-weight:600;
+  margin-top:4px;
 }
 .error{display:none;color:#ff6a6a;font-size:11px}
 
-/* ================= UI ================= */
-.page{max-width:1200px;margin:0 auto;padding:20px}
+/* ===================================== */
+/* PAGE LAYOUT / PANELS */
+/* ===================================== */
+.page{
+  max-width:1200px;
+  margin:0 auto;
+  padding:20px;
+}
 header{
   display:flex;
   justify-content:space-between;
+  align-items:center;
   background:var(--panel);
+  border:1px solid var(--border);
   border-radius:24px;
   padding:16px 22px;
   margin-bottom:18px;
 }
-header h1{font-size:20px;letter-spacing:.25em}
-header span{font-size:11px;color:var(--muted)}
+header h1{
+  font-size:20px;
+  letter-spacing:.25em;
+}
+header span{
+  font-size:11px;
+  color:var(--muted);
+}
 
-.layout{display:grid;grid-template-columns:260px 1fr;gap:18px}
+.layout{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:18px;
+}
 .panel{
   background:var(--panel);
+  backdrop-filter:blur(14px);
+  border:1px solid var(--border);
   border-radius:20px;
   padding:14px;
 }
@@ -156,12 +218,15 @@ header span{font-size:11px;color:var(--muted)}
 
 .game{
   background:var(--card);
+  border:1px solid var(--border);
   border-radius:14px;
   padding:10px;
   margin-bottom:6px;
   cursor:pointer;
+  transition:.15s;
 }
 .game:hover{
+  border-color:var(--accent);
   box-shadow:0 0 18px var(--glow);
 }
 
@@ -176,6 +241,8 @@ select{
   background:var(--card);
   color:var(--text);
   border-radius:999px;
+  padding:3px 8px;
+  cursor:pointer;
 }
 
 iframe{
@@ -183,17 +250,41 @@ iframe{
   height:560px;
   border:none;
   border-radius:18px;
+  background:#000;
+}
+
+/* ===================================== */
+/* CUSTOM SCROLLBAR */
+::-webkit-scrollbar {
+  width:8px;
+}
+::-webkit-scrollbar-track {
+  background:var(--panel);
+  border-radius:999px;
+}
+::-webkit-scrollbar-thumb {
+  background:var(--accent);
+  border-radius:999px;
+}
+
+/* ===================================== */
+/* RESPONSIVE */
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  iframe{height:400px}
 }
 </style>
 </head>
 
-<body>
+<body data-theme="default">
 
-<div id="adminBtn">ADMIN</div>
-
+<!-- CURSOR ELEMENTS -->
 <div class="cursor-glow"></div>
 <div class="cursor-trail"></div>
 <div class="cursor-core"></div>
+
+<!-- ADMIN BUTTON -->
+<div id="adminBtn">ADMIN</div>
 
 <!-- USER LOCK -->
 <div class="overlay" id="lock">
@@ -219,13 +310,17 @@ iframe{
 <div class="overlay" id="adminPanel" style="display:none">
   <div class="box">
     <h2>ADMIN PANEL</h2>
+    <input id="gName" placeholder="Game Name">
+    <input id="gUrl" placeholder="Game URL">
+    <button onclick="addGame()">Add Game</button><br><br>
     <button onclick="setAdminTheme()">Force Admin Theme</button><br><br>
-    <button onclick="enableVIP()">Enable VIP Theme</button><br><br>
-    <button onclick="resetAll()">Reset Everything</button><br><br>
+    <button onclick="enableVIP()">Unlock VIP Theme</button><br><br>
+    <button onclick="resetAll()">Reset All</button><br><br>
     <button onclick="closeAdmin()">Close</button>
   </div>
 </div>
 
+<!-- MAIN PAGE -->
 <div class="page">
 <header>
   <h1>MASON’S MANSION</h1>
@@ -234,9 +329,11 @@ iframe{
 
 <div class="layout">
 <aside class="panel">
-  <h3>SETTINGS</h3>
+  <h3>GAMES</h3>
+  <div id="games"></div>
+  <h3 style="margin-top:14px">SETTINGS</h3>
   <div class="setting">
-    Theme
+    Theme:
     <select id="themeSelect">
       <option value="default">Default</option>
       <option value="honey">Honey</option>
@@ -244,6 +341,9 @@ iframe{
       <option value="vip" disabled>VIP 🔒</option>
     </select>
   </div>
+  <div class="setting">Open in new tab <input type="checkbox" id="optTab"></div>
+  <div class="setting">Iframe sandbox <input type="checkbox" id="optSandbox" checked></div>
+  <div class="setting">About:Blank cloak <input type="checkbox" id="optCloak"></div>
 </aside>
 
 <section class="panel">
@@ -253,45 +353,109 @@ iframe{
 </div>
 
 <script>
+// =====================================
+// CURSOR LOGIC
+// =====================================
+const core=document.querySelector(".cursor-core"),
+glow=document.querySelector(".cursor-glow"),
+trail=document.querySelector(".cursor-trail");
+document.addEventListener("mousemove",e=>{
+  core.style.transform=`translate(${e.clientX-3}px,${e.clientY-3}px)`;
+  glow.style.transform=`translate(${e.clientX-60}px,${e.clientY-60}px)`;
+  trail.style.transform=`translate(${e.clientX-18}px,${e.clientY-18}px)`;
+});
+
+// =====================================
+// USER + ADMIN LOGIC
+// =====================================
 const USER="Honey";
 const ADMIN="Hubbard330!";
+let games=JSON.parse(localStorage.getItem("mm_games"))||[
+ {name:"Gladihoppers",url:"https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html"},
+ {name:"BitLife",url:"https://3kh0.github.io/bitlife/"},
+ {name:"Proxy",url:"https://ultraviolet-node.netlify.app/"}
+];
+
+const list=document.getElementById("games");
+const player=document.getElementById("player");
 
 function unlock(){
   if(userPass.value===USER){
     lock.style.display="none";
-  }else userErr.style.display="block";
+    renderGames();
+  } else userErr.style.display="block";
 }
 
-/* ADMIN */
-adminBtn.onclick=()=>adminLogin.style.display="flex";
+function renderGames(){
+  list.innerHTML="";
+  games.forEach(g=>{
+    const d=document.createElement("div");
+    d.className="game";
+    d.textContent=g.name;
+    d.onclick=()=>launchGame(g);
+    list.appendChild(d);
+  });
+}
+
+function launchGame(g){
+  if(optTab.checked){window.open(g.url,"_blank"); return;}
+  if(optCloak.checked){
+    const w=window.open();
+    w.document.write(`<iframe src="${g.url}" style="border:none;width:100%;height:100%"></iframe>`);
+    return;
+  }
+  player.src=g.url;
+  player.sandbox=optSandbox.checked?"allow-scripts allow-same-origin allow-forms":"";
+}
+
+// Admin button logic
+document.getElementById("adminBtn").onclick=()=>adminLogin.style.display="flex";
 
 function adminUnlock(){
   if(adminPass.value===ADMIN){
     adminLogin.style.display="none";
     adminPanel.style.display="flex";
-  }else adminErr.style.display="block";
+  } else adminErr.style.display="block";
 }
-function closeAdmin(){adminPanel.style.display="none"}
+function closeAdmin(){adminPanel.style.display="none";}
 
-/* THEMES */
+// Add game
+function addGame(){
+  if(!gName.value||!gUrl.value)return;
+  games.push({name:gName.value,url:gUrl.value});
+  localStorage.setItem("mm_games",JSON.stringify(games));
+  renderGames();
+  gName.value=gUrl.value="";
+}
+
+// =====================================
+// THEMES
+// =====================================
 const themeSelect=document.getElementById("themeSelect");
-
 themeSelect.onchange=()=>{
   document.body.dataset.theme=themeSelect.value==="default"?"":themeSelect.value;
 }
 
-/* ADMIN FUN */
+// Admin-only theme control
 function setAdminTheme(){
   document.body.dataset.theme="admin";
 }
+
+// VIP unlock
 function enableVIP(){
   document.querySelector('option[value="vip"]').disabled=false;
   alert("VIP theme unlocked 😈");
 }
+
+// Reset
 function resetAll(){
   localStorage.clear();
   location.reload();
 }
+
+// Initial render
+renderGames();
 </script>
+
 </body>
 </html>
