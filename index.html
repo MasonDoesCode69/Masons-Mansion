@@ -3,176 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mason’s Mansion | Infinite Singularity V16</title>
+    <title>Mason’s Mansion | V16 Architect</title>
     <link href="fonts.googleapis.com" rel="stylesheet">
     <style>
         :root {
             --bg: #010103; --accent: #ffcc33; --glow: rgba(255, 204, 51, 0.4);
-            --glass: rgba(8, 8, 12, 0.98); --border: rgba(255, 255, 255, 0.05);
-            --vip: #00f2ff; --owner: #ff3333; --font-main: 'Orbitron', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace; --font-title: 'Syncopate', sans-serif;
+            --glass: rgba(10, 10, 15, 0.98); --border: rgba(255, 255, 255, 0.05);
+            --font-main: 'Orbitron', sans-serif; --font-mono: 'JetBrains Mono', monospace;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         body, html { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: #fff; font-family: var(--font-main); cursor: crosshair; }
+        canvas { position: fixed; inset: 0; z-index: 0; }
 
-        canvas#particle-canvas { position: fixed; inset: 0; z-index: 0; }
+        /* --- MASON BRANDING --- */
+        #branding { position: fixed; bottom: 30px; left: 40px; z-index: 1000; pointer-events: none; }
+        #branding h2 { font-family: 'Syncopate'; font-size: 14px; letter-spacing: 10px; color: var(--accent); text-shadow: 0 0 10px var(--glow); }
+        #branding p { font-family: var(--font-mono); font-size: 8px; opacity: 0.5; letter-spacing: 4px; margin-top: 5px; }
 
-        /* --- ADVANCED LOGIN --- */
-        #auth-wrap {
-            position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center;
-            background: #000; transition: 1.5s cubic-bezier(1, 0, 0, 1);
-        }
-        .login-box { width: 450px; padding: 60px; background: var(--glass); border: 1px solid var(--border); position: relative; }
-        .login-box::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--accent); animation: scan 3s infinite; }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
-        .login-box h1 { font-family: 'Syncopate'; letter-spacing: 12px; font-size: 20px; color: var(--accent); margin-bottom: 40px; text-align: center; }
-        .login-box input { width: 100%; background: #080808; border: 1px solid var(--border); padding: 18px; color: #fff; text-align: center; font-family: var(--font-mono); margin-bottom: 20px; }
-        .login-btn { width: 100%; padding: 18px; background: var(--accent); font-weight: 900; border: none; cursor: pointer; letter-spacing: 5px; }
+        /* --- AUTH --- */
+        #auth-wrap { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; background: #000; transition: 1.2s; }
+        .login-box { width: 450px; padding: 60px; background: var(--glass); border: 1px solid var(--border); text-align: center; border-radius: 4px; }
+        .login-box h1 { font-family: 'Syncopate'; letter-spacing: 12px; font-size: 18px; color: var(--accent); margin-bottom: 40px; }
+        .login-box input { width: 100%; background: #050505; border: 1px solid var(--border); padding: 18px; color: #fff; text-align: center; margin-bottom: 20px; }
+        .login-btn { width: 100%; padding: 18px; background: var(--accent); color: #000; font-weight: 900; border: none; cursor: pointer; letter-spacing: 5px; }
 
-        /* --- M.A.V.I.S. AI ENTITY --- */
-        #mavis-entity {
-            position: fixed; bottom: 120px; left: 50px; z-index: 2000;
-            display: flex; flex-direction: column; align-items: center; width: 300px;
-        }
-        .mavis-orb {
-            width: 80px; height: 80px; background: var(--glass); border: 2px solid var(--accent);
-            border-radius: 50%; position: relative; box-shadow: 0 0 30px var(--glow);
-            display: flex; align-items: center; justify-content: center; animation: float 4s infinite;
-        }
-        .mavis-eyes { width: 40px; display: flex; justify-content: space-between; position: absolute; top: 25px; }
+        /* --- M.A.V.I.S AI SYSTEM --- */
+        #ai-interface { position: fixed; top: 180px; left: 40px; width: 350px; z-index: 2000; }
+        #mavis-face { width: 80px; height: 80px; border: 2px solid var(--accent); border-radius: 50%; margin-bottom: 20px; position: relative; box-shadow: 0 0 30px var(--glow); animation: float 4s infinite; }
+        .eye-row { display: flex; justify-content: space-around; width: 30px; position: absolute; top: 25px; left: 23px; }
         .eye { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
-        .mavis-smile {
-            width: 30px; height: 15px; border-bottom: 3px solid var(--accent);
-            border-radius: 0 0 50px 50px; position: absolute; bottom: 20px;
-        }
+        #mouth { width: 25px; height: 10px; border-bottom: 3px solid var(--accent); border-radius: 0 0 20px 20px; position: absolute; bottom: 20px; left: 26px; transition: 0.2s; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        #mavis-chat {
-            background: var(--glass); border: 1px solid var(--border); padding: 15px; margin-top: 20px;
-            font-size: 11px; font-family: var(--font-mono); color: var(--accent); border-radius: 5px;
-            text-align: center; min-height: 50px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        /* --- PIXEL STUDIO ENGINE --- */
-        #win-draw { width: 650px; height: 820px; }
-        #pixel-grid {
-            display: grid; background: #111; border: 1px solid var(--border);
-            margin: 20px auto; width: 512px; height: 512px; cursor: crosshair;
-        }
-        .px { border: 0.1px solid rgba(255,255,255,0.02); }
-        .palette { display: flex; gap: 10px; justify-content: center; padding: 20px; background: rgba(0,0,0,0.3); }
-        .swatch { width: 35px; height: 35px; border-radius: 4px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
-        .swatch.active { border-color: #fff; transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-
-        /* --- TASKBAR --- */
-        #taskbar {
-            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
-            background: var(--glass); border: 1px solid var(--border); padding: 15px 50px;
-            border-radius: 100px; display: flex; gap: 30px; z-index: 5000; backdrop-filter: blur(20px);
-        }
-        .t-icon { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; transition: 0.4s; border-radius: 50%; }
-        .t-icon:hover { transform: translateY(-20px) scale(1.1); background: var(--accent); color: #000; }
+        
+        #ai-bubble { background: var(--glass); border: 1px solid var(--border); padding: 20px; border-radius: 10px; font-size: 11px; font-family: var(--font-mono); color: #ccc; margin-bottom: 15px; border-left: 4px solid var(--accent); }
+        #ai-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 12px; color: var(--accent); font-family: var(--font-mono); border-radius: 5px; }
 
         /* --- CHRONOS HUD --- */
-        #hud { position: fixed; top: 50px; right: 60px; text-align: right; z-index: 1000; }
-        #time { font-size: 64px; font-weight: 900; color: var(--accent); letter-spacing: 10px; font-family: var(--font-title); }
-        #date { font-size: 14px; opacity: 0.5; letter-spacing: 5px; font-family: var(--font-mono); }
+        #hud { position: fixed; top: 40px; right: 40px; text-align: right; z-index: 1000; }
+        #time { font-size: 64px; font-weight: 900; color: var(--accent); letter-spacing: 10px; line-height: 1; }
+        #date { font-size: 12px; opacity: 0.5; letter-spacing: 4px; font-family: var(--font-mono); margin-top: 10px; }
 
-        .window { position: absolute; background: var(--glass); border: 1px solid var(--border); display: none; flex-direction: column; box-shadow: 0 50px 150px #000; z-index: 3000; overflow: hidden; backdrop-filter: blur(30px); }
-        .win-bar { padding: 20px; background: rgba(255,255,255,0.05); cursor: move; display: flex; justify-content: space-between; font-weight: 900; font-size: 11px; letter-spacing: 4px; }
+        /* --- WINDOWS --- */
+        .window { position: absolute; background: var(--glass); border: 1px solid var(--border); display: none; flex-direction: column; box-shadow: 0 50px 150px #000; z-index: 3000; overflow: hidden; backdrop-filter: blur(25px); }
+        .win-bar { padding: 18px 25px; background: rgba(255,255,255,0.05); cursor: move; display: flex; justify-content: space-between; font-weight: 900; font-size: 11px; letter-spacing: 4px; }
+        
+        /* --- THEME LIST --- */
+        .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; }
+        .theme-btn { padding: 15px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); color: #fff; cursor: pointer; font-family: var(--font-mono); font-size: 10px; text-align: left; }
+        .theme-btn:hover { border-color: var(--accent); background: rgba(255,255,255,0.08); }
+
+        /* --- TASKBAR --- */
+        #taskbar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--glass); border: 1px solid var(--border); padding: 12px 40px; border-radius: 100px; display: flex; gap: 30px; z-index: 5000; }
+        .icon { width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; font-size: 26px; cursor: pointer; transition: 0.3s; border-radius: 50%; }
+        .icon:hover { transform: translateY(-15px); background: var(--accent); color: #000; box-shadow: 0 10px 30px var(--glow); }
+
         .hidden { display: none !important; }
         iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
-    <canvas id="particle-canvas"></canvas>
+    <canvas id="canvas"></canvas>
+
+    <div id="branding">
+        <h2>MASONS MANSION</h2>
+        <p>MADE BY MASON PORRAZZO // V16 ARCHITECT</p>
+    </div>
 
     <div id="auth-wrap">
         <div class="login-box">
-            <h1>SINGULARITY</h1>
-            <input type="password" id="pass-key" placeholder="SECURE_ACCESS_KEY">
-            <button class="login-btn" onclick="Mansion.init()">INITIALIZE</button>
+            <h1>AUTHENTICATE</h1>
+            <input type="password" id="sys-pass" placeholder="ACCESS KEY">
+            <button class="login-btn" onclick="Engine.init()">ENTER MANSION</button>
         </div>
     </div>
 
     <div id="desktop" class="hidden">
         <div id="hud">
             <div id="time">00:00:00</div>
-            <div id="date">SYNCING_CORE...</div>
+            <div id="date">JANUARY 08, 2026</div>
         </div>
 
-        <!-- M.A.V.I.S. Entity -->
-        
-            <div class="mavis-orb">
-                <div class="mavis-eyes">
-                    <div class="eye"></div>
-                    <div class="eye"></div>
-                </div>
-                <div class="mavis-smile"></div>
+        <!-- M.A.V.I.S AI Interface -->
+        <div id="ai-interface">
+            <div id="mavis-face">
+                <div class="eye-row"><div class="eye"></div><div class="eye"></div></div>
+                <div id="mouth"></div>
             </div>
-            <div id="mavis-chat">M.A.V.I.S: Systems Nominal. Hello, Mason.</div>
+            <div id="ai-bubble">M.A.V.I.S: Identity confirmed. Welcome home, Mason Porrazzo. Awaiting command.</div>
+            <input type="text" id="ai-input" placeholder="TALK TO M.A.V.I.S..." onkeypress="Engine.talk(event)">
         </div>
 
-        <!-- Pixel Art Window -->
-        <div id="win-draw" class="window">
-            <div class="win-bar"><span>🖌️ PIXEL_STUDIO_V16</span><span onclick="Mansion.close('draw')" style="cursor:pointer">×</span></div>
-            <div class="palette" id="swatch-container"></div>
-            <div id="pixel-grid"></div>
-            <div style="padding: 20px; text-align: center;">
-                <button onclick="Mansion.clearCanvas()" style="background:none; border:1px solid var(--accent); color:var(--accent); padding:10px 20px; cursor:pointer; font-family:var(--font-mono); font-size:10px;">PURGE_LAYER_0</button>
-            </div>
+        <!-- Theme Window -->
+        <div id="win-themes" class="window" style="width:400px; height:500px;">
+            <div class="win-bar"><span>🎨 THEME_VAULT</span><span onclick="Engine.close('themes')" style="cursor:pointer">×</span></div>
+            <div class="theme-grid" id="theme-grid"></div>
         </div>
 
-        <div id="win-games" class="window" style="width:1100px; height:700px;">
-            <div class="win-bar"><span>⚔️ GAME_REPOSITORY</span><span onclick="Mansion.close('games')" style="cursor:pointer">×</span></div>
-            <div id="game-portal" style="flex:1"></div>
+        <div id="win-games" class="window" style="width:1000px; height:650px;">
+            <div class="win-bar"><span>⚔️ GAME_CENTER</span><span onclick="Engine.close('games')" style="cursor:pointer">×</span></div>
+            <div id="game-frame" style="flex:1"></div>
         </div>
 
         <div id="taskbar">
-            <div class="t-icon" onclick="Mansion.open('draw')">🖌️</div>
-            <div class="t-icon" onclick="Mansion.open('games', 'usernamegth.github.io')">⚔️</div>
-            <div class="t-icon" onclick="Mansion.open('games', '96f.github.io')">⛷️</div>
-            <div id="owner-icon" class="t-icon hidden">👑</div>
+            <div class="icon" title="Themes" onclick="Engine.open('themes')">🎨</div>
+            <div class="icon" title="Gladihoppers" onclick="Engine.open('games', 'usernamegth.github.io')">⚔️</div>
+            <div class="icon" title="Slope" onclick="Engine.open('games', '96f.github.io')">⛷️</div>
+            <div id="owner-icon" class="icon hidden">👑</div>
         </div>
     </div>
 
     <script>
         /**
-         * MASON V16: INFINITE SINGULARITY ENGINE
-         * Architected for 2026 Hybrid Web Environments
+         * Mason V16: Architect Edition
+         * Scripting by Mason Porrazzo
          */
-        const Mansion = {
-            brush: '#ffcc33', res: 32, entities: [],
-            mavisLines: [
-                "The simulation is running at 99.8% efficiency.",
-                "Did you know? My smile is rendered in pure CSS.",
-                "I've detected a slight anomaly in the void. It's beautiful.",
-                "Mason, the Gladihoppers are waiting for your command.",
-                "Entropy is just a state of mind, don't you think?",
-                "I'm currently recalculating the meaning of life. Please wait...",
-                "The yellow pixels look particularly vibrant today.",
-                "Shall we purge the reality field once more?"
+        const Engine = {
+            parts: [], mx: 0, my: 0,
+            themes: [
+                {n:'Honey Gold', a:'#ffcc33', b:'#010103'}, {n:'Cyber Neon', a:'#00f2ff', b:'#050a15'},
+                {n:'Vampire', a:'#ff1f1f', b:'#0a0000'}, {n:'Emerald', a:'#50c878', b:'#000f05'},
+                {n:'Obsidian', a:'#ffffff', b:'#000000'}, {n:'Amethyst', a:'#bc13fe', b:'#08000f'}
             ],
+            dialogue: {
+                hello: "Hello Mason Porrazzo. The mansion is operating at peak efficiency.",
+                theme: "Of course. Reconfiguring visual protocols now.",
+                clear: "Purging all active entities from the simulation.",
+                gladihoppers: "The Gladihoppers mirror is ready for combat.",
+                unknown: "My apologies, Mason. That command is not in my database yet.",
+                time: "Current temporal sync is verified with the 2026 world clock.",
+                creator: "You are my creator, Mason Porrazzo. I am your V16 Singularity."
+            },
 
             init() {
-                const k = document.getElementById('pass-key').value;
-                if(k === "masononly69") { document.getElementById('owner-icon').classList.remove('hidden'); }
-                else if(k !== "honey" && k !== "vip420") { alert("UNAUTHORIZED_ACCESS_DENIED"); return; }
+                const k = document.getElementById('sys-pass').value;
+                if(k === "masononly69") document.getElementById('owner-icon').classList.remove('hidden');
+                else if(k !== "honey" && k !== "vip420") return alert("INVALID KEY");
                 
                 document.getElementById('auth-wrap').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('auth-wrap').style.display = 'none';
                     document.getElementById('desktop').classList.remove('hidden');
                     this.boot();
-                }, 1200);
+                }, 1000);
             },
 
             boot() {
-                this.c = document.getElementById('particle-canvas'); 
-                this.ctx = this.c.getContext('2d');
-                window.onresize = () => { this.c.width = innerWidth; this.c.height = innerHeight; }; 
-                window.onresize();
+                this.c = document.getElementById('canvas'); this.ctx = this.c.getContext('2d');
+                window.onresize = () => { this.c.width = innerWidth; this.c.height = innerHeight; }; window.onresize();
+                window.onmousemove = (e) => { this.mx = e.clientX; this.my = e.clientY; };
                 
                 setInterval(() => {
                     const d = new Date();
@@ -180,58 +160,61 @@
                     document.getElementById('date').innerText = d.toLocaleDateString(undefined, {weekday:'long', month:'long', day:'numeric'}).toUpperCase();
                 }, 1000);
 
-                setInterval(() => this.mavisChat(), 8000);
-                this.initStudio();
+                this.loadThemes();
                 for(let i=0; i<60; i++) this.spawn();
                 this.render();
             },
 
-            mavisChat() {
-                const line = this.mavisLines[Math.floor(Math.random() * this.mavisLines.length)];
-                document.getElementById('mavis-chat').innerText = "M.A.V.I.S: " + line;
-            },
-
-            initStudio() {
-                const g = document.getElementById('pixel-grid');
-                g.style.gridTemplateColumns = `repeat(${this.res}, 1fr)`;
-                for(let i=0; i<this.res*this.res; i++) {
-                    const px = document.createElement('div');
-                    px.className = 'px';
-                    px.onmousedown = () => px.style.background = this.brush;
-                    px.onmouseover = (e) => { if(e.buttons === 1) px.style.background = this.brush; };
-                    g.appendChild(px);
-                }
-
-                const colors = ['#ffcc33', '#ff3333', '#00f2ff', '#ffffff', '#50c878', '#000000'];
-                const sc = document.getElementById('swatch-container');
-                colors.forEach(c => {
-                    const s = document.createElement('div');
-                    s.className = 'swatch' + (c === this.brush ? ' active' : '');
-                    s.style.background = c;
-                    s.onclick = () => {
-                        this.brush = c;
-                        document.querySelectorAll('.swatch').forEach(sw => sw.classList.remove('active'));
-                        s.classList.add('active');
+            loadThemes() {
+                const tg = document.getElementById('theme-grid');
+                this.themes.forEach((t, i) => {
+                    const btn = document.createElement('button'); btn.className = 'theme-btn';
+                    btn.innerText = `INIT_${t.n.toUpperCase()}`;
+                    btn.onclick = () => {
+                        document.documentElement.style.setProperty('--accent', t.a);
+                        document.documentElement.style.setProperty('--bg', t.b);
+                        this.mavisSpeak(this.dialogue.theme);
                     };
-                    sc.appendChild(s);
+                    tg.appendChild(btn);
                 });
             },
 
-            clearCanvas() { document.querySelectorAll('.px').forEach(p => p.style.background = 'none'); },
+            talk(e) {
+                if(e.key === 'Enter') {
+                    const input = e.target.value.toLowerCase();
+                    const bubble = document.getElementById('ai-bubble');
+                    
+                    if(input.includes('hello') || input.includes('mason')) this.mavisSpeak(this.dialogue.hello);
+                    else if(input.includes('clear') || input.includes('purge')) { this.parts = []; this.mavisSpeak(this.dialogue.clear); }
+                    else if(input.includes('time')) this.mavisSpeak(this.dialogue.time);
+                    else if(input.includes('who made you')) this.mavisSpeak(this.dialogue.creator);
+                    else if(input.includes('theme')) this.open('themes');
+                    else this.mavisSpeak(this.dialogue.unknown);
+                    
+                    e.target.value = '';
+                }
+            },
+
+            mavisSpeak(txt) {
+                document.getElementById('ai-bubble').innerText = "M.A.V.I.S: " + txt;
+                const mouth = document.getElementById('mouth');
+                mouth.style.height = "15px"; mouth.style.borderRadius = "50%";
+                setTimeout(() => { mouth.style.height = "10px"; mouth.style.borderRadius = "0 0 20px 20px"; }, 600);
+            },
 
             spawn() {
-                this.entities.push({
+                this.parts.push({
                     x: Math.random()*innerWidth, y: Math.random()*innerHeight,
-                    vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2,
-                    sz: 20+Math.random()*30, rot: Math.random()*360
+                    vx: (Math.random()-0.5)*3, vy: (Math.random()-0.5)*3,
+                    sz: 20+Math.random()*40, rot: Math.random()*360
                 });
             },
 
             open(id, url) {
-                const win = document.getElementById('win-' + id);
-                win.style.display = 'flex'; win.style.top = '100px'; win.style.left = '350px';
-                if(url) document.getElementById('game-portal').innerHTML = `<iframe src="${url}"></iframe>`;
-                this.drag(win);
+                const w = document.getElementById('win-' + id); w.style.display = 'flex';
+                w.style.top = '100px'; w.style.left = '450px';
+                if(url) document.getElementById('game-frame').innerHTML = `<iframe src="${url}"></iframe>`;
+                this.drag(w);
             },
             close(id) { document.getElementById('win-' + id).style.display = 'none'; },
 
@@ -239,7 +222,7 @@
                 let p1=0, p2=0, p3=0, p4=0;
                 el.querySelector('.win-bar').onmousedown = (e) => {
                     p3=e.clientX; p4=e.clientY;
-                    document.onmouseup = () => { document.onmouseup = null; document.onmousemove = null; };
+                    document.onmouseup = () => { document.onmouseup=null; document.onmousemove=null; };
                     document.onmousemove = (e) => {
                         p1=p3-e.clientX; p2=p4-e.clientY; p3=e.clientX; p4=e.clientY;
                         el.style.top = (el.offsetTop-p2)+"px"; el.style.left = (el.offsetLeft-p1)+"px";
@@ -248,14 +231,17 @@
             },
 
             render() {
-                this.ctx.fillStyle = '#010103'; this.ctx.fillRect(0,0,innerWidth,innerHeight);
-                this.entities.forEach(e => {
-                    e.x += e.vx; e.y += e.vy; e.rot += 0.5;
-                    if(e.x<0 || e.x>innerWidth) e.vx*=-1; if(e.y<0 || e.y>innerHeight) e.vy*=-1;
-                    this.ctx.save(); this.ctx.translate(e.x, e.y); this.ctx.rotate(e.rot*Math.PI/180);
-                    this.ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
-                    this.ctx.lineWidth = 1; this.ctx.beginPath();
-                    this.ctx.moveTo(0,-e.sz); this.ctx.lineTo(e.sz/2,e.sz/2); this.ctx.lineTo(-e.sz/2,e.sz/2);
+                const acc = getComputedStyle(document.documentElement).getPropertyValue('--accent');
+                this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg');
+                this.ctx.fillRect(0,0,innerWidth,innerHeight);
+
+                this.parts.forEach(p => {
+                    p.x += p.vx; p.y += p.vy; p.rot += 0.5;
+                    if(p.x<0 || p.x>innerWidth) p.vx*=-1; if(p.y<0 || p.y>innerHeight) p.vy*=-1;
+
+                    this.ctx.save(); this.ctx.translate(p.x, p.y); this.ctx.rotate(p.rot*Math.PI/180);
+                    this.ctx.strokeStyle = acc; this.ctx.lineWidth = 1.5; this.ctx.beginPath();
+                    this.ctx.moveTo(0,-p.sz); this.ctx.lineTo(p.sz/2,p.sz/2); this.ctx.lineTo(-p.sz/2,p.sz/2);
                     this.ctx.closePath(); this.ctx.stroke(); this.ctx.restore();
                 });
                 requestAnimationFrame(() => this.render());
