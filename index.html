@@ -3,697 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mason’s Mansion | Ultimate V4</title>
+    <title>Mason’s Mansion | V8 Supernova</title>
     <style>
-        /* MASON'S MANSION CORE STYLESHEET
-           Architecture: Modular Neon-OS
+        /* MASON'S MANSION V8 - THE SUPERNOVA UPDATE
+           Focus: High Vibrancy, Floating Orbs, Theme Restoration
         */
         :root {
-            --bg: #020202;
-            --panel: rgba(10, 10, 10, 0.9);
-            --card: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
-            --text: #ffffff;
-            --muted: #666666;
+            --bg: #020205;
             --accent: #00f2ff;
-            --glow: rgba(0, 242, 255, 0.3);
-            --error: #ff3333;
-            --success: #00ff88;
-            --win-top: rgba(30, 30, 30, 0.95);
+            --glow: rgba(0, 242, 255, 0.6);
+            --glass: rgba(10, 10, 15, 0.85);
+            --border: rgba(255, 255, 255, 0.15);
+            --text: #ffffff;
+            --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --underglow: 0 0 30px var(--glow);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-user-drag: none;
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        body, html { 
+            width: 100%; height: 100%; overflow: hidden; 
+            background: var(--bg); color: var(--text); 
+            font-family: var(--font); cursor: crosshair;
         }
 
-        body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            cursor: none; /* Custom cursor used instead */
-        }
+        /* --- VIBRANT FLOATING ORBS --- */
+        #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
-        /* --- BACKGROUND ENGINE --- */
-        #canvas-bg {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 1;
-            pointer-events: none;
+        /* --- TOP LEFT AUTH --- */
+        #auth-anchor {
+            position: fixed; top: 20px; left: 20px; z-index: 10000;
+            display: flex; gap: 10px; background: var(--glass);
+            padding: 12px; border-radius: 14px; border: 1px solid var(--border);
+            backdrop-filter: blur(20px); box-shadow: var(--underglow);
         }
+        #auth-anchor input {
+            background: rgba(0,0,0,0.4); border: 1px solid var(--border);
+            color: #fff; padding: 8px 12px; border-radius: 8px; width: 140px;
+        }
+        #auth-anchor button {
+            background: var(--accent); color: #000; border: none;
+            padding: 8px 15px; border-radius: 8px; font-weight: 900; cursor: pointer;
+            text-transform: uppercase; transition: 0.3s;
+        }
+        #auth-anchor button:hover { transform: scale(1.05); filter: brightness(1.2); }
 
-        /* --- CURSOR ENGINE --- */
-        #cursor-dot {
-            position: fixed;
-            width: 8px; height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1000000;
-            box-shadow: 0 0 10px var(--accent);
-        }
+        /* --- DESKTOP --- */
+        #desktop { position: relative; width: 100vw; height: 100vh; z-index: 10; display: none; }
 
-        #cursor-ring {
-            position: fixed;
-            width: 40px; height: 40px;
-            border: 2px solid var(--accent);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 999999;
-            transition: transform 0.1s ease-out, width 0.3s, height 0.3s;
-            opacity: 0.5;
+        /* --- WINDOWS --- */
+        .window {
+            position: absolute; background: var(--glass);
+            border: 1px solid var(--border); border-radius: 20px;
+            backdrop-filter: blur(30px); display: flex; flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7), var(--underglow);
+            overflow: hidden; animation: winShow 0.4s ease-out;
         }
+        @keyframes winShow { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
-        /* --- BOOT & AUTH LAYER --- */
-        #boot-screen {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 1s ease-in-out;
+        .win-header {
+            padding: 14px 20px; background: rgba(255,255,255,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: move; border-bottom: 1px solid var(--border);
         }
+        .win-title { font-size: 11px; font-weight: 900; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
+        .win-close { width: 12px; height: 12px; background: #ff5f56; border-radius: 50%; cursor: pointer; box-shadow: 0 0 10px #ff5f56; }
 
-        .login-card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            padding: 40px;
-            border-radius: 24px;
-            width: 350px;
-            text-align: center;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 20px 80px rgba(0,0,0,0.8);
-        }
+        /* --- TERMINAL --- */
+        .terminal-box { padding: 15px; height: 280px; background: #000; font-family: 'Consolas', monospace; }
+        .term-log { height: 210px; overflow-y: auto; font-size: 13px; color: var(--accent); margin-bottom: 10px; }
+        .term-input-line { display: flex; gap: 8px; align-items: center; color: var(--accent); }
+        #term-prompt { background: transparent; border: none; color: #fff; flex: 1; font-family: 'Consolas', monospace; font-size: 14px; }
 
-        .login-card h1 {
-            font-size: 1.2rem;
-            letter-spacing: 0.5em;
-            margin-bottom: 30px;
-            font-weight: 300;
+        /* --- THEME ENGINE --- */
+        .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px; }
+        .theme-card {
+            padding: 15px; border-radius: 12px; border: 1px solid var(--border);
+            background: rgba(255,255,255,0.03); color: #fff; cursor: pointer;
+            font-size: 12px; font-weight: 800; text-align: center; transition: 0.3s;
         }
+        .theme-card:hover { background: var(--accent); color: #000; transform: translateY(-3px); }
 
-        .login-card input {
-            width: 100%;
-            padding: 15px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: white;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 1rem;
-            transition: 0.3s;
+        /* --- MASON'S ROOM OF GAMES --- */
+        .game-area { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; padding: 25px; }
+        .game-item {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+            border-radius: 15px; padding: 20px; text-align: center; cursor: pointer;
+            transition: 0.4s;
         }
+        .game-item:hover { 
+            border-color: var(--accent); background: rgba(255,255,255,0.08); 
+            transform: scale(1.05); box-shadow: 0 0 20px var(--glow);
+        }
+        .game-item i { font-size: 35px; display: block; margin-bottom: 10px; }
 
-        .login-card input:focus {
-            border-color: var(--accent);
-            background: rgba(255,255,255,0.08);
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 15px;
-            border-radius: 12px;
-            border: none;
-            background: var(--accent);
-            color: #000;
-            font-weight: 800;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: 0.3s;
-        }
-
-        .login-btn:hover {
-            filter: brightness(1.2);
-            transform: scale(1.02);
-            box-shadow: 0 0 20px var(--glow);
-        }
-
-        /* --- DESKTOP ENVIRONMENT --- */
-        #desktop {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            z-index: 10;
-            display: none; /* Shown after login */
-            background-image: 
-                radial-gradient(circle at 50% 50%, rgba(20, 20, 20, 0) 0%, rgba(0,0,0,0.5) 100%);
-        }
+        /* --- OWNER PANEL --- */
+        .owner-control { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .owner-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; }
 
         /* --- TASKBAR --- */
         #taskbar {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            height: 64px;
-            background: rgba(15, 15, 15, 0.7);
-            backdrop-filter: blur(25px);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
-            gap: 12px;
-            z-index: 10000;
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: var(--glass); border: 1px solid var(--border);
+            padding: 12px 25px; border-radius: 25px; display: flex; gap: 20px;
+            backdrop-filter: blur(25px); z-index: 1000; box-shadow: var(--underglow);
+        }
+        .t-icon {
+            width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.04); border-radius: 15px; cursor: pointer;
+            font-size: 26px; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .t-icon:hover { transform: translateY(-15px) scale(1.2); background: var(--accent); color: #000; box-shadow: 0 10px 20px var(--glow); }
+
+        /* --- VIP RGB EFFECT --- */
+        .vip-chroma { animation: chroma-loop 3s infinite linear !important; border-width: 2px !important; }
+        @keyframes chroma-loop {
+            0% { border-color: #ff0000; box-shadow: 0 0 25px #ff0000; }
+            33% { border-color: #00ff00; box-shadow: 0 0 25px #00ff00; }
+            66% { border-color: #0000ff; box-shadow: 0 0 25px #0000ff; }
+            100% { border-color: #ff0000; box-shadow: 0 0 25px #ff0000; }
         }
 
-        .app-icon {
-            width: 44px;
-            height: 44px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            cursor: pointer;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .app-icon:hover {
-            transform: translateY(-10px) scale(1.2);
-            background: var(--accent);
-            color: #000;
-            border-color: #fff;
-        }
-
-        /* --- WINDOW SYSTEM --- */
-        .win {
-            position: absolute;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-            backdrop-filter: blur(20px);
-            min-width: 300px;
-            min-height: 200px;
-        }
-
-        .win-header {
-            height: 40px;
-            background: var(--win-top);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 15px;
-            cursor: grab;
-            user-select: none;
-        }
-
-        .win-title {
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--muted);
-        }
-
-        .win-controls {
-            display: flex;
-            gap: 8px;
-        }
-
-        .win-btn {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .win-close { background: #ff5f57; }
-        .win-min { background: #ffbd2e; }
-        .win-max { background: #28c840; }
-
-        .win-body {
-            flex: 1;
-            overflow: auto;
-            position: relative;
-        }
-
-        /* --- APP CONTENT STYLES --- */
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 15px;
-            padding: 20px;
-        }
-
-        .game-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .game-card:hover {
-            border-color: var(--accent);
-            background: rgba(255,255,255,0.08);
-            transform: translateY(-5px);
-        }
-
-        .game-card i {
-            font-size: 32px;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        #game-frame {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: #000;
-        }
-
-        .admin-panel {
-            padding: 25px;
-        }
-
-        .admin-input {
-            width: 100%;
-            padding: 12px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: white;
-            margin-bottom: 15px;
-        }
-
-        .theme-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding: 20px;
-        }
-
-        .theme-item {
-            padding: 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            border: 1px solid var(--border);
-        }
-
-        /* --- STATUS BAR --- */
-        #status-bar {
-            position: absolute;
-            top: 0; width: 100%;
-            height: 30px;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: var(--muted);
-            z-index: 1000;
-        }
-
-        .hidden { display: none; }
-
+        iframe { width: 100%; flex: 1; border: none; background: #000; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <canvas id="canvas-bg"></canvas>
-    <div id="cursor-dot"></div>
-    <div id="cursor-ring"></div>
+    <canvas id="bg-canvas"></canvas>
 
-    <div id="boot-screen">
-        <div class="login-card">
-            <h1>MANSION OS</h1>
-            <input type="password" id="pass-field" placeholder="TERMINAL KEY" autocomplete="off">
-            <button class="login-btn" onclick="Mansion.validate()">Execute</button>
-            <p id="err-msg" style="color:var(--error); font-size:10px; margin-top:15px; display:none;">ACCESS DENIED: UNAUTHORIZED CREDENTIALS</p>
-        </div>
+    <div id="auth-anchor">
+        <input type="password" id="sys-pass" placeholder="KEY CODE">
+        <button onclick="Mansion.init()">Initialize</button>
     </div>
 
     <div id="desktop">
-        <div id="status-bar">
-            <div id="sys-time">00:00:00</div>
-            <div id="sys-user">USER: GUEST</div>
-            <div id="sys-ver">BUILD 4.0.1-STABLE</div>
-        </div>
-
-        <div id="win-container"></div>
+        <div id="win-layer"></div>
 
         <div id="taskbar">
-            <div class="app-icon" title="Game Library" onclick="Mansion.openApp('games')">🎮</div>
-            <div class="app-icon" title="Theme Engine" onclick="Mansion.openApp('themes')">🎨</div>
-            <div class="app-icon" title="System Settings" onclick="Mansion.openApp('settings')">⚙️</div>
-            <div class="app-icon" title="Owner Admin" id="admin-icon" style="display:none;" onclick="Mansion.openApp('admin')">👑</div>
-            <div style="width:1px; height:30px; background:var(--border); margin:0 5px;"></div>
-            <div class="app-icon" title="Close All" onclick="Mansion.closeAll()">❌</div>
+            <div class="t-icon" title="Mason's Room of Games" onclick="Mansion.spawn('games')">🎮</div>
+            <div class="t-icon" title="Terminal" onclick="Mansion.spawn('terminal')">📟</div>
+            <div class="t-icon" title="Themes" onclick="Mansion.spawn('themes')">🎨</div>
+            <div id="owner-icon" class="t-icon hidden" title="Owner Panel" onclick="Mansion.spawn('owner')">👑</div>
+            <div class="t-icon" title="Emergency" onclick="Mansion.panic()">🛑</div>
         </div>
     </div>
 
     <script>
-        /**
-         * MASON'S MANSION V4 | CORE SYSTEM SCRIPT
-         * Lines: 700+ Logic Implementation
-         */
-
-        const CORE_CONFIG = {
-            keys: {
-                member: "Honey",
-                vip: "VIP67",
-                owner: "masononly69"
-            },
-            apps: {
-                games: { title: "Central Intelligence - Games", w: 600, h: 500 },
-                themes: { title: "Visual Matrix - Themes", w: 350, h: 450 },
-                admin: { title: "Command Center - Owner", w: 400, h: 400 },
-                settings: { title: "Kernel Settings", w: 400, h: 300 },
-                browser: { title: "Shadow Browser", w: 900, h: 600 }
-            },
-            defaultGames: [
-                { name: "Gladihoppers", url: "https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html", icon: "⚔️" },
-                { name: "Minecraft", url: "https://precisionclient.pages.dev/", icon: "⛏️" },
-                { name: "BitLife", url: "https://3kh0.github.io/bitlife/", icon: "👶" },
-                { name: "Retro Bowl", url: "https://game316311.konggames.com/gamefileproxy/getgamefile/0031/6311/live/index.html", icon: "🏈" },
-                { name: "Tunnel Rush", url: "https://3kh0.github.io/tunnel-rush/", icon: "🌀" }
-            ],
-            themes: [
-                { id: "cyan", name: "CYBERPUNK", accent: "#00f2ff", bg: "#020202", glow: "rgba(0,242,255,0.3)" },
-                { id: "ruby", name: "BLOOD MOON", accent: "#ff3333", bg: "#050000", glow: "rgba(255,51,51,0.3)" },
-                { id: "emerald", name: "MATRIX", accent: "#00ff88", bg: "#000500", glow: "rgba(0,255,136,0.3)" },
-                { id: "gold", name: "LUXURY", accent: "#ffcc00", bg: "#050500", glow: "rgba(255,204,0,0.3)" },
-                { id: "violet", name: "VIOLET NIGHT", accent: "#bf00ff", bg: "#050005", glow: "rgba(191,0,255,0.3)" }
-            ]
-        };
-
         const Mansion = {
-            userRank: "GUEST",
-            activeWins: [],
+            rank: 'guest',
             zIndex: 100,
-            
+            isVip: false,
+            themes: [
+                { n: 'Supernova (Cyan)', a: '#00f2ff', g: 'rgba(0, 242, 255, 0.6)' },
+                { n: 'Hellfire (Red)', a: '#ff3c00', g: 'rgba(255, 60, 0, 0.6)' },
+                { n: 'Emerald (Green)', a: '#00ff88', g: 'rgba(0, 255, 136, 0.6)' },
+                { n: 'Void (Purple)', a: '#bf00ff', g: 'rgba(191, 0, 255, 0.6)' },
+                { n: 'Venom (Lime)', a: '#a2ff00', g: 'rgba(162, 255, 0, 0.6)' },
+                { n: 'Barbie (Pink)', a: '#ff00ea', g: 'rgba(255, 0, 234, 0.6)' }
+            ],
+
             init() {
-                console.log("Initializing Mansion OS...");
-                this.setupCanvas();
-                this.setupCursor();
-                this.setupClock();
-                this.handlePanicKey();
-                
-                // Allow Enter key to login
-                document.getElementById('pass-field').addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.validate();
-                });
+                const p = document.getElementById('sys-pass').value;
+                if(p === "masononly69") {
+                    this.rank = "OWNER";
+                    document.getElementById('owner-icon').classList.remove('hidden');
+                    this.boot();
+                } else if(p === "Honey") {
+                    this.rank = "MEMBER";
+                    this.boot();
+                } else { alert("ACCESS DENIED"); }
             },
 
-            setupCanvas() {
-                const canvas = document.getElementById('canvas-bg');
-                const ctx = canvas.getContext('2d');
-                let w, h, particles = [];
-
-                const resize = () => {
-                    w = canvas.width = window.innerWidth;
-                    h = canvas.height = window.innerHeight;
-                };
-
-                class Part {
-                    constructor() {
-                        this.reset();
-                    }
-                    reset() {
-                        this.x = Math.random() * w;
-                        this.y = Math.random() * h;
-                        this.vx = (Math.random() - 0.5) * 0.5;
-                        this.vy = (Math.random() - 0.5) * 0.5;
-                        this.s = Math.random() * 2;
-                    }
-                    update() {
-                        this.x += this.vx;
-                        this.y += this.vy;
-                        if(this.x<0||this.x>w||this.y<0||this.y>h) this.reset();
-                    }
-                    draw() {
-                        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
-                        ctx.globalAlpha = 0.3;
-                        ctx.beginPath();
-                        ctx.arc(this.x, this.y, this.s, 0, Math.PI*2);
-                        ctx.fill();
-                    }
-                }
-
-                resize();
-                window.addEventListener('resize', resize);
-                for(let i=0; i<120; i++) particles.push(new Part());
-
-                function anim() {
-                    ctx.clearRect(0,0,w,h);
-                    particles.forEach(p => { p.update(); p.draw(); });
-                    requestAnimationFrame(anim);
-                }
-                anim();
+            boot() {
+                document.getElementById('auth-anchor').style.transform = "translateX(-500px)";
+                document.getElementById('desktop').style.display = "block";
+                this.initOrbs();
+                this.spawn('games');
             },
 
-            setupCursor() {
-                const dot = document.getElementById('cursor-dot');
-                const ring = document.getElementById('cursor-ring');
-                
-                window.addEventListener('mousemove', (e) => {
-                    dot.style.left = e.clientX + 'px';
-                    dot.style.top = e.clientY + 'px';
-                    
-                    // Ring follows with slight delay
-                    setTimeout(() => {
-                        ring.style.left = (e.clientX - 20) + 'px';
-                        ring.style.top = (e.clientY - 20) + 'px';
-                    }, 50);
-                });
-
-                window.addEventListener('mousedown', () => {
-                    ring.style.transform = 'scale(0.8)';
-                    dot.style.transform = 'scale(1.5)';
-                });
-
-                window.addEventListener('mouseup', () => {
-                    ring.style.transform = 'scale(1)';
-                    dot.style.transform = 'scale(1)';
-                });
-            },
-
-            setupClock() {
-                const clock = document.getElementById('sys-time');
-                setInterval(() => {
-                    const now = new Date();
-                    clock.innerText = now.getHours().toString().padStart(2, '0') + ":" + 
-                                     now.getMinutes().toString().padStart(2, '0') + ":" + 
-                                     now.getSeconds().toString().padStart(2, '0');
-                }, 1000);
-            },
-
-            handlePanicKey() {
-                window.addEventListener('keydown', (e) => {
-                    // Panic Key: Press 'P' or 'Escape'
-                    if (e.key === 'Escape' || e.key.toLowerCase() === 'p') {
-                        window.location.replace("https://www.google.com/search?q=calculus+homework+help");
-                    }
-                });
-            },
-
-            validate() {
-                const pass = document.getElementById('pass-field').value;
-                const boot = document.getElementById('boot-screen');
-                const desk = document.getElementById('desktop');
-                const status = document.getElementById('sys-user');
-
-                if (pass === CORE_CONFIG.keys.owner) {
-                    this.userRank = "OWNER";
-                    document.getElementById('admin-icon').style.display = 'flex';
-                } else if (pass === CORE_CONFIG.keys.vip) {
-                    this.userRank = "VIP";
-                } else if (pass === CORE_CONFIG.keys.member) {
-                    this.userRank = "MEMBER";
-                } else {
-                    document.getElementById('err-msg').style.display = 'block';
-                    return;
-                }
-
-                status.innerText = "RANK: " + this.userRank;
-                boot.style.opacity = '0';
-                setTimeout(() => {
-                    boot.style.display = 'none';
-                    desk.style.display = 'block';
-                    this.openApp('games');
-                }, 1000);
-            },
-
-            openApp(appId, data = null) {
-                const config = CORE_CONFIG.apps[appId];
-                if (!config) return;
-
-                const winId = 'win-' + Math.floor(Math.random()*10000);
+            spawn(type) {
+                const id = 'w-' + Math.random().toString(36).substr(2, 5);
                 const win = document.createElement('div');
-                win.className = 'win';
-                win.id = winId;
-                win.style.width = config.w + 'px';
-                win.style.height = config.h + 'px';
-                win.style.left = (window.innerWidth/2 - config.w/2 + (this.activeWins.length * 20)) + 'px';
-                win.style.top = (window.innerHeight/2 - config.h/2 + (this.activeWins.length * 20)) + 'px';
+                win.className = 'window';
+                if(this.isVip) win.classList.add('vip-chroma');
+                win.id = id;
+                win.style.width = "550px"; win.style.height = "400px";
+                win.style.left = "25%"; win.style.top = "20%";
                 win.style.zIndex = ++this.zIndex;
 
-                let content = '';
-
-                if (appId === 'games') {
-                    content = `<div class="game-grid">`;
-                    const games = JSON.parse(localStorage.getItem('mm_custom_games')) || CORE_CONFIG.defaultGames;
-                    games.forEach(g => {
-                        content += `
-                            <div class="game-card" onclick="Mansion.launchGame('${g.url}', '${g.name}')">
-                                <i>${g.icon}</i>
-                                <span>${g.name}</span>
-                            </div>
-                        `;
-                    });
-                    content += `</div>`;
-                } else if (appId === 'themes') {
-                    content = `<div class="theme-list">`;
-                    CORE_CONFIG.themes.forEach(t => {
-                        content += `
-                            <div class="theme-item" style="background:${t.bg}; border-color:${t.accent}" onclick="Mansion.applyTheme('${t.id}')">
-                                <span style="color:${t.accent}">${t.name}</span>
-                                <span>●</span>
-                            </div>
-                        `;
-                    });
-                    content += `</div>`;
-                } else if (appId === 'admin') {
-                    content = `
-                        <div class="admin-panel">
-                            <h3 style="margin-bottom:15px; font-size:12px; color:var(--accent)">INJECT CUSTOM MODULE</h3>
-                            <input id="adm-n" class="admin-input" placeholder="Application Name">
-                            <input id="adm-u" class="admin-input" placeholder="Source URL">
-                            <input id="adm-i" class="admin-input" placeholder="Icon (Emoji)">
-                            <button class="login-btn" onclick="Mansion.addGame()">Deploy to Matrix</button>
-                        </div>
-                    `;
+                let body = '';
+                if(type === 'games') {
+                    body = `<div class="win-title" style="padding:15px 0 0 25px;">Mason’s Room of Games</div>
+                            <div class="game-area">
+                                <div class="game-item" onclick="Mansion.play('https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html', 'Gladihoppers')">
+                                    <i>⚔️</i><span>Gladihoppers</span>
+                                </div>
+                            </div>`;
+                } else if(type === 'terminal') {
+                    body = `<div class="terminal-box" onclick="document.getElementById('term-prompt').focus()">
+                                <div class="term-log" id="t-log">Mansion Kernel v8.0.0...<br>Enter credentials or 'help'.</div>
+                                <div class="term-input-line"><span>></span><input id="term-prompt" onkeydown="Mansion.term(event)"></div>
+                            </div>`;
+                } else if(type === 'themes') {
+                    body = `<div class="theme-grid">` + this.themes.map(t => `
+                        <div class="theme-card" onclick="Mansion.setTheme('${t.n}')">${t.n}</div>`).join('') + `</div>`;
+                } else if(type === 'owner') {
+                    body = `<div class="owner-control">
+                        <div class="owner-row"><span>Site-Wide RGB</span><button class="theme-card" onclick="Mansion.isVip=true">Enable</button></div>
+                        <div class="owner-row"><span>Orb Density</span><button class="theme-card" onclick="location.reload()">Reset</button></div>
+                        <div class="owner-row"><span>Force Cloak</span><button class="theme-card" onclick="Mansion.panic()">Execute</button></div>
+                    </div>`;
                 }
 
                 win.innerHTML = `
-                    <div class="win-header" onmousedown="Mansion.dragWin(event, '${winId}')">
-                        <div class="win-title">${config.title}</div>
-                        <div class="win-controls">
-                            <div class="win-btn win-min"></div>
-                            <div class="win-btn win-close" onclick="document.getElementById('${winId}').remove()"></div>
-                        </div>
+                    <div class="win-header" onmousedown="Mansion.drag(event, '${id}')">
+                        <div class="win-title">${type}</div>
+                        <div class="win-close" onclick="document.getElementById('${id}').remove()"></div>
                     </div>
-                    <div class="win-body">${content}</div>
-                `;
-
-                document.getElementById('win-container').appendChild(win);
-                this.activeWins.push(winId);
+                    ${body}`;
+                document.getElementById('win-layer').appendChild(win);
             },
 
-            launchGame(url, name) {
-                const winId = 'game-' + Math.floor(Math.random()*10000);
+            term(e) {
+                if(e.key === 'Enter') {
+                    const cmd = e.target.value.toLowerCase();
+                    const log = document.getElementById('t-log');
+                    if(cmd === 'vip67') {
+                        this.isVip = true;
+                        log.innerHTML += `<br><span style="color:#00ff00">ACCESS GRANTED. VIP CHROMA ENABLED.</span>`;
+                        document.querySelectorAll('.window').forEach(w => w.classList.add('vip-chroma'));
+                    } else if(cmd === 'help') {
+                        log.innerHTML += `<br>Available: help, clear, vip67, reboot`;
+                    } else if(cmd === 'clear') { log.innerHTML = 'Terminal reset.'; }
+                    else { log.innerHTML += `<br>Invalid: ${cmd}`; }
+                    e.target.value = '';
+                    log.scrollTop = log.scrollHeight;
+                }
+            },
+
+            setTheme(name) {
+                const t = this.themes.find(x => x.n === name);
+                const r = document.documentElement;
+                r.style.setProperty('--accent', t.a);
+                r.style.setProperty('--glow', t.g);
+                r.style.setProperty('--underglow', `0 0 30px ${t.g}`);
+            },
+
+            play(url, name) {
+                const id = 'p-' + Date.now();
                 const win = document.createElement('div');
-                win.className = 'win';
-                win.id = winId;
-                win.style.width = '80%';
-                win.style.height = '80%';
-                win.style.left = '10%';
-                win.style.top = '10%';
+                win.className = 'window';
+                if(this.isVip) win.classList.add('vip-chroma');
+                win.id = id; win.style.width = "80%"; win.style.height = "85%";
+                win.style.left = "10%"; win.style.top = "7.5%";
                 win.style.zIndex = ++this.zIndex;
-
                 win.innerHTML = `
-                    <div class="win-header" onmousedown="Mansion.dragWin(event, '${winId}')">
-                        <div class="win-title">RUNNING: ${name}</div>
-                        <div class="win-controls">
-                            <div class="win-btn win-max" onclick="Mansion.fullscreen('${winId}')"></div>
-                            <div class="win-btn win-close" onclick="document.getElementById('${winId}').remove()"></div>
-                        </div>
+                    <div class="win-header" onmousedown="Mansion.drag(event, '${id}')">
+                        <div class="win-title">ROOM_GAMES: ${name}</div>
+                        <div class="win-close" onclick="document.getElementById('${id}').remove()"></div>
                     </div>
-                    <div class="win-body">
-                        <iframe id="game-frame" src="${url}" allow="autoplay; fullscreen; keyboard"></iframe>
-                    </div>
-                `;
-                document.getElementById('win-container').appendChild(win);
+                    <iframe src="${url}"></iframe>`;
+                document.getElementById('win-layer').appendChild(win);
             },
 
-            dragWin(e, id) {
+            drag(e, id) {
                 const el = document.getElementById(id);
                 el.style.zIndex = ++this.zIndex;
-                
-                let px = e.clientX, py = e.clientY;
+                let ox = e.clientX - el.offsetLeft, oy = e.clientY - el.offsetTop;
+                const mm = (e) => { el.style.left = (e.clientX - ox) + "px"; el.style.top = (e.clientY - oy) + "px"; };
+                const mu = () => { window.removeEventListener('mousemove', mm); window.removeEventListener('mouseup', mu); };
+                window.addEventListener('mousemove', mm);
+                window.addEventListener('mouseup', mu);
+            },
 
-                const move = (e) => {
-                    const dx = px - e.clientX;
-                    const dy = py - e.clientY;
-                    px = e.clientX;
-                    py = e.clientY;
-                    el.style.top = (el.offsetTop - dy) + "px";
-                    el.style.left = (el.offsetLeft - dx) + "px";
+            panic() { window.location.replace("https://www.google.com/search?q=educational+science+simulations"); },
+
+            initOrbs() {
+                const c = document.getElementById('bg-canvas');
+                const ctx = c.getContext('2d');
+                let orbs = [];
+                const resize = () => { c.width = window.innerWidth; c.height = window.innerHeight; };
+                window.onresize = resize; resize();
+
+                for(let i=0; i<40; i++) {
+                    orbs.push({
+                        x: Math.random()*c.width, y: Math.random()*c.height,
+                        r: Math.random()*100 + 50,
+                        vx: (Math.random()-0.5)*0.8, vy: (Math.random()-0.5)*0.8
+                    });
+                }
+
+                const draw = () => {
+                    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg');
+                    ctx.fillRect(0,0,c.width,c.height);
+                    orbs.forEach(o => {
+                        o.x += o.vx; o.y += o.vy;
+                        if(o.x<0||o.x>c.width) o.vx *= -1;
+                        if(o.y<0||o.y>c.height) o.vy *= -1;
+                        let grad = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
+                        grad.addColorStop(0, getComputedStyle(document.documentElement).getPropertyValue('--glow'));
+                        grad.addColorStop(1, 'transparent');
+                        ctx.fillStyle = grad;
+                        ctx.beginPath(); ctx.arc(o.x, o.y, o.r, 0, Math.PI*2); ctx.fill();
+                    });
+                    requestAnimationFrame(draw);
                 };
-
-                const stop = () => {
-                    document.removeEventListener('mousemove', move);
-                    document.removeEventListener('mouseup', stop);
-                };
-
-                document.addEventListener('mousemove', move);
-                document.addEventListener('mouseup', stop);
-            },
-
-            applyTheme(id) {
-                const theme = CORE_CONFIG.themes.find(t => t.id === id);
-                if (!theme) return;
-                const r = document.documentElement;
-                r.style.setProperty('--accent', theme.accent);
-                r.style.setProperty('--bg', theme.bg);
-                r.style.setProperty('--glow', theme.glow);
-            },
-
-            addGame() {
-                const n = document.getElementById('adm-n').value;
-                const u = document.getElementById('adm-u').value;
-                const i = document.getElementById('adm-i').value || "🎮";
-                
-                if(!n || !u) return alert("Missing Parameters");
-
-                let custom = JSON.parse(localStorage.getItem('mm_custom_games')) || [...CORE_CONFIG.defaultGames];
-                custom.push({name: n, url: u, icon: i});
-                localStorage.setItem('mm_custom_games', JSON.stringify(custom));
-                alert("Application Initialized Successfully");
-            },
-
-            closeAll() {
-                document.getElementById('win-container').innerHTML = '';
-                this.activeWins = [];
-            },
-
-            fullscreen(id) {
-                const el = document.getElementById(id);
-                el.style.width = '100vw';
-                el.style.height = '100vh';
-                el.style.top = '0';
-                el.style.left = '0';
-                el.style.borderRadius = '0';
+                draw();
             }
         };
-
-        // --- SYSTEM BOOTSTRAP ---
-        window.onload = () => Mansion.init();
-
     </script>
 </body>
 </html>
