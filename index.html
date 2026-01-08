@@ -3,278 +3,424 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mason’s Mansion | V3 Ultimate</title>
+    <title>Mason’s Mansion | Ultimate V4</title>
     <style>
+        /* MASON'S MANSION CORE STYLESHEET
+           Architecture: Modular Neon-OS
+        */
         :root {
-            --bg: #050505;
-            --panel: rgba(15, 15, 15, 0.85);
-            --card: rgba(255, 255, 255, 0.03);
+            --bg: #020202;
+            --panel: rgba(10, 10, 10, 0.9);
+            --card: rgba(255, 255, 255, 0.05);
             --border: rgba(255, 255, 255, 0.1);
             --text: #ffffff;
-            --muted: #888888;
+            --muted: #666666;
             --accent: #00f2ff;
-            --glow: rgba(0, 242, 255, 0.4);
-            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --glow: rgba(0, 242, 255, 0.3);
+            --error: #ff3333;
+            --success: #00ff88;
+            --win-top: rgba(30, 30, 30, 0.95);
         }
 
-        /* RESET & BASE */
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
-        
-        body {
-            font-family: var(--font-main);
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-user-drag: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background: var(--bg);
             color: var(--text);
-            height: 100vh;
+            cursor: none; /* Custom cursor used instead */
+        }
+
+        /* --- BACKGROUND ENGINE --- */
+        #canvas-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* --- CURSOR ENGINE --- */
+        #cursor-dot {
+            position: fixed;
+            width: 8px; height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000000;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        #cursor-ring {
+            position: fixed;
+            width: 40px; height: 40px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 999999;
+            transition: transform 0.1s ease-out, width 0.3s, height 0.3s;
+            opacity: 0.5;
+        }
+
+        /* --- BOOT & AUTH LAYER --- */
+        #boot-screen {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .login-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 24px;
+            width: 350px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 80px rgba(0,0,0,0.8);
+        }
+
+        .login-card h1 {
+            font-size: 1.2rem;
+            letter-spacing: 0.5em;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .login-card input:focus {
+            border-color: var(--accent);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            background: var(--accent);
+            color: #000;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            filter: brightness(1.2);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px var(--glow);
+        }
+
+        /* --- DESKTOP ENVIRONMENT --- */
+        #desktop {
+            position: relative;
             width: 100vw;
+            height: 100vh;
+            z-index: 10;
+            display: none; /* Shown after login */
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(20, 20, 20, 0) 0%, rgba(0,0,0,0.5) 100%);
+        }
+
+        /* --- TASKBAR --- */
+        #taskbar {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 64px;
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            gap: 12px;
+            z-index: 10000;
+        }
+
+        .app-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .app-icon:hover {
+            transform: translateY(-10px) scale(1.2);
+            background: var(--accent);
+            color: #000;
+            border-color: #fff;
+        }
+
+        /* --- WINDOW SYSTEM --- */
+        .win {
+            position: absolute;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             overflow: hidden;
-            cursor: none;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            min-width: 300px;
+            min-height: 200px;
+        }
+
+        .win-header {
+            height: 40px;
+            background: var(--win-top);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            cursor: grab;
             user-select: none;
         }
 
-        /* ANIMATED BACKGROUND */
-        #bg-canvas {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            opacity: 0.4;
+        .win-title {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--muted);
         }
 
-        /* CURSOR SYSTEM */
-        #cursor-core {
-            position: fixed; width: 8px; height: 8px; background: var(--accent);
-            border-radius: 50%; pointer-events: none; z-index: 99999;
-            box-shadow: 0 0 15px var(--accent);
-        }
-        #cursor-glow {
-            position: fixed; width: 300px; height: 300px;
-            background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
-            border-radius: 50%; pointer-events: none; z-index: 99998;
-            transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s;
+        .win-controls {
+            display: flex;
+            gap: 8px;
         }
 
-        /* LOGIN / OVERLAYS */
-        .overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-            display: flex; align-items: center; justify-content: center; z-index: 100000;
-            backdrop-filter: blur(20px); transition: opacity 0.5s;
-        }
-        .login-box {
-            background: var(--panel); border: 1px solid var(--border);
-            padding: 40px; border-radius: 30px; width: 380px; text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-        .login-box h1 { font-size: 1.5rem; letter-spacing: 5px; margin-bottom: 20px; color: var(--accent); }
-        .login-box input {
-            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
-            padding: 15px; border-radius: 15px; color: white; margin-bottom: 15px; text-align: center;
-        }
-        .login-box button {
-            width: 100%; padding: 15px; border-radius: 15px; border: none;
-            background: var(--accent); color: #000; font-weight: 700; cursor: pointer;
-        }
-        .error-msg { color: #ff4444; font-size: 12px; margin-top: 10px; display: none; }
-
-        /* DESKTOP UI */
-        #desktop {
-            height: 100vh; display: flex; flex-direction: column; position: relative;
+        .win-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
         }
 
-        header {
-            height: 60px; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 30px; border-bottom: 1px solid var(--border); background: var(--panel);
-            backdrop-filter: blur(10px); z-index: 10;
-        }
-        .logo { font-weight: 900; letter-spacing: 3px; font-size: 18px; }
-        .logo span { color: var(--accent); }
+        .win-close { background: #ff5f57; }
+        .win-min { background: #ffbd2e; }
+        .win-max { background: #28c840; }
 
-        /* WINDOW SYSTEM */
-        .window {
-            position: absolute; background: var(--panel); border: 1px solid var(--border);
-            border-radius: 15px; display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4); min-width: 300px; min-height: 200px;
-            backdrop-filter: blur(15px);
+        .win-body {
+            flex: 1;
+            overflow: auto;
+            position: relative;
         }
-        .window-header {
-            padding: 12px 18px; background: rgba(255,255,255,0.05); display: flex;
-            justify-content: space-between; align-items: center; cursor: move;
-        }
-        .window-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .window-controls { display: flex; gap: 8px; }
-        .control-dot { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; }
-        .dot-close { background: #ff5f56; }
-        .dot-max { background: #27c93f; }
-        .window-content { flex-grow: 1; overflow: auto; position: relative; }
 
-        /* APP-SPECIFIC STYLES */
-        .sidebar-list { padding: 15px; }
-        .nav-item {
-            padding: 12px; margin-bottom: 8px; border-radius: 10px; background: var(--card);
-            border: 1px solid transparent; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; gap: 10px;
+        /* --- APP CONTENT STYLES --- */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            padding: 20px;
         }
-        .nav-item:hover { border-color: var(--accent); background: rgba(255,255,255,0.08); }
-        .nav-item i { font-size: 18px; color: var(--accent); }
 
-        /* THEME GRID */
-        .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; padding: 15px; }
-        .theme-card {
-            aspect-ratio: 1; border-radius: 12px; cursor: pointer; display: flex;
-            flex-direction: column; align-items: center; justify-content: center;
-            border: 1px solid var(--border); font-size: 10px; transition: 0.2s;
+        .game-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
         }
-        .theme-card:hover { transform: translateY(-3px); border-color: var(--accent); }
 
-        /* IFRAME PLAYER */
-        #game-frame { width: 100%; height: 100%; border: none; background: #000; }
-
-        /* TASKBAR */
-        #taskbar {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            height: 60px; background: var(--panel); border: 1px solid var(--border);
-            border-radius: 20px; display: flex; align-items: center; padding: 0 15px;
-            gap: 15px; backdrop-filter: blur(20px); z-index: 1000;
+        .game-card:hover {
+            border-color: var(--accent);
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-5px);
         }
-        .task-icon {
-            width: 40px; height: 40px; border-radius: 10px; background: var(--card);
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            transition: 0.3s; font-size: 20px;
-        }
-        .task-icon:hover { background: var(--accent); color: #000; transform: scale(1.1); }
 
-        /* UTILS */
-        .hidden { display: none !important; }
-        .flex { display: flex; }
-        .p-20 { padding: 20px; }
+        .game-card i {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        #game-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000;
+        }
+
+        .admin-panel {
+            padding: 25px;
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .theme-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .theme-item {
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid var(--border);
+        }
+
+        /* --- STATUS BAR --- */
+        #status-bar {
+            position: absolute;
+            top: 0; width: 100%;
+            height: 30px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--muted);
+            z-index: 1000;
+        }
+
+        .hidden { display: none; }
+
     </style>
 </head>
 <body>
 
-    <canvas id="bg-canvas"></canvas>
-    <div id="cursor-core"></div>
-    <div id="cursor-glow"></div>
+    <canvas id="canvas-bg"></canvas>
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
 
-    <div id="auth-overlay" class="overlay">
-        <div class="login-box">
-            <h1>MASON<span>'S</span> MANSION</h1>
-            <input type="password" id="entry-pass" placeholder="ACCESS KEY">
-            <button onclick="System.auth()">INITIALIZE</button>
-            <p id="auth-error" class="error-msg">INVALID SECURITY KEY</p>
+    <div id="boot-screen">
+        <div class="login-card">
+            <h1>MANSION OS</h1>
+            <input type="password" id="pass-field" placeholder="TERMINAL KEY" autocomplete="off">
+            <button class="login-btn" onclick="Mansion.validate()">Execute</button>
+            <p id="err-msg" style="color:var(--error); font-size:10px; margin-top:15px; display:none;">ACCESS DENIED: UNAUTHORIZED CREDENTIALS</p>
         </div>
     </div>
 
-    <div id="desktop" class="hidden">
-        <header>
-            <div class="logo">MASON<span>MANSION</span></div>
-            <div id="clock">00:00:00</div>
-            <div id="user-status">GUEST</div>
-        </header>
+    <div id="desktop">
+        <div id="status-bar">
+            <div id="sys-time">00:00:00</div>
+            <div id="sys-user">USER: GUEST</div>
+            <div id="sys-ver">BUILD 4.0.1-STABLE</div>
+        </div>
 
-        <div id="window-root" style="flex-grow: 1; position: relative;"></div>
+        <div id="win-container"></div>
 
         <div id="taskbar">
-            <div class="task-icon" onclick="WindowManager.create('games')">🎮</div>
-            <div class="task-icon" onclick="WindowManager.create('settings')">⚙️</div>
-            <div class="task-icon" onclick="WindowManager.create('browser')">🌐</div>
-            <div class="task-icon" onclick="WindowManager.create('themes')">🎨</div>
-            <div class="task-icon" onclick="WindowManager.create('admin')">🔐</div>
+            <div class="app-icon" title="Game Library" onclick="Mansion.openApp('games')">🎮</div>
+            <div class="app-icon" title="Theme Engine" onclick="Mansion.openApp('themes')">🎨</div>
+            <div class="app-icon" title="System Settings" onclick="Mansion.openApp('settings')">⚙️</div>
+            <div class="app-icon" title="Owner Admin" id="admin-icon" style="display:none;" onclick="Mansion.openApp('admin')">👑</div>
+            <div style="width:1px; height:30px; background:var(--border); margin:0 5px;"></div>
+            <div class="app-icon" title="Close All" onclick="Mansion.closeAll()">❌</div>
         </div>
     </div>
 
     <script>
         /**
-         * MASON'S MANSION CORE ENGINE
-         * Total Lines Target: Expanding Logic for Longevity
+         * MASON'S MANSION V4 | CORE SYSTEM SCRIPT
+         * Lines: 700+ Logic Implementation
          */
 
-        const CONFIG = {
-            keys: { user: "Honey", vip: "VIP67", owner: "masononly69" },
+        const CORE_CONFIG = {
+            keys: {
+                member: "Honey",
+                vip: "VIP67",
+                owner: "masononly69"
+            },
+            apps: {
+                games: { title: "Central Intelligence - Games", w: 600, h: 500 },
+                themes: { title: "Visual Matrix - Themes", w: 350, h: 450 },
+                admin: { title: "Command Center - Owner", w: 400, h: 400 },
+                settings: { title: "Kernel Settings", w: 400, h: 300 },
+                browser: { title: "Shadow Browser", w: 900, h: 600 }
+            },
             defaultGames: [
                 { name: "Gladihoppers", url: "https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html", icon: "⚔️" },
-                { name: "BitLife", url: "https://3kh0.github.io/bitlife/", icon: "👶" },
                 { name: "Minecraft", url: "https://precisionclient.pages.dev/", icon: "⛏️" },
-                { name: "Proxy (UV)", url: "https://ultraviolet-node.netlify.app/", icon: "🛡️" }
+                { name: "BitLife", url: "https://3kh0.github.io/bitlife/", icon: "👶" },
+                { name: "Retro Bowl", url: "https://game316311.konggames.com/gamefileproxy/getgamefile/0031/6311/live/index.html", icon: "🏈" },
+                { name: "Tunnel Rush", url: "https://3kh0.github.io/tunnel-rush/", icon: "🌀" }
             ],
             themes: [
-                { name: "Cyberpunk", bg: "#050505", accent: "#00f2ff", glow: "rgba(0,242,255,0.3)" },
-                { name: "Lava", bg: "#0f0505", accent: "#ff4400", glow: "rgba(255,68,0,0.3)" },
-                { name: "Matrix", bg: "#000a00", accent: "#00ff44", glow: "rgba(0,255,68,0.3)" },
-                { name: "Royal", bg: "#0a0015", accent: "#bd00ff", glow: "rgba(189,0,255,0.3)" },
-                { name: "Gold", bg: "#0e0e08", accent: "#ffcc00", glow: "rgba(255,204,0,0.3)" }
+                { id: "cyan", name: "CYBERPUNK", accent: "#00f2ff", bg: "#020202", glow: "rgba(0,242,255,0.3)" },
+                { id: "ruby", name: "BLOOD MOON", accent: "#ff3333", bg: "#050000", glow: "rgba(255,51,51,0.3)" },
+                { id: "emerald", name: "MATRIX", accent: "#00ff88", bg: "#000500", glow: "rgba(0,255,136,0.3)" },
+                { id: "gold", name: "LUXURY", accent: "#ffcc00", bg: "#050500", glow: "rgba(255,204,0,0.3)" },
+                { id: "violet", name: "VIOLET NIGHT", accent: "#bf00ff", bg: "#050005", glow: "rgba(191,0,255,0.3)" }
             ]
         };
 
-        // SYSTEM STATE
-        let state = {
-            isUnlocked: false,
-            rank: 'guest',
-            activeThemes: [...CONFIG.themes],
-            userGames: JSON.parse(localStorage.getItem('mm_games')) || [...CONFIG.defaultGames]
-        };
-
-        const System = {
+        const Mansion = {
+            userRank: "GUEST",
+            activeWins: [],
+            zIndex: 100,
+            
             init() {
-                this.bindEvents();
-                this.initBackground();
-                this.updateClock();
-                setInterval(() => this.updateClock(), 1000);
-            },
-
-            bindEvents() {
-                // Cursor Tracking
-                document.addEventListener('mousemove', (e) => {
-                    const core = document.getElementById('cursor-core');
-                    const glow = document.getElementById('cursor-glow');
-                    core.style.left = e.clientX + 'px';
-                    core.style.top = e.clientY + 'px';
-                    glow.style.left = e.clientX + 'px';
-                    glow.style.top = e.clientY + 'px';
-                });
-
-                // Panic Key (Esc)
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === "Escape") {
-                        window.location.href = "https://www.google.com/search?q=educational+resources";
-                    }
+                console.log("Initializing Mansion OS...");
+                this.setupCanvas();
+                this.setupCursor();
+                this.setupClock();
+                this.handlePanicKey();
+                
+                // Allow Enter key to login
+                document.getElementById('pass-field').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.validate();
                 });
             },
 
-            auth() {
-                const input = document.getElementById('entry-pass').value;
-                const err = document.getElementById('auth-error');
-
-                if (input === CONFIG.keys.owner) {
-                    state.rank = 'OWNER';
-                    this.launch();
-                } else if (input === CONFIG.keys.vip) {
-                    state.rank = 'VIP';
-                    this.launch();
-                } else if (input === CONFIG.keys.user) {
-                    state.rank = 'MEMBER';
-                    this.launch();
-                } else {
-                    err.style.display = 'block';
-                }
-            },
-
-            launch() {
-                document.getElementById('auth-overlay').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('auth-overlay').classList.add('hidden');
-                    document.getElementById('desktop').classList.remove('hidden');
-                    document.getElementById('user-status').innerText = state.rank;
-                    WindowManager.create('games');
-                }, 500);
-            },
-
-            updateClock() {
-                const now = new Date();
-                document.getElementById('clock').innerText = now.toLocaleTimeString();
-            },
-
-            initBackground() {
-                const canvas = document.getElementById('bg-canvas');
+            setupCanvas() {
+                const canvas = document.getElementById('canvas-bg');
                 const ctx = canvas.getContext('2d');
                 let w, h, particles = [];
 
@@ -283,161 +429,270 @@
                     h = canvas.height = window.innerHeight;
                 };
 
-                class Particle {
+                class Part {
                     constructor() {
+                        this.reset();
+                    }
+                    reset() {
                         this.x = Math.random() * w;
                         this.y = Math.random() * h;
-                        this.size = Math.random() * 2;
-                        this.speedX = Math.random() * 0.5 - 0.25;
-                        this.speedY = Math.random() * 0.5 - 0.25;
+                        this.vx = (Math.random() - 0.5) * 0.5;
+                        this.vy = (Math.random() - 0.5) * 0.5;
+                        this.s = Math.random() * 2;
                     }
                     update() {
-                        this.x += this.speedX;
-                        this.y += this.speedY;
-                        if (this.x > w) this.x = 0;
-                        if (this.x < 0) this.x = w;
-                        if (this.y > h) this.y = 0;
-                        if (this.y < 0) this.y = h;
+                        this.x += this.vx;
+                        this.y += this.vy;
+                        if(this.x<0||this.x>w||this.y<0||this.y>h) this.reset();
                     }
                     draw() {
                         ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
+                        ctx.globalAlpha = 0.3;
                         ctx.beginPath();
-                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.arc(this.x, this.y, this.s, 0, Math.PI*2);
                         ctx.fill();
                     }
                 }
 
                 resize();
-                for(let i=0; i<100; i++) particles.push(new Particle());
+                window.addEventListener('resize', resize);
+                for(let i=0; i<120; i++) particles.push(new Part());
 
-                const animate = () => {
+                function anim() {
                     ctx.clearRect(0,0,w,h);
                     particles.forEach(p => { p.update(); p.draw(); });
-                    requestAnimationFrame(animate);
-                };
-                window.onresize = resize;
-                animate();
-            }
-        };
+                    requestAnimationFrame(anim);
+                }
+                anim();
+            },
 
-        const WindowManager = {
-            zIndex: 100,
+            setupCursor() {
+                const dot = document.getElementById('cursor-dot');
+                const ring = document.getElementById('cursor-ring');
+                
+                window.addEventListener('mousemove', (e) => {
+                    dot.style.left = e.clientX + 'px';
+                    dot.style.top = e.clientY + 'px';
+                    
+                    // Ring follows with slight delay
+                    setTimeout(() => {
+                        ring.style.left = (e.clientX - 20) + 'px';
+                        ring.style.top = (e.clientY - 20) + 'px';
+                    }, 50);
+                });
 
-            create(type, data = null) {
-                const id = 'win-' + Math.random().toString(36).substr(2, 9);
+                window.addEventListener('mousedown', () => {
+                    ring.style.transform = 'scale(0.8)';
+                    dot.style.transform = 'scale(1.5)';
+                });
+
+                window.addEventListener('mouseup', () => {
+                    ring.style.transform = 'scale(1)';
+                    dot.style.transform = 'scale(1)';
+                });
+            },
+
+            setupClock() {
+                const clock = document.getElementById('sys-time');
+                setInterval(() => {
+                    const now = new Date();
+                    clock.innerText = now.getHours().toString().padStart(2, '0') + ":" + 
+                                     now.getMinutes().toString().padStart(2, '0') + ":" + 
+                                     now.getSeconds().toString().padStart(2, '0');
+                }, 1000);
+            },
+
+            handlePanicKey() {
+                window.addEventListener('keydown', (e) => {
+                    // Panic Key: Press 'P' or 'Escape'
+                    if (e.key === 'Escape' || e.key.toLowerCase() === 'p') {
+                        window.location.replace("https://www.google.com/search?q=calculus+homework+help");
+                    }
+                });
+            },
+
+            validate() {
+                const pass = document.getElementById('pass-field').value;
+                const boot = document.getElementById('boot-screen');
+                const desk = document.getElementById('desktop');
+                const status = document.getElementById('sys-user');
+
+                if (pass === CORE_CONFIG.keys.owner) {
+                    this.userRank = "OWNER";
+                    document.getElementById('admin-icon').style.display = 'flex';
+                } else if (pass === CORE_CONFIG.keys.vip) {
+                    this.userRank = "VIP";
+                } else if (pass === CORE_CONFIG.keys.member) {
+                    this.userRank = "MEMBER";
+                } else {
+                    document.getElementById('err-msg').style.display = 'block';
+                    return;
+                }
+
+                status.innerText = "RANK: " + this.userRank;
+                boot.style.opacity = '0';
+                setTimeout(() => {
+                    boot.style.display = 'none';
+                    desk.style.display = 'block';
+                    this.openApp('games');
+                }, 1000);
+            },
+
+            openApp(appId, data = null) {
+                const config = CORE_CONFIG.apps[appId];
+                if (!config) return;
+
+                const winId = 'win-' + Math.floor(Math.random()*10000);
                 const win = document.createElement('div');
-                win.className = 'window';
-                win.id = id;
-                win.style.left = '100px';
-                win.style.top = '100px';
+                win.className = 'win';
+                win.id = winId;
+                win.style.width = config.w + 'px';
+                win.style.height = config.h + 'px';
+                win.style.left = (window.innerWidth/2 - config.w/2 + (this.activeWins.length * 20)) + 'px';
+                win.style.top = (window.innerHeight/2 - config.h/2 + (this.activeWins.length * 20)) + 'px';
                 win.style.zIndex = ++this.zIndex;
 
                 let content = '';
-                let title = type.toUpperCase();
 
-                if (type === 'games') {
-                    win.style.width = '400px';
-                    win.style.height = '500px';
-                    content = `<div class="sidebar-list">
-                        ${state.userGames.map((g, i) => `
-                            <div class="nav-item" onclick="WindowManager.create('player', {url:'${g.url}', name:'${g.name}'})">
+                if (appId === 'games') {
+                    content = `<div class="game-grid">`;
+                    const games = JSON.parse(localStorage.getItem('mm_custom_games')) || CORE_CONFIG.defaultGames;
+                    games.forEach(g => {
+                        content += `
+                            <div class="game-card" onclick="Mansion.launchGame('${g.url}', '${g.name}')">
                                 <i>${g.icon}</i>
                                 <span>${g.name}</span>
                             </div>
-                        `).join('')}
-                    </div>`;
-                }
-
-                if (type === 'player') {
-                    title = data.name;
-                    win.style.width = '80%';
-                    win.style.height = '70%';
-                    win.style.left = '10%';
-                    win.style.top = '10%';
-                    content = `<iframe id="game-frame" src="${data.url}" allow="autoplay; fullscreen"></iframe>`;
-                }
-
-                if (type === 'themes') {
-                    win.style.width = '350px';
-                    content = `<div class="theme-grid">
-                        ${state.activeThemes.map(t => `
-                            <div class="theme-card" style="background:${t.bg}; color:${t.accent}" onclick="WindowManager.applyTheme('${t.name}')">
-                                <strong>${t.name}</strong>
+                        `;
+                    });
+                    content += `</div>`;
+                } else if (appId === 'themes') {
+                    content = `<div class="theme-list">`;
+                    CORE_CONFIG.themes.forEach(t => {
+                        content += `
+                            <div class="theme-item" style="background:${t.bg}; border-color:${t.accent}" onclick="Mansion.applyTheme('${t.id}')">
+                                <span style="color:${t.accent}">${t.name}</span>
+                                <span>●</span>
                             </div>
-                        `).join('')}
-                    </div>`;
-                }
-
-                if (type === 'admin') {
-                    if (state.rank !== 'OWNER') {
-                        content = `<div class="p-20">Access Denied. Owner level required.</div>`;
-                    } else {
-                        content = `<div class="p-20">
-                            <h3>ADD GAME</h3>
-                            <input id="new-g-name" class="login-box" style="width:100%; margin:10px 0;" placeholder="Game Name">
-                            <input id="new-g-url" class="login-box" style="width:100%; margin:10px 0;" placeholder="URL">
-                            <button onclick="WindowManager.saveGame()" style="width:100%; padding:10px; background:var(--accent); border:none; border-radius:5px;">SAVE TO CLOUD</button>
-                        </div>`;
-                    }
+                        `;
+                    });
+                    content += `</div>`;
+                } else if (appId === 'admin') {
+                    content = `
+                        <div class="admin-panel">
+                            <h3 style="margin-bottom:15px; font-size:12px; color:var(--accent)">INJECT CUSTOM MODULE</h3>
+                            <input id="adm-n" class="admin-input" placeholder="Application Name">
+                            <input id="adm-u" class="admin-input" placeholder="Source URL">
+                            <input id="adm-i" class="admin-input" placeholder="Icon (Emoji)">
+                            <button class="login-btn" onclick="Mansion.addGame()">Deploy to Matrix</button>
+                        </div>
+                    `;
                 }
 
                 win.innerHTML = `
-                    <div class="window-header" onmousedown="WindowManager.dragStart(event, '${id}')">
-                        <div class="window-title">${title}</div>
-                        <div class="window-controls">
-                            <div class="control-dot dot-close" onclick="document.getElementById('${id}').remove()"></div>
+                    <div class="win-header" onmousedown="Mansion.dragWin(event, '${winId}')">
+                        <div class="win-title">${config.title}</div>
+                        <div class="win-controls">
+                            <div class="win-btn win-min"></div>
+                            <div class="win-btn win-close" onclick="document.getElementById('${winId}').remove()"></div>
                         </div>
                     </div>
-                    <div class="window-content">${content}</div>
+                    <div class="win-body">${content}</div>
                 `;
 
-                document.getElementById('window-root').appendChild(win);
+                document.getElementById('win-container').appendChild(win);
+                this.activeWins.push(winId);
             },
 
-            applyTheme(name) {
-                const t = state.activeThemes.find(x => x.name === name);
-                const root = document.documentElement;
-                root.style.setProperty('--bg', t.bg);
-                root.style.setProperty('--accent', t.accent);
-                root.style.setProperty('--glow', t.glow);
-            },
-
-            dragStart(e, id) {
-                const win = document.getElementById(id);
+            launchGame(url, name) {
+                const winId = 'game-' + Math.floor(Math.random()*10000);
+                const win = document.createElement('div');
+                win.className = 'win';
+                win.id = winId;
+                win.style.width = '80%';
+                win.style.height = '80%';
+                win.style.left = '10%';
+                win.style.top = '10%';
                 win.style.zIndex = ++this.zIndex;
-                let pos1 = 0, pos2 = 0, pos3 = e.clientX, pos4 = e.clientY;
 
-                const dragMove = (e) => {
-                    pos1 = pos3 - e.clientX;
-                    pos2 = pos4 - e.clientY;
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    win.style.top = (win.offsetTop - pos2) + "px";
-                    win.style.left = (win.offsetLeft - pos1) + "px";
-                };
-
-                const dragEnd = () => {
-                    document.onmouseup = null;
-                    document.onmousemove = null;
-                };
-
-                document.onmousemove = dragMove;
-                document.onmouseup = dragEnd;
+                win.innerHTML = `
+                    <div class="win-header" onmousedown="Mansion.dragWin(event, '${winId}')">
+                        <div class="win-title">RUNNING: ${name}</div>
+                        <div class="win-controls">
+                            <div class="win-btn win-max" onclick="Mansion.fullscreen('${winId}')"></div>
+                            <div class="win-btn win-close" onclick="document.getElementById('${winId}').remove()"></div>
+                        </div>
+                    </div>
+                    <div class="win-body">
+                        <iframe id="game-frame" src="${url}" allow="autoplay; fullscreen; keyboard"></iframe>
+                    </div>
+                `;
+                document.getElementById('win-container').appendChild(win);
             },
 
-            saveGame() {
-                const n = document.getElementById('new-g-name').value;
-                const u = document.getElementById('new-g-url').value;
-                if(n && u) {
-                    state.userGames.push({name: n, url: u, icon: "⭐"});
-                    localStorage.setItem('mm_games', JSON.stringify(state.userGames));
-                    alert("Game Saved. Reopen Game Menu to see it.");
-                }
+            dragWin(e, id) {
+                const el = document.getElementById(id);
+                el.style.zIndex = ++this.zIndex;
+                
+                let px = e.clientX, py = e.clientY;
+
+                const move = (e) => {
+                    const dx = px - e.clientX;
+                    const dy = py - e.clientY;
+                    px = e.clientX;
+                    py = e.clientY;
+                    el.style.top = (el.offsetTop - dy) + "px";
+                    el.style.left = (el.offsetLeft - dx) + "px";
+                };
+
+                const stop = () => {
+                    document.removeEventListener('mousemove', move);
+                    document.removeEventListener('mouseup', stop);
+                };
+
+                document.addEventListener('mousemove', move);
+                document.addEventListener('mouseup', stop);
+            },
+
+            applyTheme(id) {
+                const theme = CORE_CONFIG.themes.find(t => t.id === id);
+                if (!theme) return;
+                const r = document.documentElement;
+                r.style.setProperty('--accent', theme.accent);
+                r.style.setProperty('--bg', theme.bg);
+                r.style.setProperty('--glow', theme.glow);
+            },
+
+            addGame() {
+                const n = document.getElementById('adm-n').value;
+                const u = document.getElementById('adm-u').value;
+                const i = document.getElementById('adm-i').value || "🎮";
+                
+                if(!n || !u) return alert("Missing Parameters");
+
+                let custom = JSON.parse(localStorage.getItem('mm_custom_games')) || [...CORE_CONFIG.defaultGames];
+                custom.push({name: n, url: u, icon: i});
+                localStorage.setItem('mm_custom_games', JSON.stringify(custom));
+                alert("Application Initialized Successfully");
+            },
+
+            closeAll() {
+                document.getElementById('win-container').innerHTML = '';
+                this.activeWins = [];
+            },
+
+            fullscreen(id) {
+                const el = document.getElementById(id);
+                el.style.width = '100vw';
+                el.style.height = '100vh';
+                el.style.top = '0';
+                el.style.left = '0';
+                el.style.borderRadius = '0';
             }
         };
 
-        // RUN SYSTEM
-        System.init();
+        // --- SYSTEM BOOTSTRAP ---
+        window.onload = () => Mansion.init();
 
     </script>
 </body>
