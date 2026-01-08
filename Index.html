@@ -2,84 +2,224 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Mason’s Mansion Deluxe Lounge</title>
+<title>Mason’s Mansion Deluxe</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 :root{
-  --bg:#050505;--panel:rgba(20,20,20,.75);--card:rgba(30,30,30,.9);--border:#222;
-  --text:#f5f5f5;--muted:#9a9a9a;--accent:#7df9ff;--glow:rgba(125,249,255,.35);
-  --vip:#d77fff;--owner:#ff8f00;--admin:#39ff14;
+  --bg:#050505;
+  --panel:rgba(20,20,20,.75);
+  --card:rgba(30,30,30,.9);
+  --border:#222;
+  --text:#f5f5f5;
+  --muted:#9a9a9a;
+  --accent:#7df9ff;
+  --glow:rgba(125,249,255,.35);
 }
 
-/* RESET */
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);
-min-height:100vh;overflow:hidden;cursor:none;transition:all 0.3s ease;}
-h1,h2,h3,h4,h5,h6{margin:0;padding:0;}
-button{outline:none;transition:all 0.2s ease;}
-input{outline:none;}
+/* ===== RESET ===== */
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif}
+body{
+  min-height:100vh;
+  overflow:hidden;
+  color:var(--text);
+  background:var(--bg);
+  transition:background 0.8s ease;
+  cursor:none;
+}
 
-/* CURSOR */
-.cursor-core,.cursor-glow,.cursor-trail{position:fixed;pointer-events:none;z-index:9999;border-radius:50%;}
-.cursor-core{width:6px;height:6px;background:#fff;}
-.cursor-glow{width:120px;height:120px;background:radial-gradient(circle,var(--glow),transparent 70%);filter:blur(8px);}
-.cursor-trail{width:36px;height:36px;border:1px solid rgba(255,255,255,.35);opacity:.5;}
+/* ===== CURSOR ===== */
+.cursor-core,.cursor-glow,.cursor-trail{
+  position:fixed;
+  pointer-events:none;
+  z-index:9999;
+  border-radius:50%;
+}
+.cursor-core{width:6px;height:6px;background:#fff}
+.cursor-glow{
+  width:120px;height:120px;
+  background:radial-gradient(circle,var(--glow),transparent 70%);
+  filter:blur(8px);
+  transition:transform .05s linear;
+}
+.cursor-trail{
+  width:36px;height:36px;
+  border:1px solid rgba(255,255,255,.35);
+  opacity:.5;
+  transition:transform .12s ease-out;
+}
 
-/* PANELS */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;
-justify-content:center;z-index:10000;transition:opacity .3s ease;}
-.box{background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--border);
-border-radius:20px;padding:26px;width:340px;text-align:center;box-shadow:0 0 50px #000;}
-.box h2{letter-spacing:.18em;margin-bottom:10px;font-size:18px;}
-.box input{width:100%;padding:9px;border-radius:999px;border:1px solid var(--border);
-background:var(--card);color:var(--text);text-align:center;margin-bottom:10px;}
-.box button{padding:8px 16px;border-radius:12px;border:none;color:#fff;font-weight:600;margin:5px;cursor:pointer;}
-.box button:hover{transform:scale(1.05);opacity:.85;}
-.error{display:none;color:#ff6a6a;font-size:11px;margin-top:5px;}
+/* ===== OVERLAYS ===== */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.88);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10000;
+}
+.box{
+  background:var(--panel);
+  backdrop-filter:blur(14px);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:26px;
+  width:320px;
+  text-align:center;
+  box-shadow:0 0 50px #000;
+}
+.box h2{
+  letter-spacing:.18em;
+  margin-bottom:10px;
+}
+.box input{
+  width:100%;
+  padding:9px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--text);
+  text-align:center;
+  margin-bottom:10px;
+}
+.box button{
+  padding:8px 16px;
+  border-radius:999px;
+  border:none;
+  background:var(--accent);
+  color:#000;
+  cursor:pointer;
+  font-weight:600;
+  margin:2px;
+  transition:0.2s;
+}
+.box button:hover{
+  filter:brightness(1.2);
+  transform:scale(1.05);
+}
+.error{display:none;color:#ff6a6a;font-size:11px}
 
-/* HEADER */
-.page{max-width:1200px;margin:0 auto;padding:20px;}
-header{display:flex;justify-content:space-between;align-items:center;background:var(--panel);
-border:1px solid var(--border);border-radius:24px;padding:16px 22px;margin-bottom:18px;}
-header h1{font-size:22px;letter-spacing:.25em;}
-header span{font-size:11px;color:var(--muted);}
-#adminBtn,#vipBtn,#ownerBtn{padding:6px 12px;border-radius:12px;border:none;font-size:13px;font-weight:600;
-cursor:pointer;transition:all .3s ease;margin-left:6px;}
-#adminBtn{background:linear-gradient(45deg,#39ff14,#00ff7f);color:#000;}
-#vipBtn{background:linear-gradient(45deg,#d77fff,#ff8fff);color:#fff;}
-#ownerBtn{background:linear-gradient(45deg,#ff8f00,#ffd700);color:#000;}
-#adminBtn:hover,#vipBtn:hover,#ownerBtn:hover{transform:scale(1.1);opacity:.9;}
+/* ===== PAGE ===== */
+.page{
+  max-width:1300px;
+  margin:0 auto;
+  padding:20px;
+}
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:16px 22px;
+  margin-bottom:18px;
+}
+header h1{font-size:22px;letter-spacing:.25em}
+header span{font-size:11px;color:var(--muted)}
 
-/* LAYOUT */
-.layout{display:grid;grid-template-columns:280px 1fr;gap:18px;}
-.panel{background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--border);
-border-radius:20px;padding:14px;overflow-y:auto;max-height:80vh;}
-.panel h3{font-size:12px;letter-spacing:.18em;color:var(--muted);margin-bottom:8px;}
-.game{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;margin-bottom:6px;cursor:pointer;position:relative;}
-.game:hover{border-color:var(--accent);box-shadow:0 0 18px var(--glow);}
-.game:after{content:'▶';position:absolute;right:10px;top:10px;opacity:0;transition:.3s;}
-.game:hover:after{opacity:1;}
-.setting{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;}
-iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;transition:all .3s ease;}
+.layout{
+  display:grid;
+  grid-template-columns:280px 1fr;
+  gap:18px;
+}
+.panel{
+  background:var(--panel);
+  backdrop-filter:blur(14px);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:14px;
+  min-height:500px;
+  overflow-y:auto;
+}
+.panel h3{
+  font-size:12px;
+  letter-spacing:.18em;
+  color:var(--muted);
+  margin-bottom:8px;
+}
+.game{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:10px;
+  margin-bottom:6px;
+  cursor:pointer;
+  transition:.15s;
+}
+.game:hover{
+  border-color:var(--accent);
+  box-shadow:0 0 18px var(--glow);
+}
+.setting{
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  margin-bottom:6px;
+}
+iframe{
+  width:100%;
+  height:560px;
+  border:none;
+  border-radius:18px;
+  background:#000;
+}
 
-/* THEMES LIST */
-#themes{display:flex;flex-direction:column;gap:6px;}
-.theme-item{padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:600;text-align:left;color:#fff;transition:all .2s ease;}
-.theme-default{background:#050505;}
-.theme-honey{background:#ffe6aa;color:#000;}
-.theme-blue{background:#00bfff;color:#000;}
-.theme-galaxy{background:#220033;color:#fff;}
-.theme-supernova{background:#ff4500;color:#fff;}
-.theme-vip{background:#d77fff;}
-.theme-neon{background:#39ff14;}
-.theme-shadow{background:#111;}
-.theme-sunset{background:#ff704d;}
-.theme-ice{background:#b3f0ff;color:#000;}
+/* ===== BUTTON PANELS ===== */
+.button-panel{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:10px;
+}
+.button-panel button{
+  flex:1 1 45%;
+  background:linear-gradient(120deg,#7df9ff,#00dfff);
+  border:none;
+  padding:8px 12px;
+  border-radius:12px;
+  color:#000;
+  cursor:pointer;
+  font-weight:600;
+  transition:0.2s;
+}
+.button-panel button:hover{
+  filter:brightness(1.2);
+  transform:scale(1.05);
+}
 
-/* SCROLLBAR */
-::-webkit-scrollbar{width:8px;}
-::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
-::-webkit-scrollbar-track{background:var(--panel);}
+/* ===== THEME COLORS ===== */
+body.honey{--bg:#fff1c4;--panel:rgba(255,223,143,.85);--card:rgba(255,223,143,.9);--accent:#f9a826;--glow:rgba(249,168,38,.35);}
+body.blue{--bg:#cce0ff;--panel:rgba(173,216,230,.85);--card:rgba(173,216,230,.9);--accent:#0aa6ff;--glow:rgba(10,166,255,.35);}
+body.galaxy{--bg:#0d001f;--panel:rgba(20,10,50,.85);--card:rgba(30,20,70,.9);--accent:#ff00ff;--glow:rgba(255,0,255,.35);}
+body.supernova{--bg:#1a0000;--panel:rgba(50,10,10,.85);--card:rgba(80,20,20,.9);--accent:#ffdd33;--glow:rgba(255,221,51,.35);}
+body.neon{--bg:#050505;--panel:rgba(0,255,255,.15);--card:rgba(0,255,255,.25);--accent:#0ff;--glow:rgba(0,255,255,.35);}
+body.shadow{--bg:#101010;--panel:rgba(20,20,20,.85);--card:rgba(40,40,40,.9);--accent:#888;--glow:rgba(136,136,136,.35);}
+body.sunset{--bg:#ffb347;--panel:rgba(255,160,122,.85);--card:rgba(255,160,122,.9);--accent:#ff4500;--glow:rgba(255,69,0,.35);}
+body.ice{--bg:#e0f7ff;--panel:rgba(180,240,255,.85);--card:rgba(180,240,255,.9);--accent:#00dfff;--glow:rgba(0,223,255,.35);}
+body.rainbow{--bg:linear-gradient(90deg,#ff0000,#ff7f00,#ffff00,#00ff00,#0000ff,#4b0082,#8f00ff);--panel:rgba(255,255,255,.15);--card:rgba(255,255,255,.25);--accent:#fff;--glow:rgba(255,255,255,.35);}
+body.cosmic{--bg:#0f0033;--panel:rgba(20,10,40,.85);--card:rgba(30,20,60,.9);--accent:#ff33cc;--glow:rgba(255,51,204,.35);}
+body.lavender{--bg:#e6e6fa;--panel:rgba(230,230,250,.85);--card:rgba(230,230,250,.9);--accent:#9370db;--glow:rgba(147,112,219,.35);}
+body.aurora{--bg:#001a33;--panel:rgba(0,26,51,.85);--card:rgba(0,51,102,.9);--accent:#00ffaa;--glow:rgba(0,255,170,.35);}
+body.mint{--bg:#dfffe0;--panel:rgba(200,255,220,.85);--card:rgba(200,255,220,.9);--accent:#00bb33;--glow:rgba(0,187,51,.35);}
+body.caramel{--bg:#ffe0b2;--panel:rgba(255,200,150,.85);--card:rgba(255,200,150,.9);--accent:#ff9933;--glow:rgba(255,153,51,.35);}
+body.pearl{--bg:#f0e6f6;--panel:rgba(200,180,220,.85);--card:rgba(200,180,220,.9);--accent:#aa88ff;--glow:rgba(170,136,255,.35);}
+body.electric{--bg:#0f0f0f;--panel:rgba(20,20,20,.85);--card:rgba(40,40,40,.9);--accent:#ffff00;--glow:rgba(255,255,0,.35);}
+body.magenta{--bg:#330033;--panel:rgba(50,0,50,.85);--card:rgba(80,20,80,.9);--accent:#ff00ff;--glow:rgba(255,0,255,.35);}
+body.tropical{--bg:#ffefd5;--panel:rgba(255,239,213,.85);--card:rgba(255,239,213,.9);--accent:#ff69b4;--glow:rgba(255,105,180,.35);}
+
+/* Scrollbar */
+.panel::-webkit-scrollbar{width:8px}
+.panel::-webkit-scrollbar-track{background:rgba(0,0,0,.2);border-radius:4px}
+.panel::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px}
+
+/* Extra fun animations */
+@keyframes pulse{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.05)}
+  100%{transform:scale(1)}
+}
+.game:hover{animation:pulse 0.4s}
 </style>
 </head>
 <body>
@@ -89,7 +229,7 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;tr
 <div class="cursor-trail"></div>
 <div class="cursor-core"></div>
 
-<!-- LOCK PANEL -->
+<!-- USER LOCK -->
 <div class="overlay" id="lock">
   <div class="box">
     <h2>MASON’S MANSION</h2>
@@ -99,13 +239,60 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;tr
   </div>
 </div>
 
-<!-- ADMIN PANEL -->
+<!-- ADMIN BUTTON LOGIN -->
 <div class="overlay" id="adminLogin" style="display:none">
   <div class="box">
-    <h2>ADMIN PANEL</h2>
-    <input id="adminPass" type="password" placeholder="Admin password">
+    <h2>ADMIN LOGIN</h2>
+    <input id="adminPass" type="password" placeholder="Enter admin password">
     <button onclick="adminUnlock()">Unlock</button>
     <div class="error" id="adminErr">Wrong password</div>
+  </div>
+</div>
+
+<!-- VIP LOGIN -->
+<div class="overlay" id="vipLogin" style="display:none">
+  <div class="box">
+    <h2>VIP LOGIN</h2>
+    <input id="vipPass" type="password" placeholder="Enter VIP password">
+    <button onclick="vipUnlock()">Unlock</button>
+    <div class="error" id="vipErr">Wrong password</div>
+  </div>
+</div>
+
+<!-- OWNER LOGIN -->
+<div class="overlay" id="ownerLogin" style="display:none">
+  <div class="box">
+    <h2>OWNER LOGIN</h2>
+    <input id="ownerPass" type="password" placeholder="Enter Owner password">
+    <button onclick="ownerUnlock()">Unlock</button>
+    <div class="error" id="ownerErr">Wrong password</div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="overlay" id="adminPanel" style="display:none">
+  <div class="box">
+    <h2>ADMIN PANEL</h2>
+    <div class="button-panel">
+      <button onclick="clearIframe()">Clear Iframe</button>
+      <button onclick="showUsers()">Show Dummy Users</button>
+      <button onclick="adminFun()">Do Fun Thing</button>
+    </div>
+    <br><button onclick="closeAdmin()">Close</button>
+  </div>
+</div>
+
+<!-- VIP PANEL -->
+<div class="overlay" id="vipPanel" style="display:none">
+  <div class="box">
+    <h2>VIP PANEL</h2>
+    <div class="button-panel">
+      <button onclick="themeRandom()">Random Theme</button>
+      <button onclick="invertColors()">Invert Colors</button>
+      <button onclick="confetti()">Confetti!</button>
+      <button onclick="vipFun()">Silly Thing</button>
+    </div>
+    <br><button onclick="closeVIP()">Close</button>
   </div>
 </div>
 
@@ -113,47 +300,35 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;tr
 <div class="overlay" id="ownerPanel" style="display:none">
   <div class="box">
     <h2>OWNER PANEL</h2>
-    <input id="ownerPass" type="password" placeholder="Owner password">
-    <button onclick="ownerUnlock()">Unlock</button>
-    <div class="error" id="ownerErr">Wrong password</div>
-    <br>
-    <button onclick="closeOwner()">Close</button>
+    <div class="button-panel">
+      <button onclick="resetGames()">Reset Games</button>
+      <button onclick="unlockVIP()">Unlock VIP Theme</button>
+      <button onclick="addOwnerGame()">Add Owner Game</button>
+      <button onclick="themeRandom()">Random Theme</button>
+    </div>
+    <br><button onclick="closeOwner()">Close</button>
   </div>
 </div>
 
-<!-- VIP PANEL -->
-<div class="overlay" id="vipPanel" style="display:none">
-  <div class="box">
-    <h2>VIP COMMANDS</h2>
-    <input id="vipPass" type="password" placeholder="VIP password">
-    <button onclick="vipUnlock()">Unlock</button>
-    <div class="error" id="vipErr">Wrong password</div>
-    <br>
-    <button onclick="closeVIP()">Close</button>
-  </div>
-</div>
-
-<!-- MAIN PAGE -->
 <div class="page">
 <header>
-  <h1>MASON’S MANSION DELUXE</h1>
+  <h1>MASON’S MANSION</h1>
   <span>private unblocked lounge</span>
-  <div>
-    <button id="adminBtn" onclick="adminLoginClick()">Admin</button>
-    <button id="vipBtn" onclick="vipLoginClick()">VIP</button>
-    <button id="ownerBtn" onclick="ownerLoginClick()">Owner</button>
-  </div>
+  <button style="position:absolute;top:10px;left:10px;background:#7df9ff;color:#000;padding:6px 10px;border-radius:12px;z-index:10001;" onclick="showAdminLogin()">Admin</button>
+  <button style="position:absolute;top:10px;left:80px;background:#ff7df9;color:#000;padding:6px 10px;border-radius:12px;z-index:10001;" onclick="showVIPLogin()">VIP</button>
+  <button style="position:absolute;top:10px;left:140px;background:#ffd700;color:#000;padding:6px 10px;border-radius:12px;z-index:10001;" onclick="showOwnerLogin()">Owner</button>
 </header>
+
 <div class="layout">
   <aside class="panel">
     <h3>GAMES</h3>
     <div id="games"></div>
-    <h3>THEMES</h3>
-    <div id="themes"></div>
     <h3 style="margin-top:14px">SETTINGS</h3>
     <div class="setting">Open in new tab <input type="checkbox" id="optTab"></div>
     <div class="setting">Iframe sandbox <input type="checkbox" id="optSandbox" checked></div>
     <div class="setting">About:Blank cloak <input type="checkbox" id="optCloak"></div>
+    <h3 style="margin-top:14px">THEMES</h3>
+    <div id="themeList" class="button-panel"></div>
   </aside>
   <section class="panel">
     <iframe id="player"></iframe>
@@ -162,7 +337,7 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;tr
 </div>
 
 <script>
-// CURSOR
+/* CURSOR */
 const core=document.querySelector(".cursor-core"),
 glow=document.querySelector(".cursor-glow"),
 trail=document.querySelector(".cursor-trail");
@@ -172,91 +347,46 @@ document.addEventListener("mousemove",e=>{
   trail.style.transform=`translate(${e.clientX-18}px,${e.clientY-18}px)`;
 });
 
-// PASSWORDS
+/* LOGIC */
 const USER="Honey";
 const ADMIN="Hubbard330!";
 const VIP="VIP67";
 const OWNER="masononly69";
 
-// GAMES
 let games=JSON.parse(localStorage.getItem("mm_games"))||[
-  {name:"Gladihoppers",url:"#"},
-  {name:"BitLife",url:"#"},
-  {name:"Proxy",url:"#"},
-  {name:"Sky Battle",url:"#"},
-  {name:"Candy Quest",url:"#"}
+  {name:"Gladihoppers",url:"https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html"},
+  {name:"BitLife",url:"https://3kh0.github.io/bitlife/"},
+  {name:"Proxy",url:"https://ultraviolet-node.netlify.app/"}
 ];
 
-// DOM
+let themes=["honey","blue","galaxy","supernova","neon","shadow","sunset","ice","rainbow","cosmic","lavender","aurora","mint","caramel","pearl","electric","magenta","tropical"];
+let publicThemes=["honey","blue","galaxy","supernova","neon","shadow"];
+let vipThemes=["sunset","ice","rainbow","cosmic","lavender"];
+let ownerThemes=["aurora","mint","caramel","pearl","electric","magenta","tropical"];
+
 const list=document.getElementById("games");
 const player=document.getElementById("player");
-const themeContainer=document.getElementById("themes");
+const themeList=document.getElementById("themeList");
 
-// USER UNLOCK
-function unlock(){if(userPass.value===USER){lock.style.display="none";render();renderThemes();}else userErr.style.display="block";}
-
-// RENDER GAMES
-function render(){list.innerHTML="";games.forEach(g=>{
-  const d=document.createElement("div");d.className="game";d.textContent=g.name;
-  d.onclick=()=>launch(g);list.appendChild(d);
-});}
-
-// LAUNCH GAME
+function unlock(){
+  if(userPass.value===USER){
+    lock.style.display="none";
+    render();
+    renderThemes(publicThemes);
+  }else userErr.style.display="block";
+}
+function render(){
+  list.innerHTML="";
+  games.forEach(g=>{
+    const d=document.createElement("div");
+    d.className="game";
+    d.textContent=g.name;
+    d.onclick=()=>launch(g);
+    list.appendChild(d);
+  });
+}
 function launch(g){
   if(optTab.checked){window.open(g.url,"_blank");return;}
   if(optCloak.checked){
     const w=window.open();
-    w.document.write(`<iframe src="${g.url}" style="border:none;width:100%;height:100%"></iframe>`);return;
-  }
-  player.src=g.url;
-  player.sandbox=optSandbox.checked?"allow-scripts allow-same-origin allow-forms":"";
-}
-
-// ADMIN PANEL
-function adminLoginClick(){adminLogin.style.display="flex";}
-function adminUnlock(){if(adminPass.value===ADMIN){adminLogin.style.display="none";alert("Admin unlocked!\nYou can clear iframe or view users.");}else adminErr.style.display="block";}
-
-// OWNER PANEL
-function ownerLoginClick(){ownerPanel.style.display="flex";}
-function ownerUnlock(){if(ownerPass.value===OWNER){ownerPanel.style.display="none";alert("Owner unlocked!\nYou can add/remove games or unlock VIPs.");}else ownerErr.style.display="block";}
-function closeOwner(){ownerPanel.style.display="none";}
-
-// VIP PANEL
-function vipLoginClick(){vipPanel.style.display="flex";}
-function vipUnlock(){if(vipPass.value===VIP){vipPanel.style.display="none";alert("VIP unlocked!\nYou can do fun commands.");}else vipErr.style.display="block";}
-function closeVIP(){vipPanel.style.display="none";}
-
-// THEMES
-const themesList=[
-  {name:"Default",class:"theme-default",type:"public"},
-  {name:"Honey",class:"theme-honey",type:"public"},
-  {name:"Blue",class:"theme-blue",type:"public"},
-  {name:"Galaxy",class:"theme-galaxy",type:"vip"},
-  {name:"Supernova",class:"theme-supernova",type:"vip"},
-  {name:"Neon",class:"theme-neon",type:"public"},
-  {name:"Shadow",class:"theme-shadow",type:"public"},
-  {name:"Sunset",class:"theme-sunset",type:"public"},
-  {name:"Ice",class:"theme-ice",type:"vip"}
-];
-function renderThemes(){
-  themeContainer.innerHTML="";
-  themesList.forEach(t=>{
-    const b=document.createElement("div");b.textContent=t.name;b.className="theme-item "+t.class;
-    b.onclick=()=>selectTheme(t);themeContainer.appendChild(b);
-  });
-}
-function selectTheme(t){
-  if(t.type==="vip"){const pw=prompt("Enter VIP password:");if(pw!==VIP){alert("Wrong password");return;}}
-  document.body.className="";document.body.style.background="";
-  document.body.classList.add(t.class);
-  if(t.class==="theme-galaxy") document.body.style.background="radial-gradient(circle at top,#220033,#000000)";
-  if(t.class==="theme-supernova") document.body.style.background="radial-gradient(circle at top,#ff4500,#330000)";
-  if(t.class==="theme-honey") document.body.style.background="linear-gradient(#ffe6aa,#ffc966)";
-  if(t.class==="theme-blue") document.body.style.background="linear-gradient(#00bfff,#0080ff)";
-  if(t.class==="theme-neon") document.body.style.background="linear-gradient(#39ff14,#00ffcc)";
-}
-render();renderThemes();
-render();
-</script>
-</body>
-</html>
+    w.document.write(`<iframe src="${g.url}" style
