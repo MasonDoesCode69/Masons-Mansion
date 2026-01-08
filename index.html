@@ -7,8 +7,8 @@
 <style>
 :root{
   --bg:#050505;
-  --panel:rgba(20,20,20,.75);
-  --card:rgba(30,30,30,.9);
+  --panel:rgba(20,20,20,.85);
+  --card:rgba(30,30,30,.95);
   --border:#222;
   --text:#f5f5f5;
   --muted:#9a9a9a;
@@ -24,44 +24,66 @@ body{
   min-height:100vh;
   overflow:hidden;
   cursor:none;
+  transition:background 0.5s;
 }
 
 /* cursor */
 .cursor-core,.cursor-glow,.cursor-trail{
   position:fixed;pointer-events:none;border-radius:50%;z-index:9999;
 }
-.cursor-core{width:6px;height:6px;background:var(--accent);}
-.cursor-glow{width:120px;height:120px;background:radial-gradient(circle,var(--glow),transparent 70%);filter:blur(8px);transition:transform .05s linear;}
-.cursor-trail{width:36px;height:36px;border:1px solid rgba(255,255,255,.35);opacity:.5;transition:transform .12s ease-out;}
+.cursor-core{width:6px;height:6px;background:var(--accent);transition:background 0.3s;}
+.cursor-glow{width:120px;height:120px;background:radial-gradient(circle,var(--glow),transparent 70%);filter:blur(8px);transition:transform .05s linear,background 0.3s;}
+.cursor-trail{width:36px;height:36px;border:1px solid rgba(255,255,255,.35);opacity:.5;transition:transform .12s ease-out;border-color:var(--accent);}
 
 /* overlays */
 .overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;z-index:10000;
+  opacity:0;pointer-events:none;transition:opacity 0.3s;
 }
+.overlay.active{opacity:1;pointer-events:auto;}
 .box{
-  background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:20px;
-  padding:26px;width:300px;text-align:center;box-shadow:0 0 50px #000;
+  background:linear-gradient(135deg,#111 0%,#222 100%);
+  backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:20px;
+  padding:26px;width:320px;text-align:center;box-shadow:0 0 50px #000;transition:background 0.5s;
 }
 .box h2{letter-spacing:.18em;margin-bottom:10px;}
-.box input{width:100%;padding:9px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);text-align:center;margin-bottom:10px;}
-.box button{padding:8px 16px;border-radius:999px;border:none;background:var(--accent);color:#000;cursor:pointer;font-weight:600;margin:3px;}
+.box input{width:100%;padding:10px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);text-align:center;margin-bottom:10px;transition:background 0.3s;}
+.box button{padding:10px 18px;border-radius:999px;border:none;background:var(--accent);color:#000;cursor:pointer;font-weight:600;margin:5px;transition:background 0.3s,transform 0.2s;}
+.box button:hover{transform:scale(1.08);}
 .error{display:none;color:#ff6a6a;font-size:11px;}
 
 /* page layout */
-.page{max-width:1200px;margin:0 auto;padding:20px;}
-header{display:flex;justify-content:space-between;align-items:center;background:var(--panel);border:1px solid var(--border);border-radius:24px;padding:16px 22px;margin-bottom:18px;}
+.page{max-width:1200px;margin:0 auto;padding:20px;transition:color 0.3s;}
+header{
+  display:flex;justify-content:space-between;align-items:center;
+  background:linear-gradient(135deg,#111 0%,#222 100%);
+  border:1px solid var(--border);border-radius:24px;padding:16px 22px;margin-bottom:18px;
+  box-shadow:0 0 20px #000;
+  transition:background 0.5s;
+}
 header h1{font-size:20px;letter-spacing:.25em;}
 header span{font-size:11px;color:var(--muted);}
-.layout{display:grid;grid-template-columns:260px 1fr;gap:18px;}
-.panel{background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:20px;padding:14px;}
+.layout{display:grid;grid-template-columns:280px 1fr;gap:18px;}
+.panel{
+  background:linear-gradient(145deg,#111 0%,#222 100%);
+  backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:20px;padding:14px;
+  box-shadow:0 0 20px #000;transition:background 0.5s;
+}
 .panel h3{font-size:12px;letter-spacing:.18em;color:var(--muted);margin-bottom:8px;}
-.game{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;margin-bottom:6px;cursor:pointer;transition:.15s;}
-.game:hover{border-color:var(--accent);box-shadow:0 0 18px var(--glow);}
+.game{
+  background:linear-gradient(135deg,#222 0%,#111 100%);
+  border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .25s;
+}
+.game:hover{border-color:var(--accent);box-shadow:0 0 18px var(--glow);transform:scale(1.03);}
 .setting{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;}
-iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;}
+iframe{width:100%;height:calc(100vh - 160px);border:none;border-radius:18px;background:#000;transition:all 0.3s;}
 
 /* theme buttons */
-.theme-btn{padding:6px 12px;margin:4px;border-radius:12px;border:none;cursor:pointer;font-weight:600;color:#fff;}
+.theme-btn{
+  padding:8px 16px;margin:4px;border-radius:12px;border:none;cursor:pointer;font-weight:600;color:#fff;
+  background:var(--accent);transition:background 0.3s,transform 0.2s;
+}
+.theme-btn:hover{transform:scale(1.08);}
 </style>
 </head>
 <body>
@@ -71,8 +93,8 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;}
 <div class="cursor-trail"></div>
 <div class="cursor-core"></div>
 
-<!-- User Login -->
-<div class="overlay" id="lock">
+<!-- Login Overlays -->
+<div class="overlay active" id="lock">
   <div class="box">
     <h2>MASON’S MANSION</h2>
     <input id="userPass" type="password" placeholder="Enter password">
@@ -81,8 +103,7 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;}
   </div>
 </div>
 
-<!-- VIP Login -->
-<div class="overlay" id="vipLogin" style="display:none">
+<div class="overlay" id="vipLogin">
   <div class="box">
     <h2>VIP LOGIN</h2>
     <input id="vipPass" type="password" placeholder="VIP password">
@@ -91,8 +112,7 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;}
   </div>
 </div>
 
-<!-- Owner Login -->
-<div class="overlay" id="ownerLogin" style="display:none">
+<div class="overlay" id="ownerLogin">
   <div class="box">
     <h2>OWNER LOGIN</h2>
     <input id="ownerPass" type="password" placeholder="Owner password">
@@ -101,8 +121,7 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;}
   </div>
 </div>
 
-<!-- Admin Panel -->
-<div class="overlay" id="adminPanel" style="display:none">
+<div class="overlay" id="adminPanel">
   <div class="box">
     <h2>ADMIN PANEL</h2>
     <input id="gName" placeholder="Game name">
@@ -112,8 +131,7 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;}
   </div>
 </div>
 
-<!-- VIP Panel -->
-<div class="overlay" id="vipPanel" style="display:none">
+<div class="overlay" id="vipPanel">
   <div class="box">
     <h2>VIP PANEL</h2>
     <button onclick="alert('VIP silly button!')">Silly Button</button>
@@ -121,8 +139,7 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;}
   </div>
 </div>
 
-<!-- Owner Panel -->
-<div class="overlay" id="ownerPanel" style="display:none">
+<div class="overlay" id="ownerPanel">
   <div class="box">
     <h2>OWNER PANEL</h2>
     <button onclick="alert('Owner powerful button!')">Owner Button</button>
@@ -168,20 +185,39 @@ document.addEventListener("mousemove",e=>{
 });
 
 /* Users */
-const USER="Honey",VIP="VIP67",OWNER="masononly69",ADMIN="Hubbard330!";
+const USER="Honey",VIP="VIP67",OWNER="masononly69";
 let games=[
-{name:"Gladihoppers",url:"https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html"},
-{name:"BitLife",url:"https://3kh0.github.io/bitlife/"},
-{name:"Proxy",url:"https://ultraviolet-node.netlify.app/"}
+  {name:"Gladihoppers",url:"https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html"},
+  {name:"BitLife",url:"https://3kh0.github.io/bitlife/"},
+  {name:"Proxy",url:"https://ultraviolet-node.netlify.app/"}
 ];
 
-/* Themes */
+/* 20 new dark public themes */
 const themeList=[
-{name:"Honey",type:"public",bg:"#fff8e5",panel:"rgba(255,191,0,.5)",accent:"#ffbf00",glow:"rgba(255,191,0,.35)"},
-{name:"Blue",type:"public",bg:"#e5f7ff",panel:"rgba(0,191,255,.25)",accent:"#00bfff",glow:"rgba(0,191,255,.35)"},
-{name:"Galaxy",type:"public",bg:"#1b0033",panel:"rgba(50,20,60,.7)",accent:"#bb88ff",glow:"rgba(187,136,255,.35)"},
-{name:"Supernova",type:"owner",bg:"#2b0000",panel:"rgba(255,85,0,.75)",accent:"#ff5500",glow:"rgba(255,85,0,.35)"},
-{name:"VIP Pink",type:"vip",bg:"#ffe5f0",panel:"rgba(255,51,153,.5)",accent:"#ff3399",glow:"rgba(255,51,153,.35)"}];
+  {name:"Honey",type:"public",bg:"#1a0a00",panel:"linear-gradient(145deg,#221100,#442200)",accent:"#ffbf00",glow:"rgba(255,191,0,.35)"},
+  {name:"Blue",type:"public",bg:"#00131a",panel:"linear-gradient(145deg,#002233,#004466)",accent:"#00bfff",glow:"rgba(0,191,255,.35)"},
+  {name:"Galaxy",type:"public",bg:"#0b0015",panel:"linear-gradient(145deg,#200040,#440080)",accent:"#bb88ff",glow:"rgba(187,136,255,.35)"},
+  {name:"Aurora",type:"public",bg:"#05050d",panel:"linear-gradient(145deg,#0a0a22,#1a1a55)",accent:"#33ffcc",glow:"rgba(51,255,204,.35)"},
+  {name:"Crimson",type:"public",bg:"#1a0000",panel:"linear-gradient(145deg,#330000,#550000)",accent:"#ff4444",glow:"rgba(255,68,68,.35)"},
+  {name:"Emerald",type:"public",bg:"#001a0a",panel:"linear-gradient(145deg,#003322,#005533)",accent:"#00ff88",glow:"rgba(0,255,136,.35)"},
+  {name:"Violet",type:"public",bg:"#0a0015",panel:"linear-gradient(145deg,#1a0033,#330066)",accent:"#cc33ff",glow:"rgba(204,51,255,.35)"},
+  {name:"Midnight",type:"public",bg:"#00000f",panel:"linear-gradient(145deg,#111133,#222266)",accent:"#8888ff",glow:"rgba(136,136,255,.35)"},
+  {name:"Obsidian",type:"public",bg:"#050505",panel:"linear-gradient(145deg,#111111,#333333)",accent:"#aaaaaa",glow:"rgba(170,170,170,.35)"},
+  {name:"Neon Red",type:"public",bg:"#1a0000",panel:"linear-gradient(145deg,#330000,#550000)",accent:"#ff0055",glow:"rgba(255,0,85,.35)"},
+  {name:"Neon Blue",type:"public",bg:"#00001a",panel:"linear-gradient(145deg,#000033,#000055)",accent:"#0055ff",glow:"rgba(0,85,255,.35)"},
+  {name:"Neon Green",type:"public",bg:"#001a00",panel:"linear-gradient(145deg,#003300,#005500)",accent:"#00ff55",glow:"rgba(0,255,85,.35)"},
+  {name:"Solar",type:"public",bg:"#1a1400",panel:"linear-gradient(145deg,#332800,#554400)",accent:"#ffaa00",glow:"rgba(255,170,0,.35)"},
+  {name:"Deep Sea",type:"public",bg:"#00141a",panel:"linear-gradient(145deg,#002833,#004455)",accent:"#00aaff",glow:"rgba(0,170,255,.35)"},
+  {name:"Twilight",type:"public",bg:"#0a0a1a",panel:"linear-gradient(145deg,#1a1a33,#2a2a55)",accent:"#8888ff",glow:"rgba(136,136,255,.35)"},
+  {name:"Steel",type:"public",bg:"#111116",panel:"linear-gradient(145deg,#222233,#333344)",accent:"#bbbbff",glow:"rgba(187,187,255,.35)"},
+  {name:"Amber",type:"public",bg:"#1a1000",panel:"linear-gradient(145deg,#332200,#554400)",accent:"#ffbb33",glow:"rgba(255,187,51,.35)"},
+  {name:"Ruby",type:"public",bg:"#1a000a",panel:"linear-gradient(145deg,#330015,#550033)",accent:"#ff33aa",glow:"rgba(255,51,170,.35)"},
+  {name:"Sapphire",type:"public",bg:"#00001a",panel:"linear-gradient(145deg,#000033,#000055)",accent:"#3399ff",glow:"rgba(51,153,255,.35)"},
+  {name:"Onyx",type:"public",bg:"#050505",panel:"linear-gradient(145deg,#111111,#222222)",accent:"#999999",glow:"rgba(153,153,153,.35)"},
+  // VIP/Owner themes
+  {name:"Supernova",type:"owner",bg:"#2b0000",panel:"rgba(255,85,0,.75)",accent:"#ff5500",glow:"rgba(255,85,0,.35)"},
+  {name:"VIP Pink",type:"vip",bg:"#ffe5f0",panel:"rgba(255,51,153,.5)",accent:"#ff3399",glow:"rgba(255,51,153,.35)"}
+];
 
 /* Render games */
 const list=document.getElementById("games"),player=document.getElementById("player"),themes=document.getElementById("themes");
@@ -216,26 +252,30 @@ function renderThemes(){
   });
 }
 function applyTheme(t){
-  if(t.type==="vip"){vipLogin.style.display="flex";return;}
-  if(t.type==="owner"){ownerLogin.style.display="flex";return;}
+  if(t.type==="vip"){showOverlay(vipLogin);return;}
+  if(t.type==="owner"){showOverlay(ownerLogin);return;}
   document.body.style.background=t.bg;
-  document.querySelectorAll(".panel,.box").forEach(el=>el.style.background=t.panel);
+  document.querySelectorAll(".panel,.box,header").forEach(el=>el.style.background=t.panel);
   document.querySelectorAll(".theme-btn").forEach(el=>el.style.background=t.accent);
   core.style.background=t.accent;trail.style.borderColor=t.accent;
   document.documentElement.style.setProperty("--glow",t.glow);
 }
 
+/* Overlay Helpers */
+function showOverlay(el){el.classList.add("active");}
+function hideOverlay(el){el.classList.remove("active");}
+
 /* Login functions */
-function unlock(){if(userPass.value===USER){lock.style.display="none";renderGames();renderThemes();}else userErr.style.display="block";}
-function vipUnlock(){if(vipPass.value===VIP){vipLogin.style.display="none";vipPanel.style.display="flex";}else vipErr.style.display="block";}
-function ownerUnlock(){if(ownerPass.value===OWNER){ownerLogin.style.display="none";ownerPanel.style.display="flex";}else ownerErr.style.display="block";}
+function unlock(){if(userPass.value===USER){hideOverlay(lock);renderGames();renderThemes();}else userErr.style.display="block";}
+function vipUnlock(){if(vipPass.value===VIP){hideOverlay(vipLogin);showOverlay(vipPanel);}else vipErr.style.display="block";}
+function ownerUnlock(){if(ownerPass.value===OWNER){hideOverlay(ownerLogin);showOverlay(ownerPanel);}else ownerErr.style.display="block";}
 
 /* Admin panel */
-document.addEventListener("keydown",e=>{if(e.ctrlKey&&e.shiftKey&&e.key==="A")adminPanel.style.display="flex";});
+document.addEventListener("keydown",e=>{if(e.ctrlKey&&e.shiftKey&&e.key==="A")showOverlay(adminPanel);});
 function addGame(){if(!gName.value||!gUrl.value)return;games.push({name:gName.value,url:gUrl.value});renderGames();gName.value=gUrl.value="";}
-function closeAdmin(){adminPanel.style.display="none";}
-function closeVIP(){vipPanel.style.display="none";}
-function closeOwner(){ownerPanel.style.display="none";}
+function closeAdmin(){hideOverlay(adminPanel);}
+function closeVIP(){hideOverlay(vipPanel);}
+function closeOwner(){hideOverlay(ownerPanel);}
 
 /* Init */
 renderGames();
