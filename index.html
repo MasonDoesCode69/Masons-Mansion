@@ -3,82 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mason’s Mansion | V16 Refined</title>
+    <title>Mason’s Mansion | Omega Edition 2026</title>
     <style>
         :root {
-            --bg: #050400;
+            --bg: #030305;
             --accent: #ffcc33;
-            --glow: rgba(255, 204, 51, 0.3);
-            --glass: rgba(15, 15, 15, 0.95);
-            --border: rgba(255, 255, 255, 0.08);
-            --text: #ffffff;
-            --font: 'Segoe UI', system-ui, sans-serif;
+            --glow: rgba(255, 204, 51, 0.4);
+            --glass: rgba(10, 10, 15, 0.92);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #f0f0f0;
+            --font: 'Outfit', 'Segoe UI', system-ui, sans-serif;
+            --window-shadow: 0 25px 60px rgba(0,0,0,0.8);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        body, html { 
-            width: 100%; height: 100%; overflow: hidden; 
-            background: var(--bg); color: var(--text); 
-            font-family: var(--font); cursor: crosshair; touch-action: none;
-        }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font); cursor: crosshair; touch-action: none; }
 
-        #bg-canvas { position: fixed; inset: 0; z-index: 0; transition: filter 0.5s; }
+        #bg-canvas { position: fixed; inset: 0; z-index: 0; filter: contrast(1.1) brightness(1.1); }
 
-        /* --- AUTH --- */
+        /* --- AUTH SYSTEM --- */
         #auth-overlay {
-            position: fixed; inset: 0; z-index: 10000;
-            display: flex; align-items: center; justify-content: center;
-            background: #000; transition: 1.2s cubic-bezier(0.7, 0, 0.3, 1);
+            position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center;
+            background: radial-gradient(circle at center, #111, #000); transition: 1.5s cubic-bezier(0.8, 0, 0.2, 1);
         }
-        .login-card { background: var(--glass); padding: 40px; border-radius: 30px; border: 1px solid var(--accent); text-align: center; width: 350px; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
-        .login-card h1 { color: var(--accent); letter-spacing: 8px; margin-bottom: 5px; font-size: 28px; text-shadow: 0 0 10px var(--glow); }
-        .login-card input { width: 100%; background: #111; border: 1px solid var(--border); padding: 15px; border-radius: 12px; color: #fff; margin-bottom: 15px; text-align: center; font-weight: bold; letter-spacing: 2px; }
-        .login-card button { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--accent); color: #000; font-weight: 900; cursor: pointer; transition: 0.3s; }
-        .login-card button:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--accent); }
+        .login-card {
+            background: var(--glass); padding: 50px; border-radius: 40px; border: 1px solid var(--accent);
+            text-align: center; width: 400px; backdrop-filter: blur(30px); box-shadow: 0 0 100px rgba(255, 204, 51, 0.1);
+        }
+        .login-card h1 { font-size: 32px; letter-spacing: 12px; margin-bottom: 10px; color: var(--accent); text-shadow: 0 0 20px var(--glow); }
+        .login-card input { width: 100%; background: #000; border: 1px solid var(--border); padding: 18px; border-radius: 15px; color: #fff; margin-bottom: 15px; text-align: center; font-size: 16px; transition: 0.3s; }
+        .login-card input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--glow); }
+        .login-card button { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--accent); color: #000; font-weight: 900; cursor: pointer; transition: 0.4s; letter-spacing: 2px; }
+        .login-card button:hover { transform: scale(1.02); box-shadow: 0 10px 30px var(--glow); }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR & MADNESS --- */
         #sidebar {
-            position: fixed; left: -250px; top: 50%; transform: translateY(-50%);
-            width: 250px; background: var(--glass); border: 1px solid var(--border);
-            padding: 20px; border-radius: 0 25px 25px 0; z-index: 2000;
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: fixed; left: -280px; top: 50%; transform: translateY(-50%); width: 280px;
+            background: var(--glass); border: 1px solid var(--border); padding: 25px; border-radius: 0 30px 30px 0;
+            z-index: 2000; transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); backdrop-filter: blur(20px);
         }
-        #sidebar.open { left: 0; border-right: 3px solid var(--accent); box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
+        #sidebar.open { left: 0; border-right: 3px solid var(--accent); box-shadow: 30px 0 60px rgba(0,0,0,0.6); }
         #sidebar-tab {
-            position: absolute; right: -45px; top: 50%; transform: translateY(-50%);
-            background: var(--accent); color: #000; padding: 15px 10px;
-            border-radius: 0 12px 12px 0; cursor: pointer; font-weight: 900; writing-mode: vertical-rl; font-size: 11px; letter-spacing: 2px;
+            position: absolute; right: -50px; top: 50%; transform: translateY(-50%);
+            background: var(--accent); color: #000; padding: 20px 12px; border-radius: 0 15px 15px 0;
+            cursor: pointer; font-weight: 900; writing-mode: vertical-rl; font-size: 12px; letter-spacing: 3px;
         }
 
-        .option-btn { width: 100%; padding: 12px; margin: 5px 0; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; border-radius: 10px; font-size: 11px; cursor: pointer; text-align: left; transition: 0.2s; }
-        .option-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); }
-        .option-btn.active { background: var(--accent); color: #000; font-weight: bold; }
+        .section-label { font-size: 10px; color: var(--accent); margin: 15px 0 8px; letter-spacing: 3px; text-transform: uppercase; font-weight: bold; opacity: 0.8; }
+        .option-btn { width: 100%; padding: 12px; margin: 4px 0; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: #ddd; border-radius: 12px; font-size: 11px; cursor: pointer; text-align: left; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; }
+        .option-btn:hover { background: rgba(255,255,255,0.08); border-color: var(--accent); transform: translateX(5px); }
+        .option-btn.active { background: var(--accent); color: #000; font-weight: 900; box-shadow: 0 0 15px var(--glow); }
 
-        /* --- WINDOWS --- */
+        /* --- DESKTOP WINDOWS --- */
         #desktop { position: relative; width: 100vw; height: 100vh; z-index: 10; display: none; }
-        .window { 
-            position: absolute; background: var(--glass); border: 1px solid var(--border); 
-            border-radius: 20px; backdrop-filter: blur(20px); overflow: hidden; 
-            display: flex; flex-direction: column; min-width: 300px; min-height: 200px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 50;
+        .window {
+            position: absolute; background: var(--glass); border: 1px solid var(--border); border-radius: 25px;
+            backdrop-filter: blur(25px); overflow: hidden; display: flex; flex-direction: column; 
+            box-shadow: var(--window-shadow); min-width: 400px; min-height: 300px; z-index: 100;
         }
-        .win-header { padding: 12px 20px; background: rgba(255,255,255,0.05); cursor: move; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-        .win-title { font-size: 12px; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; }
-        .win-close { cursor: pointer; color: #ff5f56; font-size: 20px; font-weight: bold; }
-        .win-content { flex: 1; padding: 15px; overflow-y: auto; color: #ccc; }
+        .win-header { padding: 15px 25px; background: rgba(255,255,255,0.03); cursor: move; display: flex; justify-content: space-between; align-items: center; }
+        .win-title { font-size: 12px; font-weight: 900; color: var(--accent); letter-spacing: 2px; }
+        .win-close { cursor: pointer; color: #ff5f56; font-size: 24px; transition: 0.2s; }
+        .win-close:hover { transform: scale(1.2); }
+        .win-content { flex: 1; padding: 20px; overflow-y: auto; scrollbar-width: none; }
 
-        /* --- DASHBOARD GRID --- */
-        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .theme-card { padding: 15px; border-radius: 12px; border: 1px solid var(--border); cursor: pointer; text-align: center; transition: 0.3s; background: rgba(0,0,0,0.3); }
-        .theme-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-        
-        #taskbar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: var(--glass); border: 1px solid var(--border); padding: 12px 25px; border-radius: 25px; display: flex; gap: 20px; z-index: 1000; }
-        .t-icon { width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); border-radius: 18px; cursor: pointer; font-size: 26px; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid transparent; }
-        .t-icon:hover { transform: translateY(-12px) scale(1.1); background: var(--accent); color: #000; box-shadow: 0 10px 20px var(--glow); }
+        /* --- GRID LAYOUTS --- */
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .theme-node { height: 80px; border-radius: 15px; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; text-align: center; padding: 5px; }
+        .theme-node:hover { transform: scale(1.05); border-color: #fff; z-index: 10; }
 
-        iframe { width: 100%; height: 100%; border: none; border-radius: 0 0 20px 20px; }
+        /* --- TASKBAR --- */
+        #taskbar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--glass); border: 1px solid var(--border); padding: 15px 30px; border-radius: 30px; display: flex; gap: 25px; z-index: 1000; backdrop-filter: blur(15px); }
+        .t-icon { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border-radius: 20px; cursor: pointer; font-size: 28px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .t-icon:hover { transform: translateY(-15px) rotate(8deg); background: var(--accent); color: #000; box-shadow: 0 15px 30px var(--glow); }
+
+        iframe { width: 100%; height: 100%; border: none; background: #000; }
         .hidden { display: none !important; }
-        .owner-badge { background: var(--accent); color: #000; padding: 2px 8px; border-radius: 5px; font-size: 9px; font-weight: 900; vertical-align: middle; }
     </style>
 </head>
 <body>
@@ -88,210 +88,240 @@
     <div id="auth-overlay">
         <div class="login-card">
             <h1>MASON V16</h1>
-            <p style="font-size: 10px; opacity: 0.5; margin-bottom: 20px; letter-spacing: 3px;">SYSTEM ACCESS REQUIRED</p>
-            <input type="password" id="sys-pass" placeholder="ACCESS KEY">
-            <button onclick="Mansion.init()">INITIALIZE</button>
+            <p style="font-size: 9px; opacity: 0.6; letter-spacing: 4px; margin-bottom: 25px;">OMEGA ARCHITECTURE 2026</p>
+            <input type="password" id="sys-pass" placeholder="PASSWORD">
+            <button onclick="Mansion.init()">ACCESS TERMINAL</button>
         </div>
     </div>
 
     <div id="desktop">
         <div id="sidebar">
-            <div id="sidebar-tab" onclick="document.getElementById('sidebar').classList.toggle('open')">MADNESS CONTROLS</div>
-            <button class="option-btn" onclick="Mansion.chaosBurst()">Spawn Swarm</button>
-            <button class="option-btn active" id="m-float" onclick="Mansion.toggle('float')">Orb Drift</button>
-            <button class="option-btn" id="m-rgb" onclick="Mansion.toggle('rgb')">RGB Cycle</button>
-            <button class="option-btn" id="m-pulse" onclick="Mansion.toggle('pulse')">Size Pulse</button>
-            <button class="option-btn" id="m-magnet" onclick="Mansion.toggle('magnet')">Magnetism</button>
-            <button class="option-btn" id="m-trails" onclick="Mansion.toggle('trails')">Ghost Trails</button>
-            <button class="option-btn" id="m-speed" onclick="Mansion.toggle('speed')">Warp Drive</button>
-            <button class="option-btn" onclick="Mansion.clearOrbs()" style="color:#ff5f56">Clear Canvas</button>
+            <div id="sidebar-tab" onclick="document.getElementById('sidebar').classList.toggle('open')">OMEGA CONTROLS</div>
+            
+            <div class="section-label">Simulation</div>
+            <button class="option-btn active" id="m-float" onclick="Mansion.toggle('float')">Fluid Drift <span>ON</span></button>
+            <button class="option-btn" id="m-rgb" onclick="Mansion.toggle('rgb')">Neural RGB <span>OFF</span></button>
+            <button class="option-btn" id="m-pulse" onclick="Mansion.toggle('pulse')">Size Resonance <span>OFF</span></button>
+            <button class="option-btn" id="m-magnet" onclick="Mansion.toggle('magnet')">Pointer Magnet <span>OFF</span></button>
+            
+            <div class="section-label">Shape Engine</div>
+            <button class="option-btn active" id="s-circle" onclick="Mansion.setShape('circle')">Spheres</button>
+            <button class="option-btn" id="s-square" onclick="Mansion.setShape('square')">Cubes</button>
+            <button class="option-btn" id="s-star" onclick="Mansion.setShape('star')">Stars</button>
+            <button class="option-btn" id="s-meme" onclick="Mansion.setShape('meme')">Meme Swarm (⚠️)</button>
+            
+            <div class="section-label">Actions</div>
+            <button class="option-btn" onclick="Mansion.chaosBurst()">Hyper Swarm</button>
+            <button class="option-btn" onclick="Mansion.clearOrbs()" style="color:#ff5f56">Purge Simulation</button>
         </div>
 
         <div id="win-layer"></div>
 
         <div id="taskbar">
-            <div class="t-icon" title="Games" onclick="Mansion.spawn('games')">🎮</div>
             <div class="t-icon" title="Themes" onclick="Mansion.spawn('themes')">🎨</div>
-            <div class="t-icon" title="Owner Tools" id="owner-icon" class="hidden" onclick="Mansion.spawn('owner')">👑</div>
+            <div class="t-icon" title="Applications" onclick="Mansion.spawn('apps')">🧩</div>
+            <div class="t-icon" title="Games" onclick="Mansion.spawn('games')">🕹️</div>
+            <div class="t-icon hidden" id="owner-icon" onclick="Mansion.spawn('owner')">👑</div>
         </div>
     </div>
 
     <script>
         const Mansion = {
-            rank: 'guest', orbs: [], activeWin: null,
-            ctx: null, canvas: null,
-            mods: { float: true, rgb: false, pulse: false, magnet: false, trails: false, speed: false },
+            rank: 'guest', orbs: [], canvas: null, ctx: null, mouse: { x: -1000, y: -1000 },
+            mods: { float: true, rgb: false, pulse: false, magnet: false, shape: 'circle' },
+            memeImgs: [],
             themes: [
-                { n: 'Honey Gold', a: '#ffcc33', g: 'rgba(255, 204, 51, 0.3)', b: '#050400' },
-                { n: 'Midnight Neon', a: '#00f2ff', g: 'rgba(0, 242, 255, 0.3)', b: '#020b12' },
-                { n: 'Vampire Red', a: '#ff1f1f', g: 'rgba(255, 31, 31, 0.3)', b: '#0a0000' },
-                { n: 'Toxic Lime', a: '#39ff14', g: 'rgba(57, 255, 20, 0.3)', b: '#030800' },
-                { n: 'Barbie Pink', a: '#ff007f', g: 'rgba(255, 0, 127, 0.3)', b: '#0d0006' },
-                { n: 'Royal Purple', a: '#bc13fe', g: 'rgba(188, 19, 254, 0.3)', b: '#08000f' },
-                { n: 'Ghost White', a: '#ffffff', g: 'rgba(255, 255, 255, 0.2)', b: '#0a0a0a' },
-                { n: 'Deep Sea', a: '#0077be', g: 'rgba(0, 119, 190, 0.3)', b: '#00050a' },
-                { n: 'Sunset Orange', a: '#ff4e00', g: 'rgba(255, 78, 0, 0.3)', b: '#0a0300' },
-                { n: 'Matrix Green', a: '#00ff41', g: 'rgba(0, 255, 65, 0.3)', b: '#000000' },
-                { n: 'Cyber Peach', a: '#ffb3a7', g: 'rgba(255, 179, 167, 0.3)', b: '#0f0a0a' }
+                { n: 'Honey', a: '#ffcc33', g: 'rgba(255, 204, 51, 0.4)', b: '#050400' },
+                { n: 'Cyber', a: '#00f2ff', g: 'rgba(0, 242, 255, 0.4)', b: '#020b12' },
+                { n: 'Blood', a: '#ff1f1f', g: 'rgba(255, 31, 31, 0.4)', b: '#0a0000' },
+                { n: 'Venom', a: '#39ff14', g: 'rgba(57, 255, 20, 0.4)', b: '#030800' },
+                { n: 'Matrix', a: '#00ff41', g: 'rgba(0, 255, 65, 0.4)', b: '#000000' },
+                { n: 'Sakura', a: '#ffb3ba', g: 'rgba(255, 179, 186, 0.4)', b: '#0d0a0a' },
+                { n: 'Amethyst', a: '#9d50bb', g: 'rgba(157, 80, 187, 0.4)', b: '#08000f' },
+                { n: 'Gold', a: '#ffd700', g: 'rgba(255, 215, 0, 0.4)', b: '#0a0a00' },
+                { n: 'Ice', a: '#e0ffff', g: 'rgba(224, 255, 255, 0.4)', b: '#000a0a' },
+                { n: 'Inferno', a: '#ff4500', g: 'rgba(255, 69, 0, 0.4)', b: '#0a0200' }
             ],
 
             init() {
                 const p = document.getElementById('sys-pass').value;
                 if(p === "masononly69") { this.rank = "OWNER"; document.getElementById('owner-icon').classList.remove('hidden'); }
                 else if(p === "honey") { this.rank = "MEMBER"; }
-                else { alert("ACCESS DENIED"); return; }
+                else { alert("INVALID CREDENTIALS"); return; }
 
-                document.getElementById('auth-overlay').style.opacity = '0';
+                document.getElementById('auth-overlay').style.transform = 'translateY(-100%)';
                 setTimeout(() => {
                     document.getElementById('auth-overlay').style.display = 'none';
                     document.getElementById('desktop').style.display = 'block';
-                    this.startCanvas();
-                }, 1000);
+                    this.bootCanvas();
+                    this.loadMemes();
+                }, 1200);
             },
 
-            startCanvas() {
+            loadMemes() {
+                const urls = [
+                    'w7.pngwing.com',
+                    'e7.pngegg.com'
+                ];
+                urls.forEach(u => { const img = new Image(); img.src = u; this.memeImgs.push(img); });
+            },
+
+            bootCanvas() {
                 this.canvas = document.getElementById('bg-canvas');
                 this.ctx = this.canvas.getContext('2d');
                 window.addEventListener('resize', () => this.resize());
+                window.addEventListener('mousemove', (e) => { this.mouse.x = e.clientX; this.mouse.y = e.clientY; });
                 this.resize();
+                for(let i=0; i<25; i++) this.spawnOrb();
                 this.animate();
-                for(let i=0; i<15; i++) this.spawnOrb();
             },
 
-            resize() {
-                this.canvas.width = window.innerWidth;
-                this.canvas.height = window.innerHeight;
-            },
+            resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; },
 
-            spawnOrb(x, y) {
+            spawnOrb() {
                 this.orbs.push({
-                    x: x || Math.random() * innerWidth,
-                    y: y || Math.random() * innerHeight,
-                    vx: (Math.random() - 0.5) * 2,
-                    vy: (Math.random() - 0.5) * 2,
-                    r: 30 + Math.random() * 30,
-                    hue: Math.random() * 360
+                    x: Math.random() * innerWidth, y: Math.random() * innerHeight,
+                    vx: (Math.random() - 0.5) * 2.5, vy: (Math.random() - 0.5) * 2.5,
+                    r: 25 + Math.random() * 35, hue: Math.random() * 360,
+                    rot: Math.random() * Math.PI, rs: (Math.random() - 0.5) * 0.05
                 });
             },
 
             toggle(m) {
                 this.mods[m] = !this.mods[m];
-                document.getElementById(`m-${m}`)?.classList.toggle('active');
+                const btn = document.getElementById(`m-${m}`);
+                btn.classList.toggle('active');
+                btn.querySelector('span').innerText = this.mods[m] ? 'ON' : 'OFF';
             },
 
-            clearOrbs() { this.orbs = []; },
-            chaosBurst() { for(let i=0; i<50; i++) this.spawnOrb(); },
+            setShape(s) {
+                this.mods.shape = s;
+                ['circle','square','star','meme'].forEach(sh => document.getElementById(`s-${sh}`).classList.remove('active'));
+                document.getElementById(`s-${s}`).classList.add('active');
+            },
 
-            applyTheme(index) {
-                const t = this.themes[index];
+            chaosBurst() { for(let i=0; i<80; i++) this.spawnOrb(); },
+            clearOrbs() { this.orbs = []; },
+
+            applyTheme(idx) {
+                const t = this.themes[idx];
                 document.documentElement.style.setProperty('--accent', t.a);
                 document.documentElement.style.setProperty('--glow', t.g);
                 document.documentElement.style.setProperty('--bg', t.b);
             },
 
             spawn(type) {
-                const id = 'win-' + type;
-                if(document.getElementById(id)) return;
-
                 const win = document.createElement('div');
-                win.id = id;
                 win.className = 'window';
-                win.style.width = '600px';
-                win.style.height = '400px';
-                win.style.top = '100px';
-                win.style.left = '100px';
+                win.style.top = '150px'; win.style.left = '350px';
+                win.innerHTML = `
+                    <div class="win-header"><span class="win-title">${type.toUpperCase()}</span><span class="win-close" onclick="this.parentElement.parentElement.remove()">×</span></div>
+                    <div class="win-content" id="content-${type}"></div>
+                `;
+                document.getElementById('win-layer').appendChild(win);
+                this.drag(win);
+                this.fillWin(type);
+            },
 
-                let content = '';
+            fillWin(type) {
+                const target = document.getElementById(`content-${type}`);
                 if(type === 'themes') {
-                    content = '<div class="dash-grid">';
+                    target.className = 'win-content grid-3';
                     this.themes.forEach((t, i) => {
-                        content += `<div class="theme-card" onclick="Mansion.applyTheme(${i})" style="border-bottom: 3px solid ${t.a}">${t.n}</div>`;
+                        target.innerHTML += `<div class="theme-node" onclick="Mansion.applyTheme(${i})" style="background:${t.b}; border-bottom: 4px solid ${t.a}">${t.n}</div>`;
                     });
-                    content += '</div>';
                 } else if(type === 'games') {
-                    content = `
-                        <div class="dash-grid">
-                            <div class="theme-card" onclick="Mansion.play('jcw87.github.io')">SANS FIGHT</div>
-                            <div class="theme-card" onclick="Mansion.play('96f.github.io')">SLOPE</div>
-                            <div class="theme-card" onclick="Mansion.play('flappybird.io')">FLAPPY BIRD</div>
-                            <div class="theme-card" onclick="Mansion.play('classic.minecraft.net')">MINECRAFT</div>
-                        </div>
-                    `;
+                    target.className = 'win-content grid-3';
+                    const gs = [['Slope','96f.github.io'],['Sans','jcw87.github.io'],['Minecraft','classic.minecraft.net']];
+                    gs.forEach(g => {
+                        target.innerHTML += `<div class="theme-node" onclick="Mansion.play('${g[1]}')">${g[0]}</div>`;
+                    });
                 } else if(type === 'owner') {
-                    content = `
-                        <div style="text-align:center">
-                            <h3>OWNER CONSOLE <span class="owner-badge">V16</span></h3>
-                            <hr style="opacity:0.1;margin:10px 0">
-                            <button class="option-btn" onclick="Mansion.chaosBurst()">Global Swarm</button>
-                            <button class="option-btn" onclick="alert('System Purge Initialized...')">Purge Sessions</button>
-                            <button class="option-btn" onclick="Mansion.clearOrbs()">Force Clear Canvas</button>
-                            <p style="font-size:10px; margin-top:20px">Mansion Status: <span style="color:var(--accent)">OPTIMAL</span></p>
+                    target.innerHTML = `
+                        <div style="text-align:center; padding:20px;">
+                            <h2 style="color:var(--accent); letter-spacing:5px;">OWNER TERMINAL</h2>
+                            <p style="font-size:10px; opacity:0.5; margin-bottom:20px;">ACCESS LEVEL: ROOT</p>
+                            <div class="grid-3">
+                                <button class="option-btn" onclick="Mansion.chaosBurst()">Swarm All</button>
+                                <button class="option-btn" onclick="Mansion.clearOrbs()">Clear Field</button>
+                                <button class="option-btn" onclick="location.reload()">Reset Sys</button>
+                            </div>
                         </div>
                     `;
                 }
-
-                win.innerHTML = `
-                    <div class="win-header">
-                        <span class="win-title">${type}</span>
-                        <span class="win-close" onclick="this.parentElement.parentElement.remove()">×</span>
-                    </div>
-                    <div class="win-content" id="${type}-body">${content}</div>
-                `;
-                
-                document.getElementById('win-layer').appendChild(win);
-                this.makeDraggable(win);
             },
 
             play(url) {
-                const body = document.querySelector('.win-content');
-                body.style.padding = '0';
-                body.innerHTML = `<iframe src="${url}"></iframe>`;
+                const wins = document.querySelectorAll('.win-content');
+                wins[wins.length-1].innerHTML = `<iframe src="${url}"></iframe>`;
+                wins[wins.length-1].style.padding = '0';
             },
 
-            makeDraggable(el) {
-                let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-                el.querySelector('.win-header').onmousedown = dragMouseDown;
-                function dragMouseDown(e) {
-                    pos3 = e.clientX; pos4 = e.clientY;
-                    document.onmouseup = closeDragElement;
-                    document.onmousemove = elementDrag;
+            drag(el) {
+                let p1 = 0, p2 = 0, p3 = 0, p4 = 0;
+                el.querySelector('.win-header').onmousedown = (e) => {
+                    p3 = e.clientX; p4 = e.clientY;
+                    document.onmouseup = () => { document.onmouseup = null; document.onmousemove = null; };
+                    document.onmousemove = (e) => {
+                        p1 = p3 - e.clientX; p2 = p4 - e.clientY;
+                        p3 = e.clientX; p4 = e.clientY;
+                        el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px";
+                    };
+                };
+            },
+
+            drawStar(x, y, r, p, m) {
+                this.ctx.beginPath();
+                for (let i = 0; i < p * 2; i++) {
+                    const radius = i % 2 === 0 ? r : r * m;
+                    const angle = (i * Math.PI) / p;
+                    this.ctx.lineTo(x + radius * Math.sin(angle), y + radius * Math.cos(angle));
                 }
-                function elementDrag(e) {
-                    pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
-                    pos3 = e.clientX; pos4 = e.clientY;
-                    el.style.top = (el.offsetTop - pos2) + "px";
-                    el.style.left = (el.offsetLeft - pos1) + "px";
-                }
-                function closeDragElement() { document.onmouseup = null; document.onmousemove = null; }
+                this.ctx.closePath();
+                this.ctx.fill();
             },
 
             animate() {
-                if(!this.ctx) return;
-                this.ctx.fillStyle = this.mods.trails ? 'rgba(0,0,0,0.1)' : getComputedStyle(document.documentElement).getPropertyValue('--bg');
-                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent');
 
                 this.orbs.forEach(o => {
-                    if(this.mods.float) {
-                        o.x += o.vx * (this.mods.speed ? 5 : 1);
-                        o.y += o.vy * (this.mods.speed ? 5 : 1);
+                    if(this.mods.float) { o.x += o.vx; o.y += o.vy; o.rot += o.rs; }
+                    if(this.mods.magnet) {
+                        const dx = this.mouse.x - o.x, dy = this.mouse.y - o.y;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        if(dist < 300) { o.x += dx * 0.02; o.y += dy * 0.02; }
                     }
-                    
+
                     if(o.x < 0 || o.x > innerWidth) o.vx *= -1;
                     if(o.y < 0 || o.y > innerHeight) o.vy *= -1;
 
-                    let radius = o.r;
-                    if(this.mods.pulse) radius += Math.sin(Date.now() * 0.01) * 10;
+                    const rad = o.r + (this.mods.pulse ? Math.sin(Date.now()*0.005)*10 : 0);
+                    const color = this.mods.rgb ? `hsla(${o.hue}, 80%, 60%, 0.7)` : accent;
+                    
+                    // COMPLEX GRADIENT ENGINE
+                    const grad = this.ctx.createRadialGradient(o.x - rad*0.3, o.y - rad*0.3, rad*0.1, o.x, o.y, rad);
+                    grad.addColorStop(0, '#fff');
+                    grad.addColorStop(0.2, color);
+                    grad.addColorStop(1, 'transparent');
+                    this.ctx.fillStyle = grad;
 
-                    this.ctx.beginPath();
-                    this.ctx.arc(o.x, o.y, radius, 0, Math.PI * 2);
-                    let color = this.mods.rgb ? `hsla(${o.hue}, 70%, 60%, 0.5)` : getComputedStyle(document.documentElement).getPropertyValue('--accent');
-                    this.ctx.fillStyle = color;
-                    this.ctx.shadowBlur = 20;
-                    this.ctx.shadowColor = color;
-                    this.ctx.fill();
+                    if(this.mods.shape === 'circle') {
+                        this.ctx.beginPath(); this.ctx.arc(o.x, o.y, rad, 0, Math.PI*2); this.ctx.fill();
+                    } else if(this.mods.shape === 'square') {
+                        this.ctx.save(); this.ctx.translate(o.x, o.y); this.ctx.rotate(o.rot);
+                        this.ctx.fillRect(-rad, -rad, rad*2, rad*2); this.ctx.restore();
+                    } else if(this.mods.shape === 'star') {
+                        this.drawStar(o.x, o.y, rad, 5, 0.5);
+                    } else if(this.mods.shape === 'meme') {
+                        const img = this.memeImgs[Math.floor(o.hue % this.memeImgs.length)];
+                        if(img && img.complete) {
+                            this.ctx.save(); this.ctx.translate(o.x, o.y); this.ctx.rotate(o.rot);
+                            this.ctx.drawImage(img, -rad, -rad, rad*2, rad*2); this.ctx.restore();
+                        }
+                    }
                     if(this.mods.rgb) o.hue += 1;
                 });
-
                 requestAnimationFrame(() => this.animate());
             }
         };
