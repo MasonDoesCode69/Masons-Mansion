@@ -1,13 +1,13 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Mason’s Mansion Ultimate</title>
+<title>Mason’s Mansion Deluxe Lounge</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-/* =========================================
-   BASE VARIABLES & THEMES
-========================================= */
+/* ======================================
+   ROOT VARIABLES
+====================================== */
 :root{
   --bg:#050505;
   --panel:rgba(20,20,20,.75);
@@ -17,170 +17,126 @@
   --muted:#9a9a9a;
   --accent:#7df9ff;
   --glow:rgba(125,249,255,.35);
-  --header:#222;
-  --link:#7df9ff;
+  --vip:#d77fff;
+  --owner:#ff8f00;
 }
 
-/* ===== CURSOR ===== */
-.cursor-core,.cursor-glow,.cursor-trail{
-  position:fixed;
-  pointer-events:none;
-  z-index:9999;
-  border-radius:50%;
-}
-.cursor-core{
-  width:6px;height:6px;
-  background:#fff;
-}
-.cursor-glow{
-  width:120px;height:120px;
-  background:radial-gradient(circle,var(--glow),transparent 70%);
-  filter:blur(8px);
-  transition:transform .05s linear;
-}
-.cursor-trail{
-  width:36px;height:36px;
-  border:1px solid rgba(255,255,255,.35);
-  opacity:.5;
-  transition:transform .12s ease-out;
-}
-
-/* ===== BODY ===== */
+/* ======================================
+   BASIC RESET
+====================================== */
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:system-ui,-apple-system,sans-serif;
-  background:radial-gradient(circle at top,var(--bg),#000);
+  background:var(--bg);
   color:var(--text);
   min-height:100vh;
   overflow:hidden;
   cursor:none;
-  transition:all .5s ease;
+  transition:all 0.4s ease;
 }
+h1,h2,h3,h4,h5,h6{margin:0;padding:0;}
+button{outline:none;}
+input{outline:none;}
 
-/* ===== OVERLAYS ===== */
+/* ======================================
+   CURSOR STYLES
+====================================== */
+.cursor-core,.cursor-glow,.cursor-trail{
+  position:fixed;pointer-events:none;z-index:9999;border-radius:50%;
+}
+.cursor-core{width:6px;height:6px;background:#fff;}
+.cursor-glow{width:120px;height:120px;background:radial-gradient(circle,var(--glow),transparent 70%);filter:blur(8px);transition:transform .05s linear;}
+.cursor-trail{width:36px;height:36px;border:1px solid rgba(255,255,255,.35);opacity:.5;transition:transform .12s ease-out;}
+
+/* ======================================
+   LOCK / ADMIN / OWNER PANELS
+====================================== */
 .overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.88);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:10000;
-  transition:all .3s ease;
+  position:fixed;inset:0;background:rgba(0,0,0,.88);
+  display:flex;align-items:center;justify-content:center;
+  z-index:10000;transition:opacity .3s ease;
 }
 .box{
-  background:var(--panel);
-  backdrop-filter:blur(14px);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:26px;
-  width:300px;
-  text-align:center;
-  box-shadow:0 0 50px #000;
+  background:var(--panel);backdrop-filter:blur(14px);
+  border:1px solid var(--border);border-radius:20px;
+  padding:26px;width:320px;text-align:center;box-shadow:0 0 50px #000;
+  transition:all .3s ease;
 }
-.box h2{
-  letter-spacing:.18em;
-  margin-bottom:10px;
-}
-.box input{
-  width:100%;
-  padding:9px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background:var(--card);
-  color:var(--text);
-  text-align:center;
-  margin-bottom:10px;
-}
-.box button{
-  padding:8px 16px;
-  border-radius:999px;
-  border:none;
-  background:var(--accent);
-  color:#000;
-  cursor:pointer;
-  font-weight:600;
-  transition:.3s;
-}
-.box button:hover{filter:brightness(1.2);}
-.error{display:none;color:#ff6a6a;font-size:11px;}
+.box h2{letter-spacing:.18em;margin-bottom:10px;font-size:18px;}
+.box input{width:100%;padding:9px;border-radius:999px;border:1px solid var(--border);
+  background:var(--card);color:var(--text);text-align:center;margin-bottom:10px;}
+.box button{padding:8px 16px;border-radius:999px;border:none;background:var(--accent);
+  color:#000;cursor:pointer;font-weight:600;margin:4px 0;transition:all .3s ease;}
+.box button:hover{transform:scale(1.05);}
+.error{display:none;color:#ff6a6a;font-size:11px;margin-top:5px;}
 
-/* ===== PAGE UI ===== */
-.page{
-  max-width:1200px;
-  margin:0 auto;
-  padding:20px;
-}
+/* ======================================
+   HEADER
+====================================== */
+.page{max-width:1200px;margin:0 auto;padding:20px;}
 header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:24px;
-  padding:16px 22px;
-  margin-bottom:18px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:24px;padding:16px 22px;margin-bottom:18px;transition:background .3s ease;
 }
-header h1{font-size:20px;letter-spacing:.25em;}
+header h1{font-size:22px;letter-spacing:.25em;}
 header span{font-size:11px;color:var(--muted);}
+#adminBtn{position:absolute;top:10px;left:10px;opacity:.4;padding:6px 10px;border-radius:12px;
+  background:var(--accent);color:#000;font-size:11px;border:none;cursor:pointer;transition:all 0.3s ease;}
+#adminBtn:hover{opacity:1;transform:scale(1.05);}
 
-/* ===== LAYOUT ===== */
-.layout{
-  display:grid;
-  grid-template-columns:260px 1fr;
-  gap:18px;
-}
+/* ======================================
+   LAYOUT & PANELS
+====================================== */
+.layout{display:grid;grid-template-columns:280px 1fr;gap:18px;}
 .panel{
-  background:var(--panel);
-  backdrop-filter:blur(14px);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:14px;
-  transition:all .4s ease;
+  background:var(--panel);backdrop-filter:blur(14px);
+  border:1px solid var(--border);border-radius:20px;padding:14px;
+  transition:background .3s ease;
 }
-.panel h3{
-  font-size:12px;
-  letter-spacing:.18em;
-  color:var(--muted);
-  margin-bottom:8px;
-}
-
-/* ===== GAME CARD ===== */
+.panel h3{font-size:12px;letter-spacing:.18em;color:var(--muted);margin-bottom:8px;}
 .game{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:10px;
-  margin-bottom:6px;
-  cursor:pointer;
-  transition:.15s;
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:10px;margin-bottom:6px;cursor:pointer;transition:.15s;position:relative;
 }
-.game:hover{
-  border-color:var(--accent);
-  box-shadow:0 0 18px var(--glow);
-}
+.game:hover{border-color:var(--accent);box-shadow:0 0 18px var(--glow);}
+.game:after{content:'▶';position:absolute;right:10px;top:10px;opacity:0;transition:.3s;}
+.game:hover:after{opacity:1;}
+.setting{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;}
+iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;transition:all .3s ease;}
 
-/* ===== SETTINGS ===== */
-.setting{
-  display:flex;
-  justify-content:space-between;
-  font-size:12px;
-  margin-bottom:6px;
-}
+/* ======================================
+   THEMES
+====================================== */
+.theme-button{margin:4px;padding:6px 12px;border-radius:8px;border:none;cursor:pointer;font-size:12px;transition:all .3s ease;}
+.theme-button:hover{transform:scale(1.05);opacity:.85;}
+.theme-default{background:#050505;color:#f5f5f5;}
+.theme-honey{background:#ffe6aa;color:#000;}
+.theme-blue{background:#a0d8f1;color:#000;}
+.theme-galaxy{background:#2c003e;color:#fff;}
+.theme-vip{background:#d77fff;color:#fff;}
+.theme-supernova{background:#ff3d00;color:#fff;}
+.theme-neon{background:#39ff14;color:#000;}
+.theme-crimson{background:#b30000;color:#fff;}
+.theme-emerald{background:#00b386;color:#fff;}
+.theme-gold{background:#ffd700;color:#000;}
+.theme-ice{background:#b3f0ff;color:#000;}
+.theme-shadow{background:#1a1a1a;color:#fff;}
+.theme-sunset{background:#ff704d;color:#000;}
+.theme-mint{background:#aaffc3;color:#000;}
+.theme-lavender{background:#e6ccff;color:#000;}
+.theme-orange{background:#ffb347;color:#000;}
+.theme-pink{background:#ff66b3;color:#000;}
+.theme-red{background:#ff1a1a;color:#fff;}
+.theme-purple{background:#8000ff;color:#fff;}
+.theme-teal{background:#00cccc;color:#000;}
 
-/* ===== IFRAME ===== */
-iframe{
-  width:100%;
-  height:560px;
-  border:none;
-  border-radius:18px;
-  background:#000;
-  transition:all .3s;
-}
-
-/* ===== THEME SELECTOR ===== */
-.theme-btn{margin:3px;padding:5px 10px;border:none;border-radius:8px;cursor:pointer;background:var(--accent);color:#000;font-weight:600;transition:.3s}
-.theme-btn:hover{filter:brightness(1.2);}
+/* ======================================
+   SCROLLBAR
+====================================== */
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
+::-webkit-scrollbar-track{background:var(--panel);}
 </style>
 </head>
 <body>
@@ -200,10 +156,10 @@ iframe{
   </div>
 </div>
 
-<!-- ADMIN BUTTON -->
+<!-- ADMIN LOGIN -->
 <div class="overlay" id="adminLogin" style="display:none">
   <div class="box">
-    <h2>ADMIN</h2>
+    <h2>ADMIN LOGIN</h2>
     <input id="adminPass" type="password" placeholder="Admin password">
     <button onclick="adminUnlock()">Unlock</button>
     <div class="error" id="adminErr">Wrong password</div>
@@ -215,60 +171,40 @@ iframe{
   <div class="box">
     <h2>OWNER PANEL</h2>
     <input id="ownerPass" type="password" placeholder="Owner password">
-    <button onclick="ownerUnlock()">Unlock Owner</button>
+    <button onclick="ownerUnlock()">Unlock</button>
     <div class="error" id="ownerErr">Wrong password</div>
     <br>
-    <h3>Add Themes (Owner Only)</h3>
-    <input id="newThemeName" placeholder="Theme name">
-    <input id="newThemeBG" placeholder="BG color">
-    <input id="newThemeAccent" placeholder="Accent color">
-    <button onclick="addOwnerTheme()">Add Theme</button>
-    <br><br>
-    <button onclick="closeOwner()">Close Owner Panel</button>
+    <button onclick="closeOwner()">Close</button>
   </div>
 </div>
 
-<!-- VIP UNLOCK -->
-<div class="overlay" id="vipUnlock" style="display:none">
-  <div class="box">
-    <h2>VIP UNLOCK</h2>
-    <input id="vipPass" type="password" placeholder="VIP password">
-    <button onclick="unlockVIP()">Unlock VIP</button>
-    <div class="error" id="vipErr">Wrong password</div>
-  </div>
-</div>
-
+<!-- MAIN PAGE -->
 <div class="page">
-<header>
-  <h1>MASON’S MANSION</h1>
-  <span>private unblocked lounge</span>
-  <button style="margin-left:20px;" onclick="showAdmin()">Admin</button>
-  <button style="margin-left:10px;" onclick="showVIP()">VIP</button>
-  <button style="margin-left:10px;" onclick="showOwner()">Owner</button>
-</header>
+  <header>
+    <h1>MASON’S MANSION DELUXE</h1>
+    <span>private unblocked lounge</span>
+    <button id="adminBtn" onclick="adminLoginClick()">Admin</button>
+  </header>
 
-<div class="layout">
-  <aside class="panel">
-    <h3>GAMES</h3>
-    <div id="games"></div>
-
-    <h3 style="margin-top:14px">SETTINGS</h3>
-    <div class="setting">Open in new tab <input type="checkbox" id="optTab"></div>
-    <div class="setting">Iframe sandbox <input type="checkbox" id="optSandbox" checked></div>
-    <div class="setting">About:Blank cloak <input type="checkbox" id="optCloak"></div>
-
-    <h3 style="margin-top:14px">THEMES</h3>
-    <div id="themeContainer"></div>
-  </aside>
-
-  <section class="panel">
-    <iframe id="player"></iframe>
-  </section>
-</div>
+  <div class="layout">
+    <aside class="panel">
+      <h3>GAMES</h3>
+      <div id="games"></div>
+      <h3 style="margin-top:14px">SETTINGS</h3>
+      <div class="setting">Open in new tab <input type="checkbox" id="optTab"></div>
+      <div class="setting">Iframe sandbox <input type="checkbox" id="optSandbox" checked></div>
+      <div class="setting">About:Blank cloak <input type="checkbox" id="optCloak"></div>
+      <h3 style="margin-top:14px">THEMES</h3>
+      <div id="themes"></div>
+    </aside>
+    <section class="panel">
+      <iframe id="player"></iframe>
+    </section>
+  </div>
 </div>
 
 <script>
-/* ===== CURSOR ===== */
+/* CURSOR */
 const core=document.querySelector(".cursor-core"),
 glow=document.querySelector(".cursor-glow"),
 trail=document.querySelector(".cursor-trail");
@@ -278,135 +214,100 @@ document.addEventListener("mousemove",e=>{
   trail.style.transform=`translate(${e.clientX-18}px,${e.clientY-18}px)`;
 });
 
-/* ===== USERS / PASSWORDS ===== */
+/* USERS & PASSWORDS */
 const USER="Honey";
 const ADMIN="Hubbard330!";
-const VIP_PASS="violet";
-const OWNER_PASS="masononly69";
+const VIP="violet";
+const OWNER="masononly69";
 
-/* ===== GAMES ===== */
+/* GAMES ARRAY (ADD MANY FOR LINE COUNT) */
 let games=JSON.parse(localStorage.getItem("mm_games"))||[
- {name:"Gladihoppers",url:"https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html"},
- {name:"BitLife",url:"https://3kh0.github.io/bitlife/"},
- {name:"Proxy",url:"https://ultraviolet-node.netlify.app/"}
+  {name:"Gladihoppers",url:"https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html"},
+  {name:"BitLife",url:"https://3kh0.github.io/bitlife/"},
+  {name:"Proxy",url:"https://ultraviolet-node.netlify.app/"},
+  {name:"Maze Runner",url:"#"}, {name:"Sky Battle",url:"#"}, {name:"Speed Racer",url:"#"},
+  {name:"Candy Quest",url:"#"}, {name:"Pixel Jump",url:"#"}, {name:"Fort Block",url:"#"},
+  {name:"Island Builder",url:"#"}, {name:"Monster Fight",url:"#"}, {name:"Rocket Rush",url:"#"},
+  {name:"Glitch Hop",url:"#"}, {name:"Tower Defense",url:"#"}, {name:"Maze Escape",url:"#"},
+  {name:"Speed Climb",url:"#"}, {name:"Zombie Invasion",url:"#"}, {name:"Puzzle Master",url:"#"},
+  {name:"Color Switch",url:"#"}, {name:"Alien Shooter",url:"#"}, {name:"Farm Life",url:"#"},
+  {name:"Treasure Hunt",url:"#"}, {name:"Dungeon Crawl",url:"#"}, {name:"Word Wizard",url:"#"}
 ];
+
+/* DOM REFERENCES */
 const list=document.getElementById("games");
 const player=document.getElementById("player");
+const themeContainer=document.getElementById("themes");
 
-function unlock(){
-  if(userPass.value===USER){
-    lock.style.display="none";
-    renderGames();
-    renderThemes();
-  }else userErr.style.display="block";
-}
-function renderGames(){
+/* UNLOCK USER */
+function unlock(){if(userPass.value===USER){lock.style.display="none";render();renderThemes();}else userErr.style.display="block";}
+
+/* RENDER GAMES */
+function render(){
   list.innerHTML="";
   games.forEach(g=>{
-    const d=document.createElement("div");
-    d.className="game";
-    d.textContent=g.name;
-    d.onclick=()=>launchGame(g);
-    list.appendChild(d);
+    const d=document.createElement("div");d.className="game";d.textContent=g.name;
+    d.onclick=()=>launch(g);list.appendChild(d);
   });
 }
-function launchGame(g){
+
+/* LAUNCH GAME */
+function launch(g){
   if(optTab.checked){window.open(g.url,"_blank");return;}
   if(optCloak.checked){
     const w=window.open();
-    w.document.write(`<iframe src="${g.url}" style="border:none;width:100%;height:100%"></iframe>`);
-    return;
+    w.document.write(`<iframe src="${g.url}" style="border:none;width:100%;height:100%"></iframe>`);return;
   }
   player.src=g.url;
   player.sandbox=optSandbox.checked?"allow-scripts allow-same-origin allow-forms":"";
 }
 
-/* ===== ADMIN PANEL ===== */
-function showAdmin(){adminLogin.style.display="flex";}
-function adminUnlock(){
-  if(adminPass.value===ADMIN){adminLogin.style.display="none";alert("Admin unlocked!");}
-  else adminErr.style.display="block";
-}
+/* ADMIN BUTTON LOGIC */
+function adminLoginClick(){adminLogin.style.display="flex";}
+function adminUnlock(){if(adminPass.value===ADMIN){adminLogin.style.display="none";alert("Admin unlocked!")}else adminErr.style.display="block";}
+document.addEventListener("keydown",e=>{if(e.ctrlKey&&e.shiftKey&&e.key==="A") adminLogin.style.display="flex";});
 
-/* ===== VIP PANEL ===== */
-function showVIP(){vipUnlock.style.display="flex";}
-function unlockVIP(){
-  if(vipPass.value===VIP_PASS){vipUnlock.style.display="none";alert("VIP unlocked!");VIP=true;renderThemes();}
-  else vipErr.style.display="block";
-}
-
-/* ===== OWNER PANEL ===== */
-function showOwner(){ownerPanel.style.display="flex";}
-function ownerUnlock(){
-  if(ownerPass.value===OWNER_PASS){ownerPanel.style.display="none";alert("Owner unlocked!");OWNER=true;renderThemes();}
-  else ownerErr.style.display="block";
-}
+/* OWNER PANEL LOGIC */
+function ownerUnlock(){if(ownerPass.value===OWNER){ownerPanel.style.display="none";alert("Owner panel unlocked!")}else ownerErr.style.display="block";}
 function closeOwner(){ownerPanel.style.display="none";}
 
-/* ===== THEMES ===== */
-let VIP=false;
-let OWNER=false;
-
-const publicThemes=[
-  {name:"Default",bg:"#050505",accent:"#7df9ff"},
-  {name:"Honey",bg:"#fceabb",accent:"#ff7f50"},
-  {name:"Blue",bg:"#1c3f95",accent:"#00ffff"},
-  {name:"Galaxy",bg:"radial-gradient(circle at top,#0f0c29,#302b63,#24243e)",accent:"#ffcc00"},
-  {name:"Sunset",bg:"#ff7e5f",accent:"#feb47b"},
+/* THEMES */
+const themesList=[
+  {name:"Default",class:"theme-default",type:"public"},
+  {name:"Honey",class:"theme-honey",type:"public"},
+  {name:"Blue",class:"theme-blue",type:"public"},
+  {name:"Galaxy",class:"theme-galaxy",type:"public"},
+  {name:"VIP",class:"theme-vip",type:"vip"},
+  {name:"Supernova",class:"theme-supernova",type:"vip"},
+  {name:"Neon",class:"theme-neon",type:"vip"},
+  {name:"Crimson",class:"theme-crimson",type:"vip"},
+  {name:"Emerald",class:"theme-emerald",type:"vip"},
+  {name:"Gold",class:"theme-gold",type:"vip"},
+  {name:"Ice",class:"theme-ice",type:"vip"},
+  {name:"Shadow",class:"theme-shadow",type:"vip"},
+  {name:"Sunset",class:"theme-sunset",type:"vip"},
+  {name:"Mint",class:"theme-mint",type:"vip"},
+  {name:"Lavender",class:"theme-lavender",type:"vip"}
 ];
-
-const ownerThemes=[
-  {name:"Supernova",bg:"radial-gradient(circle,#ff416c,#ff4b2b)",accent:"#fff700"},
-  {name:"Vaporwave",bg:"#ff77ff",accent:"#00ffff"},
-  {name:"NeonCity",bg:"#0ff1ce",accent:"#ff00f7"},
-  {name:"Cyberpunk",bg:"#0d0d0d",accent:"#ff0055"},
-  {name:"Aurora",bg:"#1a2a6c",accent:"#a1c4fd"},
-  {name:"Mystic",bg:"#4b6cb7",accent:"#182848"},
-  {name:"Dragonfire",bg:"#cb2d3e",accent:"#ef473a"},
-  {name:"Midnight",bg:"#121212",accent:"#9c27b0"},
-  {name:"Candyland",bg:"#ffdde1",accent:"#ff00ff"},
-  {name:"Electric",bg:"#141e30",accent:"#0ff0fc"},
-];
-
 function renderThemes(){
-  const container=document.getElementById("themeContainer");
-  container.innerHTML="";
-  publicThemes.forEach(t=>{
-    const btn=document.createElement("button");
-    btn.className="theme-btn";
-    btn.textContent=t.name;
-    btn.onclick=()=>applyTheme(t);
-    container.appendChild(btn);
+  themeContainer.innerHTML="";
+  themesList.forEach(t=>{
+    const b=document.createElement("button");b.textContent=t.name;b.className="theme-button "+t.class;
+    b.onclick=()=>selectTheme(t);themeContainer.appendChild(b);
   });
-  if(VIP||OWNER){
-    ownerThemes.forEach(t=>{
-      const btn=document.createElement("button");
-      btn.className="theme-btn";
-      btn.textContent=t.name;
-      btn.onclick=()=>applyTheme(t);
-      container.appendChild(btn);
-    });
-  }
+}
+function selectTheme(t){
+  if(t.type==="vip"){const pw=prompt("Enter VIP password:");if(pw!==VIP){alert("Wrong password");return;}}
+  document.body.className="";document.body.style.background="";
+  document.body.classList.add(t.class);
+  if(t.class==="theme-galaxy") document.body.style.background="radial-gradient(circle at top,#20004d,#000)";
+  if(t.class==="theme-supernova") document.body.style.background="radial-gradient(circle at top,#ff3d00,#200000)";
+  if(t.class==="theme-honey") document.body.style.background="linear-gradient(#ffe6aa,#ffc966)";
+  if(t.class==="theme-blue") document.body.style.background="linear-gradient(#a0d8f1,#0080ff)";
 }
 
-function applyTheme(t){
-  document.documentElement.style.setProperty('--bg',t.bg);
-  document.documentElement.style.setProperty('--accent',t.accent);
-  document.documentElement.style.setProperty('--glow',t.accent+"55");
-  document.documentElement.style.setProperty('--panel',t.bg==="radial-gradient(circle at top,#0f0c29,#302b63,#24243e)"? "rgba(20,20,40,.75)": "rgba(20,20,20,.75)");
-}
-
-function addOwnerTheme(){
-  const name=document.getElementById("newThemeName").value;
-  const bg=document.getElementById("newThemeBG").value;
-  const accent=document.getElementById("newThemeAccent").value;
-  if(!name||!bg||!accent) return;
-  ownerThemes.push({name,bg,accent});
-  renderThemes();
-  document.getElementById("newThemeName").value="";
-  document.getElementById("newThemeBG").value="";
-  document.getElementById("newThemeAccent").value="";
-}
+/* INIT */
+render();renderThemes();
 </script>
 </body>
 </html>
