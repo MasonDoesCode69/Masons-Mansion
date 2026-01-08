@@ -26,7 +26,6 @@ body{
   cursor:none;
 }
 
-/* Cursor */
 .cursor-core,.cursor-glow,.cursor-trail{
   position:fixed;pointer-events:none;border-radius:50%;z-index:9999;
 }
@@ -34,22 +33,18 @@ body{
 .cursor-glow{width:120px;height:120px;background:radial-gradient(circle,var(--glow),transparent 70%);filter:blur(8px);transition:transform .05s linear;}
 .cursor-trail{width:36px;height:36px;border:1px solid rgba(255,255,255,.35);opacity:.5;transition:transform .12s ease-out;}
 
-/* overlays */
 .overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;z-index:10000;
-  display:none;
 }
-.overlay.active{display:flex;}
 .box{
   background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:20px;
-  padding:26px;width:360px;text-align:center;box-shadow:0 0 50px #000;
+  padding:26px;width:300px;text-align:center;box-shadow:0 0 50px #000;
 }
 .box h2{letter-spacing:.18em;margin-bottom:10px;}
 .box input{width:100%;padding:9px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);text-align:center;margin-bottom:10px;}
 .box button{padding:8px 16px;border-radius:999px;border:none;background:var(--accent);color:#000;cursor:pointer;font-weight:600;margin:3px;}
 .error{display:none;color:#ff6a6a;font-size:11px;}
 
-/* page layout */
 .page{max-width:1200px;margin:0 auto;padding:20px;}
 header{display:flex;justify-content:space-between;align-items:center;background:var(--panel);border:1px solid var(--border);border-radius:24px;padding:16px 22px;margin-bottom:18px;}
 header h1{font-size:20px;letter-spacing:.25em;}
@@ -62,34 +57,26 @@ header span{font-size:11px;color:var(--muted);}
 .setting{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;}
 iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;}
 
-/* theme buttons */
 .theme-btn{padding:6px 12px;margin:4px;border-radius:12px;border:none;cursor:pointer;font-weight:600;color:#fff;}
 </style>
 </head>
 <body>
 
-<!-- Cursor -->
 <div class="cursor-glow"></div>
 <div class="cursor-trail"></div>
 <div class="cursor-core"></div>
 
-<!-- User Login -->
-<div class="overlay active" id="lock">
+<!-- Login Pages -->
+<div class="overlay" id="lock">
   <div class="box">
     <h2>MASON’S MANSION</h2>
     <input id="userPass" type="password" placeholder="Enter password">
     <button onclick="unlock()">Enter</button>
     <div class="error" id="userErr">Wrong password</div>
-    <div style="margin-top:10px;">
-      <button onclick="showOverlay(vipLogin)">VIP Login</button>
-      <button onclick="showOverlay(ownerLogin)">Owner Login</button>
-      <button onclick="showOverlay(adminLogin)">Admin Login</button>
-    </div>
   </div>
 </div>
 
-<!-- VIP Login -->
-<div class="overlay" id="vipLogin">
+<div class="overlay" id="vipLogin" style="display:none">
   <div class="box">
     <h2>VIP LOGIN</h2>
     <input id="vipPass" type="password" placeholder="VIP password">
@@ -98,8 +85,7 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;}
   </div>
 </div>
 
-<!-- Owner Login -->
-<div class="overlay" id="ownerLogin">
+<div class="overlay" id="ownerLogin" style="display:none">
   <div class="box">
     <h2>OWNER LOGIN</h2>
     <input id="ownerPass" type="password" placeholder="Owner password">
@@ -108,78 +94,60 @@ iframe{width:100%;height:560px;border:none;border-radius:18px;background:#000;}
   </div>
 </div>
 
-<!-- Admin Login -->
-<div class="overlay" id="adminLogin">
-  <div class="box">
-    <h2>ADMIN LOGIN</h2>
-    <input id="adminPass" type="password" placeholder="Admin password">
-    <button onclick="adminUnlock()">Enter</button>
-    <div class="error" id="adminErr">Wrong password</div>
-  </div>
-</div>
-
-<!-- Admin/VIP/Owner Panels -->
-<div class="overlay" id="adminPanel">
+<div class="overlay" id="adminPanel" style="display:none">
   <div class="box">
     <h2>ADMIN PANEL</h2>
     <input id="gName" placeholder="Game name">
     <input id="gUrl" placeholder="Game URL">
     <button onclick="addGame()">Add Game</button>
     <button onclick="closeAdmin()">Close</button>
+    <div style="margin-top:8px;font-size:10px;color:#aaa;">Thank you for using Mason’s Mansion – Credits to Mason Porrazzo</div>
   </div>
 </div>
 
-<div class="overlay" id="vipPanel">
+<div class="overlay" id="vipPanel" style="display:none">
   <div class="box">
     <h2>VIP PANEL</h2>
-    <button onclick="alert('VIP Button 1')">Button 1</button>
-    <button onclick="alert('VIP Button 2')">Button 2</button>
-    <button onclick="alert('VIP Button 3')">Button 3</button>
-    <button onclick="alert('VIP Button 4')">Button 4</button>
-    <button onclick="alert('VIP Button 5')">Button 5</button>
-    <button onclick="alert('VIP Button 6')">Button 6</button>
-    <button onclick="alert('VIP Button 7')">Button 7</button>
-    <button onclick="alert('VIP Button 8')">Button 8</button>
-    <button onclick="alert('VIP Button 9')">Button 9</button>
-    <button onclick="alert('VIP Button 10')">Button 10</button>
+    <button onclick="alert('VIP silly button!')">Silly Button</button>
+    <button onclick="alert('VIP feature coming soon!')">VIP Fun Button</button>
     <button onclick="closeVIP()">Close</button>
   </div>
 </div>
 
-<div class="overlay" id="ownerPanel">
+<div class="overlay" id="ownerPanel" style="display:none">
   <div class="box">
     <h2>OWNER PANEL</h2>
-    <button onclick="alert('Owner Button 1')">Button 1</button>
-    <button onclick="alert('Owner Button 2')">Button 2</button>
-    <button onclick="alert('Owner Button 3')">Button 3</button>
-    <button onclick="alert('Owner Button 4')">Button 4</button>
-    <button onclick="alert('Owner Button 5')">Button 5</button>
-    <button onclick="alert('Owner Button 6')">Button 6</button>
-    <button onclick="alert('Owner Button 7')">Button 7</button>
-    <button onclick="alert('Owner Button 8')">Button 8</button>
-    <button onclick="alert('Owner Button 9')">Button 9</button>
-    <button onclick="alert('Owner Button 10')">Button 10</button>
+    <button onclick="grantVIP()">Grant VIP</button>
+    <button onclick="revokeVIP()">Revoke VIP</button>
+    <button onclick="alert('Owner powerful button 1!')">Power Button 1</button>
+    <button onclick="alert('Owner powerful button 2!')">Power Button 2</button>
+    <button onclick="alert('Owner powerful button 3!')">Power Button 3</button>
+    <button onclick="startRGBTheme()">RGB Theme</button>
     <button onclick="closeOwner()">Close</button>
+    <div style="margin-top:8px;font-size:10px;color:#aaa;">Thank you for using Mason’s Mansion – Credits to Mason Porrazzo</div>
   </div>
 </div>
 
-<!-- Main page -->
 <div class="page">
 <header>
   <h1>MASON’S MANSION</h1>
   <span>private unblocked lounge</span>
 </header>
+
 <div class="layout">
   <aside class="panel">
     <h3>GAMES</h3>
     <div id="games"></div>
+
     <h3 style="margin-top:14px">SETTINGS</h3>
     <div class="setting">Open in new tab <input type="checkbox" id="optTab"></div>
     <div class="setting">Iframe sandbox <input type="checkbox" id="optSandbox" checked></div>
     <div class="setting">About:Blank cloak <input type="checkbox" id="optCloak"></div>
+
     <h3 style="margin-top:14px">THEMES</h3>
     <div id="themes"></div>
   </aside>
+
   <section class="panel">
     <iframe id="player"></iframe>
   </section>
@@ -198,22 +166,9 @@ document.addEventListener("mousemove",e=>{
 });
 
 /* Users */
-const USER="Honey",VIP="VIP67",OWNER="masononly69",ADMIN="Hubbard330!";
-let vipLogged=false,ownerLogged=false,adminLogged=false;
+const USER="Honey",VIP="VIP67",OWNER="masononly69";
+let vipUsers=[]; // dynamically store VIPs
 
-/* Elements */
-const lock=document.getElementById("lock");
-const vipLogin=document.getElementById("vipLogin");
-const ownerLogin=document.getElementById("ownerLogin");
-const adminLogin=document.getElementById("adminLogin");
-const adminPanel=document.getElementById("adminPanel");
-const vipPanel=document.getElementById("vipPanel");
-const ownerPanel=document.getElementById("ownerPanel");
-const list=document.getElementById("games");
-const player=document.getElementById("player");
-const themes=document.getElementById("themes");
-
-/* Games */
 let games=[
 {name:"Gladihoppers",url:"https://xfrapo.github.io/projectroyal/projects/gladihoppers/index.html"},
 {name:"BitLife",url:"https://3kh0.github.io/bitlife/"},
@@ -221,35 +176,90 @@ let games=[
 ];
 
 /* Themes */
-let themeList=[
+const themeList=[
 {name:"Honey",type:"public",bg:"#fff8e5",panel:"rgba(255,191,0,.5)",accent:"#ffbf00",glow:"rgba(255,191,0,.35)"},
 {name:"Blue",type:"public",bg:"#e5f7ff",panel:"rgba(0,191,255,.25)",accent:"#00bfff",glow:"rgba(0,191,255,.35)"},
 {name:"Galaxy",type:"public",bg:"#1b0033",panel:"rgba(50,20,60,.7)",accent:"#bb88ff",glow:"rgba(187,136,255,.35)"},
 {name:"Supernova",type:"owner",bg:"#2b0000",panel:"rgba(255,85,0,.75)",accent:"#ff5500",glow:"rgba(255,85,0,.35)"},
 {name:"VIP Pink",type:"vip",bg:"#ffe5f0",panel:"rgba(255,51,153,.5)",accent:"#ff3399",glow:"rgba(255,51,153,.35)"},
-{name:"RGB Owner",type:"owner",bg:"linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet)",panel:"rgba(0,0,0,.7)",accent:"#fff",glow:"rgba(255,255,255,.4)"},
-{name:"Admin Dark",type:"admin",bg:"#000",panel:"rgba(50,50,50,.85)",accent:"#00ffcc",glow:"rgba(0,255,204,.35)"}];
+// 20 new public themes
+{name:"Nightfall",type:"public",bg:"linear-gradient(135deg,#0f2027,#203a43,#2c5364)",panel:"rgba(30,30,30,.8)",accent:"#1ac6ff",glow:"rgba(26,198,255,.35)"},
+{name:"Deep Space",type:"public",bg:"linear-gradient(135deg,#000428,#004e92)",panel:"rgba(20,20,40,.75)",accent:"#9d00ff",glow:"rgba(157,0,255,.35)"},
+{name:"Aurora",type:"public",bg:"linear-gradient(135deg,#1a2a6c,#b21f1f,#fdbb2d)",panel:"rgba(40,20,50,.7)",accent:"#ff33cc",glow:"rgba(255,51,204,.35)"},
+{name:"Crimson Tide",type:"public",bg:"linear-gradient(135deg,#4b0000,#8b0000,#c00000)",panel:"rgba(50,0,0,.75)",accent:"#ff4444",glow:"rgba(255,68,68,.35)"},
+{name:"Twilight",type:"public",bg:"linear-gradient(135deg,#2c3e50,#4ca1af)",panel:"rgba(30,30,30,.7)",accent:"#00ffea",glow:"rgba(0,255,234,.35)"},
+{name:"Obsidian",type:"public",bg:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)",panel:"rgba(20,20,20,.85)",accent:"#ff9900",glow:"rgba(255,153,0,.35)"},
+{name:"Violet Dusk",type:"public",bg:"linear-gradient(135deg,#20002c,#cbb4d4)",panel:"rgba(30,20,40,.8)",accent:"#bb33ff",glow:"rgba(187,51,255,.35)"},
+{name:"Cyberpunk",type:"public",bg:"linear-gradient(135deg,#0f0c29,#302b63,#ff0099)",panel:"rgba(40,0,40,.7)",accent:"#ff00cc",glow:"rgba(255,0,204,.35)"},
+{name:"Dark Ocean",type:"public",bg:"linear-gradient(135deg,#000428,#004e92)",panel:"rgba(20,20,40,.75)",accent:"#00c6ff",glow:"rgba(0,198,255,.35)"},
+{name:"Inferno",type:"public",bg:"linear-gradient(135deg,#ff0000,#ff9900,#fffc00)",panel:"rgba(50,20,10,.8)",accent:"#ffdd00",glow:"rgba(255,221,0,.35)"},
+{name:"Midnight Purple",type:"public",bg:"linear-gradient(135deg,#1e0033,#4b0066)",panel:"rgba(30,0,40,.75)",accent:"#cc66ff",glow:"rgba(204,102,255,.35)"},
+{name:"Eclipse",type:"public",bg:"linear-gradient(135deg,#2c3e50,#000000)",panel:"rgba(20,20,20,.85)",accent:"#ff5555",glow:"rgba(255,85,85,.35)"},
+{name:"Galaxy Storm",type:"public",bg:"linear-gradient(135deg,#141e30,#243b55,#0f0c29)",panel:"rgba(20,20,30,.8)",accent:"#33ccff",glow:"rgba(51,204,255,.35)"},
+{name:"Steel Blue",type:"public",bg:"linear-gradient(135deg,#1c92d2,#f2fcfe)",panel:"rgba(30,30,40,.75)",accent:"#66ccff",glow:"rgba(102,204,255,.35)"},
+{name:"Mystic",type:"public",bg:"linear-gradient(135deg,#42275a,#734b6d)",panel:"rgba(40,20,40,.75)",accent:"#ff66cc",glow:"rgba(255,102,204,.35)"},
+{name:"Dark Coral",type:"public",bg:"linear-gradient(135deg,#ff7e5f,#feb47b)",panel:"rgba(50,20,20,.75)",accent:"#ff9966",glow:"rgba(255,153,102,.35)"},
+{name:"Shadow Realm",type:"public",bg:"linear-gradient(135deg,#0f2027,#203a43)",panel:"rgba(20,20,30,.85)",accent:"#66ffcc",glow:"rgba(102,255,204,.35)"},
+{name:"Oblivion",type:"public",bg:"linear-gradient(135deg,#2c3e50,#bdc3c7)",panel:"rgba(30,30,30,.8)",accent:"#ff66ff",glow:"rgba(255,102,255,.35)"},
+{name:"Phantom",type:"public",bg:"linear-gradient(135deg,#434343,#000000)",panel:"rgba(20,20,20,.85)",accent:"#ff00ff",glow:"rgba(255,0,255,.35)"},
+{name:"Night Sky",type:"public",bg:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)",panel:"rgba(20,20,30,.8)",accent:"#33ffcc",glow:"rgba(51,255,204,.35)"}
+];
 
-/* Functions */
-function showOverlay(el){document.querySelectorAll(".overlay").forEach(o=>o.classList.remove("active"));el.classList.add("active");}
-function unlock(){if(document.getElementById("userPass").value===USER){lock.classList.remove("active");renderGames();renderThemes();alert("Thank you for using Mason’s Mansion. Credits to Mason Porrazzo.");}else document.getElementById("userErr").style.display="block";}
-function vipUnlock(){if(document.getElementById("vipPass").value===VIP){vipLogged=true;vipLogin.classList.remove("active");vipPanel.classList.add("active");alert("VIP Access Granted. Thank you for using Mason’s Mansion. Credits to Mason Porrazzo.");}else document.getElementById("vipErr").style.display="block";}
-function ownerUnlock(){if(document.getElementById("ownerPass").value===OWNER){ownerLogged=true;ownerLogin.classList.remove("active");ownerPanel.classList.add("active");alert("Owner Access Granted. Thank you for using Mason’s Mansion. Credits to Mason Porrazzo.");}else document.getElementById("ownerErr").style.display="block";}
-function adminUnlock(){if(document.getElementById("adminPass").value===ADMIN){adminLogged=true;adminLogin.classList.remove("active");adminPanel.classList.add("active");alert("Admin Access Granted. Thank you for using Mason’s Mansion. Credits to Mason Porrazzo.");}else document.getElementById("adminErr").style.display="block";}
+/* DOM Elements */
+const list=document.getElementById("games"),
+player=document.getElementById("player"),
+themes=document.getElementById("themes"),
+lock=document.getElementById("lock"),
+vipLogin=document.getElementById("vipLogin"),
+ownerLogin=document.getElementById("ownerLogin"),
+vipPanel=document.getElementById("vipPanel"),
+ownerPanel=document.getElementById("ownerPanel"),
+adminPanel=document.getElementById("adminPanel");
 
-/* Admin Panel */
-function addGame(){if(!document.getElementById("gName").value||!document.getElementById("gUrl").value)return;games.push({name:document.getElementById("gName").value,url:document.getElementById("gUrl").value});renderGames();document.getElementById("gName").value=document.getElementById("gUrl").value="";}
-function closeAdmin(){adminPanel.classList.remove("active");}
-function closeVIP(){vipPanel.classList.remove("active");}
-function closeOwner(){ownerPanel.classList.remove("active");}
+/* Settings checkboxes */
+const optTab=document.getElementById("optTab"),
+optSandbox=document.getElementById("optSandbox"),
+optCloak=document.getElementById("optCloak");
 
-/* Render games/themes */
-function renderGames(){list.innerHTML="";games.forEach(g=>{const d=document.createElement("div");d.className="game";d.textContent=g.name;d.onclick=()=>{player.src=g.url;};list.appendChild(d);});}
-function renderThemes(){themes.innerHTML="";themeList.forEach(t=>{const b=document.createElement("button");b.className="theme-btn";b.textContent=t.name;b.onclick=()=>{if(t.type==="vip"&&!vipLogged){alert("Permission Declined");return;}if(t.type==="owner"&&!ownerLogged){alert("Permission Declined");return;}if(t.type==="admin"&&!adminLogged){alert("Permission Declined");return;}applyTheme(t);};themes.appendChild(b);});}
-function applyTheme(t){document.body.style.background=t.bg;document.querySelectorAll(".panel,.box,header").forEach(el=>el.style.background=t.panel);document.querySelectorAll(".theme-btn").forEach(el=>el.style.background=t.accent);core.style.background=t.accent;trail.style.borderColor=t.accent;document.documentElement.style.setProperty("--glow",t.glow);}
+/* Render Games */
+function renderGames(){
+  list.innerHTML="";
+  games.forEach(g=>{
+    const d=document.createElement("div");
+    d.className="game";d.textContent=g.name;
+    d.onclick=()=>launch(g);list.appendChild(d);
+  });
+}
 
-/* Init */
-renderGames();renderThemes();
-</script>
-</body>
-</html>
+/* Launch games */
+function launch(g){
+  if(optTab.checked){window.open(g.url,"_blank");return;}
+  if(optCloak.checked){
+    const w=window.open();
+    w.document.write(`<iframe src="${g.url}" style="border:none;width:100%;height:100%"></iframe>`);return;
+  }
+  player.src=g.url;
+  player.sandbox=optSandbox.checked?"allow-scripts allow-same-origin allow-forms":"";
+}
+
+/* Render Themes */
+function renderThemes(){
+  themes.innerHTML="";
+  themeList.forEach(t=>{
+    const b=document.createElement("button");
+    b.className="theme-btn";b.textContent=t.name;
+    b.onclick=()=>applyTheme(t);
+    themes.appendChild(b);
+  });
+}
+
+/* Apply Theme */
+function applyTheme(t){
+  if(t.type==="vip"){if(!vipPanel.style.display){alert("Permission Declined");return;} }
+  if(t.type==="owner"){if(!ownerPanel.style.display){alert("Permission Declined");return;} }
+  if(t.type==="owner" && t.name==="RGB"){startRGBTheme(); return;}
+  document.body.style.background=t.bg;
+  document.querySelectorAll(".panel,.box").forEach(el=>el.style.background=t.panel);
+  document.querySelectorAll(".theme-btn").forEach(el=>el.style.background=t.accent);
+  core.style.background=t.accent;trail.style.borderColor=t.accent;
+  document.documentElement.style.setProperty
