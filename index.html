@@ -1,139 +1,353 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="honey">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mason’s Mansion | Honey Perfect V13</title>
+    <title>Mason’s Mansion | V13 Honey Perfect</title>
+    <!-- Matter.js for Physics Engine -->
+    <script src="cdnjs.cloudflare.com"></script>
     <style>
-        :root {
-            /* Honey Gold Theme (Default) */
-            --bg: #050400;
-            --accent: #ffcc33;
-            --glow: rgba(255, 204, 51, 0.4);
-            --glass: rgba(18, 16, 10, 0.95);
-            --border: rgba(255, 204, 51, 0.2);
-            --text: #ffffff;
-            --font: 'Segoe UI', system-ui, sans-serif;
+        /* --- THEMES DEFINITIONS (20+) --- */
+        :root, [data-theme="honey"] {
+            --bg: #050400; --accent: #ffcc33; --glow: rgba(255, 204, 51, 0.25);
+            --glass: rgba(15, 12, 5, 0.7); /* Gradient Lower */
+            --border: rgba(255, 204, 51, 0.25); --text: #ffffff;
         }
-
-        /* Better Theme Options (Alternative: Midnight Blue) */
         [data-theme="midnight"] {
-            --bg: #00040a;
-            --accent: #00d4ff;
-            --glow: rgba(0, 212, 255, 0.4);
-            --glass: rgba(10, 15, 25, 0.95);
-            --border: rgba(0, 212, 255, 0.2);
+            --bg: #00040a; --accent: #00d4ff; --glow: rgba(0, 212, 255, 0.25);
+            --glass: rgba(10, 15, 25, 0.7); --border: rgba(0, 212, 255, 0.2);
+        }
+        [data-theme="vaporwave"] {
+            --bg: #1a0033; --accent: #ff00ff; --glow: rgba(255, 0, 255, 0.25);
+            --glass: rgba(26, 0, 51, 0.7); --border: rgba(255, 0, 255, 0.2);
+        }
+        [data-theme="ocean"] {
+            --bg: #001f3f; --accent: #7fdbff; --glow: rgba(127, 219, 255, 0.25);
+            --glass: rgba(0, 31, 63, 0.7); --border: rgba(127, 219, 255, 0.2);
+        }
+        [data-theme="forest"] {
+            --bg: #003300; --accent: #2ecc40; --glow: rgba(46, 204, 64, 0.25);
+            --glass: rgba(0, 51, 0, 0.7); --border: rgba(46, 204, 64, 0.2);
+        }
+        [data-theme="ruby"] {
+            --bg: #330000; --accent: #ff4136; --glow: rgba(255, 65, 54, 0.25);
+            --glass: rgba(51, 0, 0, 0.7); --border: rgba(255, 65, 54, 0.2);
+        }
+        [data-theme="arctic"] {
+            --bg: #f0f8ff; --accent: #0000ff; --glow: rgba(0, 0, 255, 0.1);
+            --glass: rgba(240, 248, 255, 0.7); --border: rgba(0, 0, 255, 0.1);
+            --text: #000000;
+        }
+        [data-theme="fire"] {
+            --bg: #330c00; --accent: #ff851b; --glow: rgba(255, 133, 27, 0.3);
+            --glass: rgba(51, 12, 0, 0.7); --border: rgba(255, 133, 27, 0.2);
+        }
+        [data-theme="grape"] {
+            --bg: #1a001a; --accent: #b100ff; --glow: rgba(177, 0, 255, 0.25);
+            --glass: rgba(26, 0, 26, 0.7); --border: rgba(177, 0, 255, 0.2);
+        }
+        [data-theme="lime"] {
+            --bg: #0d1a00; --accent: #39ff14; --glow: rgba(57, 255, 20, 0.25);
+            --glass: rgba(13, 26, 0, 0.7); --border: rgba(57, 255, 20, 0.2);
+        }
+        [data-theme="solar"] {
+            --bg: #001a1a; --accent: #fffd37; --glow: rgba(255, 253, 55, 0.25);
+            --glass: rgba(0, 26, 26, 0.7); --border: rgba(255, 253, 55, 0.2);
+        }
+        [data-theme="rose"] {
+            --bg: #1a000a; --accent: #ff007f; --glow: rgba(255, 0, 127, 0.25);
+            --glass: rgba(26, 0, 10, 0.7); --border: rgba(255, 0, 127, 0.2);
+        }
+        [data-theme="silver"] {
+            --bg: #1a1a1a; --accent: #aaaaaa; --glow: rgba(170, 170, 170, 0.25);
+            --glass: rgba(26, 26, 26, 0.7); --border: rgba(170, 170, 170, 0.2);
+        }
+        [data-theme="rust"] {
+            --bg: #330d00; --accent: #b5651d; --glow: rgba(181, 101, 29, 0.25);
+            --glass: rgba(51, 13, 0, 0.7); --border: rgba(181, 101, 29, 0.2);
+        }
+        [data-theme="indigo"] {
+            --bg: #000033; --accent: #4b0082; --glow: rgba(75, 0, 130, 0.25);
+            --glass: rgba(0, 0, 51, 0.7); --border: rgba(75, 0, 130, 0.2);
+        }
+        [data-theme="neon"] {
+            --bg: #000000; --accent: #39ff14; --glow: rgba(57, 255, 20, 0.5);
+            --glass: rgba(0, 0, 0, 0.8); --border: rgba(57, 255, 20, 0.3);
+        }
+        [data-theme="pastel"] {
+            --bg: #f5eefc; --accent: #ffb6c1; --glow: rgba(255, 182, 193, 0.5);
+            --glass: rgba(245, 239, 252, 0.7); --border: rgba(255, 182, 193, 0.2);
+            --text: #333333;
+        }
+        [data-theme="darkmatter"] {
+            --bg: #0a0a0a; --accent: #6a0dad; --glow: rgba(106, 13, 173, 0.25);
+            --glass: rgba(10, 10, 10, 0.7); --border: rgba(106, 13, 173, 0.2);
+        }
+        [data-theme="cyber"] {
+            --bg: #000000; --accent: #00ffff; --glow: rgba(0, 255, 255, 0.4);
+            --glass: rgba(0, 0, 0, 0.85); --border: rgba(0, 255, 255, 0.2);
+        }
+        [data-theme="blizzard"] {
+            --bg: #e0f7fa; --accent: #00bcd4; --glow: rgba(0, 188, 212, 0.2);
+            --glass: rgba(224, 247, 250, 0.7); --border: rgba(0, 188, 212, 0.15);
+            --text: #000000;
         }
 
-        body { background: var(--bg); color: var(--text); font-family: var(--font); margin: 0; overflow: hidden; }
+
+        --font: 'Segoe UI', system-ui, sans-serif;
+        
+        body { background: var(--bg); color: var(--text); font-family: var(--font); margin: 0; overflow: hidden; height: 100vh; width: 100vw; transition: background 0.8s ease; }
+        /* Reset cursor for everything, JS handles custom cursor */
+        * { cursor: none !important; box-sizing: border-box; }
+
+        /* --- PHYSICS & PARTICLES --- */
+        #physics-container { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+        /* Add cool particle effects */
+        .particle {
+            position: absolute; width: 3px; height: 3px; background: var(--accent);
+            border-radius: 50%; pointer-events: none; opacity: 0.6;
+            animation: flicker 1s infinite alternate;
+        }
+        @keyframes flicker { 0% { opacity: 0.6; transform: scale(1); } 100% { opacity: 1; transform: scale(1.5); } }
+
+
+        /* --- CUSTOM CURSOR --- */
+        #cursor-glow {
+            position: fixed; width: 450px; height: 450px;
+            background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+            pointer-events: none; z-index: 10001; transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background 0.5s ease;
+        }
+        #cursor-dot {
+            position: fixed; width: 6px; height: 6px; background: var(--accent);
+            border-radius: 50%; pointer-events: none; z-index: 10002;
+            transform: translate(-50%, -50%); box-shadow: 0 0 15px var(--accent);
+            transition: background 0.5s ease, box-shadow 0.5s ease;
+        }
 
         /* --- AUTH SCREEN --- */
-        #auth-overlay {
-            position: fixed; inset: 0; z-index: 10000;
-            display: flex; align-items: center; justify-content: center;
-            background: #000; transition: 1s ease-in-out;
-        }
-        .login-card { 
-            background: var(--glass); padding: 40px; border-radius: 25px; 
-            border: 1px solid var(--accent); text-align: center; width: 350px; 
-            box-shadow: 0 0 30px var(--glow);
-        }
-        .login-card h1 { color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-size: 24px; text-transform: uppercase; }
-        .login-card input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 12px; border-radius: 10px; color: #fff; margin-bottom: 15px; text-align: center; }
-        .login-card button { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--accent); color: #000; font-weight: 900; cursor: pointer; }
+        #auth-overlay { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background: #000; transition: 1s ease-in-out; }
+        .login-card { background: var(--glass); padding: 40px; border-radius: 30px; border: 1px solid var(--border); text-align: center; width: 350px; box-shadow: 0 0 50px rgba(0,0,0,1); backdrop-filter: blur(20px); transition: all 0.5s ease; }
+        .login-card h1 { color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-size: 24px; text-shadow: 0 0 10px var(--glow); }
+        .credits { font-size: 10px; opacity: 0.6; margin-bottom: 25px; letter-spacing: 2px; text-transform: uppercase; }
+        .login-card input { width: 100%; background: #000; border: 1px solid var(--border); padding: 12px; border-radius: 12px; color: #fff; margin-bottom: 15px; text-align: center; outline: none; transition: all 0.5s ease; }
+        .login-card button { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--accent); color: #000; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .login-card button:hover { box-shadow: 0 0 20px var(--accent); transform: scale(1.02); }
+        #welcome-msg { opacity: 0; transition: opacity 1s ease 0.5s; font-size: 14px; margin-top: 20px; color: var(--text); }
+        #welcome-msg.show { opacity: 1; }
 
-        /* --- SIDEBAR (Improved Transitions) --- */
-        #sidebar {
-            position: fixed; left: -240px; top: 50%; transform: translateY(-50%);
-            width: 240px; background: var(--glass); border: 1px solid var(--border);
-            padding: 20px; border-radius: 0 20px 20px 0; z-index: 2000;
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        #sidebar.open { left: 0; box-shadow: 0 0 40px var(--glow); border-right: 2px solid var(--accent); }
-        
-        #sidebar-tab {
-            position: absolute; right: -40px; top: 50%; transform: translateY(-50%);
-            background: var(--accent); color: #000; padding: 15px 8px;
-            border-radius: 0 10px 10px 0; cursor: pointer; font-weight: 900; 
-            writing-mode: vertical-rl; font-size: 11px; text-transform: uppercase;
-        }
+        /* --- SIDEBAR (MADNESS LIST) --- */
+        #sidebar { position: fixed; left: -250px; top: 50%; transform: translateY(-50%); width: 250px; background: var(--glass); border: 1px solid var(--border); padding: 20px; border-radius: 0 25px 25px 0; z-index: 2000; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(15px); }
+        #sidebar.open { left: 0; box-shadow: 15px 0 40px rgba(0,0,0,0.6); border-right: 2px solid var(--accent); }
+        #sidebar-tab { position: absolute; right: -42px; top: 50%; transform: translateY(-50%); background: var(--accent); color: #000; padding: 15px 10px; border-radius: 0 12px 12px 0; cursor: pointer; font-weight: 900; writing-mode: vertical-rl; font-size: 11px; }
 
-        .option-btn { 
-            width: 100%; padding: 10px; margin: 5px 0; background: rgba(255,255,255,0.03); 
-            border: 1px solid var(--border); color: #fff; border-radius: 8px; 
-            font-size: 12px; cursor: pointer; text-align: left; transition: 0.2s;
-        }
-        .option-btn:hover { background: var(--accent); color: #000; }
+        .option-btn { width: 100%; padding: 12px; margin: 6px 0; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); border-radius: 10px; font-size: 12px; cursor: pointer; text-align: left; transition: 0.2s; }
+        .option-btn:hover { background: var(--accent); color: #000; font-weight: bold; }
 
-        /* --- GLADIHOPPERS FRAME --- */
-        .window-content { height: calc(100% - 45px); background: #000; }
+        /* --- WINDOWS & GAMES --- */
+        #desktop { position: relative; width: 100vw; height: 100vh; z-index: 10; display: none; }
+        .window { position: absolute; background: var(--glass); border: 1px solid var(--border); border-radius: 20px; backdrop-filter: blur(25px); box-shadow: 0 15px 40px rgba(0,0,0,0.6); overflow: hidden; display: flex; flex-direction: column; min-width: 400px; }
+        .win-header { padding: 15px; background: rgba(255,255,255,0.05); cursor: move; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        .win-title { font-size: 11px; font-weight: bold; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; }
+        .win-close { cursor: pointer; color: #ff5f56; font-size: 22px; line-height: 1; }
+        .win-content { flex-grow: 1; background: #000; position: relative; }
         iframe { width: 100%; height: 100%; border: none; }
 
         /* --- TASKBAR --- */
-        #taskbar { 
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
-            background: var(--glass); border: 1px solid var(--border); 
-            padding: 10px 20px; border-radius: 20px; display: flex; gap: 15px; 
-            z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); 
-        }
-        .t-icon { 
-            width: 50px; height: 50px; display: flex; align-items: center; 
-            justify-content: center; background: rgba(255,255,255,0.02); 
-            border-radius: 14px; cursor: pointer; font-size: 24px; transition: 0.2s; 
-        }
-        .t-icon:hover { transform: translateY(-8px); background: var(--accent); color: #000; box-shadow: 0 0 20px var(--accent); }
+        #taskbar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: var(--glass); border: 1px solid var(--border); padding: 12px 25px; border-radius: 25px; display: flex; gap: 20px; z-index: 1000; backdrop-filter: blur(20px); }
+        .t-icon { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); border-radius: 15px; cursor: pointer; font-size: 24px; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .t-icon:hover { transform: translateY(-12px) scale(1.2); background: var(--accent); color: #000; box-shadow: 0 5px 25px var(--glow); }
     </style>
 </head>
 <body>
 
+    <div id="cursor-glow"></div>
+    <div id="cursor-dot"></div>
+    <div id="physics-container"></div>
+
     <div id="auth-overlay">
         <div class="login-card">
             <h1>MASON'S MANSION</h1>
-            <p class="credits">V13 | HONEY PERFECT</p>
-            <input type="password" placeholder="ENTER ACCESS CODE">
-            <button onclick="login()">UNLOCK</button>
+            <div class="credits">HONEY PERFECT | V13</div>
+            <input type="password" id="pass" placeholder="ACCESS CODE (Any key works)">
+            <button onclick="login()">Enter Mansion</button>
+            <p id="welcome-msg">Thank you for logging in! Credits to Mason Porrazzo.</p>
         </div>
     </div>
 
     <div id="sidebar">
         <div id="sidebar-tab" onclick="toggleSidebar()">MADNESS LIST</div>
-        <button class="option-btn" onclick="setTheme('honey')">Honey Gold Theme</button>
-        <button class="option-btn" onclick="setTheme('midnight')">Midnight Blue Theme</button>
-        <button class="option-btn mobile-trigger" onclick="openGladihoppers()">Launch Gladihoppers</button>
+        <p style="font-size: 10px; color: var(--accent); opacity: 0.8; margin-top: 15px;">ARCADE & TOOLS</p>
+        <button class="option-btn" onclick="openGame('gladi')">⚔️ Gladihoppers</button>
+        <button class="option-btn" onclick="openGame('chess')">♟️ Master Chess</button>
+        <button class="option-btn" onclick="openGame('sudoku')">🧩 Daily Sudoku</button>
+        <button class="option-btn" onclick="spawnSquare()">📦 Spawn Physics Box</button>
+        <p style="font-size: 10px; color: var(--accent); opacity: 0.8; margin-top: 15px;">THEMES (20)</p>
+        <button class="option-btn" onclick="setTheme('honey')">🍯 Honey Gold</button>
+        <button class="option-btn" onclick="setTheme('midnight')">🌃 Midnight Blue</button>
+        <button class="option-btn" onclick="setTheme('vaporwave')">🔮 Vaporwave</button>
+        <button class="option-btn" onclick="setTheme('ocean')">🌊 Ocean Deep</button>
+        <button class="option-btn" onclick="setTheme('forest')">🌳 Forest Green</button>
+        <button class="option-btn" onclick="setTheme('ruby')">♦️ Ruby Red</button>
+        <button class="option-btn" onclick="setTheme('arctic')">❄️ Arctic White</button>
+        <button class="option-btn" onclick="setTheme('fire')">🔥 Fire Orange</button>
+        <button class="option-btn" onclick="setTheme('grape')">🍇 Grape Purple</button>
+        <button class="option-btn" onclick="setTheme('lime')">🍋 Lime Green</button>
+        <button class="option-btn" onclick="setTheme('solar')">☀️ Solar Yellow</button>
+        <button class="option-btn" onclick="setTheme('rose')">🌹 Rose Pink</button>
+        <button class="option-btn" onclick="setTheme('silver')">⚪ Silver Grey</button>
+        <button class="option-btn" onclick="setTheme('rust')">🍂 Rust Brown</button>
+        <button class="option-btn" onclick="setTheme('indigo')">🌌 Indigo Violet</button>
+        <button class="option-btn" onclick="setTheme('neon')">💡 Neon Green</button>
+        <button class="option-btn" onclick="setTheme('pastel')">🌸 Pastel Dreams</button>
+        <button class="option-btn" onclick="setTheme('darkmatter')">🖤 Dark Matter</button>
+        <button class="option-btn" onclick="setTheme('cyber')">🤖 Cyber Blue</button>
+        <button class="option-btn" onclick="setTheme('blizzard')">🌨️ Blizzard White</button>
     </div>
 
-    <!-- Gladihoppers Container -->
     <div id="desktop">
-        <div class="window" id="game-window" style="width: 800px; height: 500px; left: 100px; top: 50px; display: none;">
+        <div id="win-gladi" class="window" style="width: 900px; height: 600px; left: 15%; top: 10%; display: none;">
             <div class="win-header">
                 <span class="win-title">Gladihoppers | Arcade</span>
-                <span class="win-close" onclick="closeGladihoppers()">×</span>
+                <span class="win-close" onclick="closeGame('gladi')">●</span>
             </div>
-            <div class="window-content">
-                <!-- Replace 'your-url-here' with the actual Gladihoppers web link -->
-                <iframe id="game-frame" src="" allowfullscreen="true"></iframe>
+            <div class="win-content">
+                <iframe id="frame-gladi" src=""></iframe>
+            </div>
+        </div>
+        <div id="win-chess" class="window" style="width: 600px; height: 600px; left: 30%; top: 20%; display: none;">
+            <div class="win-header">
+                <span class="win-title">Master Chess | Arcade</span>
+                <span class="win-close" onclick="closeGame('chess')">●</span>
+            </div>
+            <div class="win-content">
+                <iframe id="frame-chess" src=""></iframe>
+            </div>
+        </div>
+         <div id="win-sudoku" class="window" style="width: 600px; height: 600px; left: 40%; top: 10%; display: none;">
+            <div class="win-header">
+                <span class="win-title">Sudoku | Arcade</span>
+                <span class="win-close" onclick="closeGame('sudoku')">●</span>
+            </div>
+            <div class="win-content">
+                <iframe id="frame-sudoku" src=""></iframe>
             </div>
         </div>
     </div>
 
     <div id="taskbar">
-        <div class="t-icon" onclick="openGladihoppers()">⚔️</div>
-        <div class="t-icon">⚙️</div>
+        <div class="t-icon" onclick="toggleSidebar()">☰</div>
+        <div class="t-icon" onclick="openGame('gladi')">⚔️</div>
+        <div class="t-icon" onclick="openGame('chess')">♟️</div>
+        <div class="t-icon" onclick="openGame('sudoku')">🧩</div>
     </div>
 
     <script>
-        function login() { document.getElementById('auth-overlay').style.opacity = '0'; setTimeout(() => { document.getElementById('auth-overlay').style.display = 'none'; document.getElementById('desktop').style.display = 'block'; }, 1000); }
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-        function setTheme(theme) { document.documentElement.setAttribute('data-theme', theme === 'midnight' ? 'midnight' : ''); }
-        
-        function openGladihoppers() {
-            const win = document.getElementById('game-window');
-            const frame = document.getElementById('game-frame');
-            win.style.display = 'flex';
-            // Use a trusted source for Gladihoppers
-            frame.src = "dreamonstudios.itch.io"; 
+        // --- CURSOR LOGIC ---
+        const glow = document.getElementById('cursor-glow');
+        const dot = document.getElementById('cursor-dot');
+        document.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+            dot.style.left = e.clientX + 'px';
+            dot.style.top = e.clientY + 'px';
+        });
+
+        // --- AUTH & UI ---
+        function login() {
+            document.getElementById('welcome-msg').classList.add('show');
+            // Give a moment for message to appear then transition out
+            setTimeout(() => {
+                document.getElementById('auth-overlay').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('auth-overlay').style.display = 'none';
+                    document.getElementById('desktop').style.display = 'block';
+                }, 1000);
+            }, 1500);
         }
-        function closeGladihoppers() { document.getElementById('game-window').style.display = 'none'; document.getElementById('game-frame').src = ""; }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        function openGame(gameId) {
+            const win = document.getElementById(`win-${gameId}`);
+            const iframe = document.getElementById(`frame-${gameId}`);
+            win.style.display = 'flex';
+
+            // Use trusted embeddable sources
+            if (gameId === 'gladi' && !iframe.src) iframe.src = "gladihoppers.com";
+            if (gameId === 'chess' && !iframe.src) iframe.src = "www.htmlgames.com?"; /* */
+            if (gameId === 'sudoku' && !iframe.src) iframe.src = "www.htmlgames.com?"; /* */
+        }
+
+        function closeGame(gameId) {
+            document.getElementById(`win-${gameId}`).style.display = 'none';
+            document.getElementById(`frame-${gameId}`).src = "";
+        }
+
+        // --- PHYSICS ENGINE (Matter.js) ---
+        const Engine = Matter.Engine,
+              Render = Matter.Render,
+              Runner = Matter.Runner,
+              Bodies = Matter.Bodies,
+              Composite = Matter.Composite;
+
+        const engine = Engine.create();
+        // Configure render options
+        const render = Render.create({
+            element: document.getElementById('physics-container'),
+            engine: engine,
+            options: { width: window.innerWidth, height: window.innerHeight, wireframes: false, background: 'transparent' }
+        });
+
+        const ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight + 25, window.innerWidth, 50, { isStatic: true, render: { fillStyle: 'transparent' } });
+        const leftWall = Bodies.rectangle(-25, window.innerHeight/2, 50, window.innerHeight, { isStatic: true, render: { fillStyle: 'transparent' } });
+        const rightWall = Bodies.rectangle(window.innerWidth + 25, window.innerHeight/2, 50, window.innerHeight, { isStatic: true, render: { fillStyle: 'transparent' } });
+        Composite.add(engine.world, [ground, leftWall, rightWall]);
+
+        function spawnSquare() {
+            const size = Math.random() * 30 + 20;
+            const square = Bodies.rectangle(
+                Math.random() * window.innerWidth, 
+                -50, 
+                size, size, 
+                { 
+                    render: { fillStyle: 'transparent', strokeStyle: getComputedStyle(document.documentElement).getPropertyValue('--accent'), lineWidth: 2 },
+                    friction: 0.5, restitution: 0.7 
+                }
+            );
+            Composite.add(engine.world, square);
+        }
+
+        // Add cool background particle effect (non-physics)
+        function createParticle() {
+            const p = document.createElement('div');
+            p.classList.add('particle');
+            p.style.left = `${Math.random() * 100}vw`;
+            p.style.top = `${Math.random() * 100}vh`;
+            p.style.animationDuration = `${Math.random() * 2 + 1}s`;
+            document.getElementById('physics-container').appendChild(p);
+            setTimeout(() => { p.remove(); }, 2000);
+        }
+        setInterval(createParticle, 300);
+
+        Render.run(render);
+        const runner = Runner.create();
+        Runner.run(runner, engine);
+
+        window.addEventListener('resize', () => {
+            render.canvas.width = window.innerWidth;
+            render.canvas.height = window.innerHeight;
+            Matter.Body.setPosition(ground, { x: window.innerWidth/2, y: window.innerHeight + 25 });
+        });
+
+        // Auto-spawn initial physics squares
+        for(let i=0; i<10; i++) setTimeout(spawnSquare, i * 300);
     </script>
 </body>
 </html>
