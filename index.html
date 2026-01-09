@@ -1,353 +1,196 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="honey">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mason’s Mansion | V13 Honey Perfect</title>
-    <!-- Matter.js for Physics Engine -->
-    <script src="cdnjs.cloudflare.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mason's Mansion | Elite Unblocked & PICO-8</title>
+    
+    <link href="cdn.jsdelivr.net" rel="stylesheet">
+    
+    <!-- PICO-8 Engine Header Scripts -->
+    <script type="text/javascript">
+        var p8_allow_mobile_menu = true;
+        var p8_autoplay = false;
+        var pico8_state = [];
+        var pico8_buttons = [0, 0, 0, 0, 0, 0, 0, 0];
+        var pico8_mouse = [];
+        var pico8_gamepads = {count: 0};
+        var pico8_gpio = new Array(128);
+        var pico8_audio_context;
+
+        // Injected GFX Data from your source
+        p8_gfx_dat={
+            "p8b_pause1": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAOUlEQVRIx2NgGPbg/8cX/0F46FtAM4vobgHVLRowC6hm0YBbQLFFoxaM4FQ0dHPy0C1Nh26NNugBAAnizNiMfvbGAAAAAElFTkSuQmCC",
+            "p8b_controls":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAQ0lEQVRIx2NgGAXEgP8fX/ynBaap4XBLhqcF1IyfYWQBrZLz0LEAlzqqxQFVLcAmT3MLqJqTaW7B4CqLaF4fjIIBBwBL/B2vqtPVIwAAAABJRU5ErkJggg==",
+            "p8b_full":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAN0lEQVRIx2NgGPLg/8cX/2mJ6WcBrUJm4CwgOSgGrQVEB8WoBaMWDGMLhm5OHnql6dCt0YY8AAA9oZm+9Z9xQAAAAABJRU5ErkJggg==",
+            "p8b_pause0":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAKUlEQVRIx2NgGHbg/8cX/7FhctWNWjBqwagFoxaMWjBqwagF5Fkw5AAAPaGZvsIUtXUAAAAASUVORK5CYII=",
+            "p8b_sound0":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAANklEQVRIx2NgGDHg/8cX/5Hx0LEA3cChYwEugwavBcRG4qgFoxYMZwuGfk4efqXp8KnRBj0AAMz7cLDnG4FeAAAAAElFTkSuQmCC",
+            "p8b_sound1":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAPUlEQVRIx2NgGDHg/8cX/5Hx0LEA3cChYwEugwhZQLQDqG4BsZFIKMhGLRi1YChbMPRz8vArTYdPjTboAQCSVgpXUWQAMAAAAABJRU5ErkJggg==",
+            "p8b_close":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAU0lEQVRIx2NkoDFgpJsF/z+++I8iwS9BkuW49A+cBcRaREgf/Swg1SJi1dHfAkIG4EyOOIJy4Cwg1iJCiWDUAvItGLqpaOjm5KFfmg79Gm3ItioAl+mAGVYIZUUAAAAASUVORK5CYII=",
+            "controls_left_panel":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAEI0lEQVR42u3dMU7DQBCG0Tjam9DTcP8jpEmfswS5iHBhAsLxev/hvQY6pGXyZRTQ+nQCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHqbHEEtl+vt7hS+fLy/mXHBQqxEi/6aI/AiFW9SnB2BWDkDBAtAsADBAhAsAMECBAtAsAAECxAsAMECECxAsAAEC0CwONJ8tYvrXRAsImK19j0IFsPGSrQQLCJiNV+et7xAT7QQLIaN1dr3ooVgMWysRAvBIipWooVgERUr0UKwiIqVaCFYRMVKtBAsomIlWggWUbESLQSLqFiJFoJFVKxEC8EiKlaihWARFSvRQrDYJSSVfhaCBSBYAIIFCBbAHpoj4Bl/scOGBWDD4lX8iwE2LADBAgQLQLAABAsQLADBAhAsQLAABAtAsADBAhAsAMECBAtAsAAECxAsAMECECxAsAAECxAsAMECECxAsMh1ud7uTsHZVDcZyFo8Yt5sVJ6NyUAaSNEyIymaXwZepIKd4mwoQbAFC0CwAMECECwAwQIEC0CwAAQLECwAwQIQLECwAAQLQLAAwQI4UHME2/10QZq7usyBObBhRQwpmBUb1nADuPbuaUD/p2ezMH+1admwhosVfBcxb2SCJVaIlmAhVoiWYIkVoiVagiVWiJZgiZVYIVqCJVaIlmgJllghWoIlViBagiVWiJZoCZZYIVqCJVYgWoIlViBaggUIlnc0sPELlmghVmIlWKKFWAmWaIFYCZZoIVYIlmghVoIlWiBWgiVaiJVgIVqIlWCJFoiVYIkWYiVYiBZiJViihViJ1XbNEWyL1mMQRYvfvIGJlQ1rmE0LzIoNyyBiDrBhAYIFIFiAYAEIFoBgAYIFIFgAggUIFoBgAQgWIFgAggUgWIBgDc+Nn1D/tdH8YupwgZy5qG4ykKIlVmZDsDjshSlazqQqH7p793Q2CBaAYAGCBSBYAIIFCBaAYAEIFiBYAIIFIFiAYAEIFoBgAYIFIFgAggUIFoBgAQgWIFgAggUgWIBgAQgWwENzBKxZPub9CJ7WjA0LsGFRV+9N5+jNDhsWgGABggUgWACCxW56fgjuA3cEiz9Z/nWwR0iWP8P/YCFYDBstsUKwiIiWWCFYRERLrBAsIqIlVggWEdESKwSLiGiJFYJFRLTECsEiIlpihWARES2xQrCIiJZYIVhEREusECwioiVWCBYx0RIrBIuoaIkVr+YhFHTZtMCGBQgWgGABCBYgWACCBSBYgGABCBaAYAGCBSBYAIIFCBbj2uOR8s6AEbhexgsWYri3SKhKczcXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMA2n+e0UMDzh3yTAAAAAElFTkSuQmCC",
+            "controls_right_panel":"data:image/png;base64,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"
+        };
+    </script>
+
     <style>
-        /* --- THEMES DEFINITIONS (20+) --- */
-        :root, [data-theme="honey"] {
-            --bg: #050400; --accent: #ffcc33; --glow: rgba(255, 204, 51, 0.25);
-            --glass: rgba(15, 12, 5, 0.7); /* Gradient Lower */
-            --border: rgba(255, 204, 51, 0.25); --text: #ffffff;
-        }
-        [data-theme="midnight"] {
-            --bg: #00040a; --accent: #00d4ff; --glow: rgba(0, 212, 255, 0.25);
-            --glass: rgba(10, 15, 25, 0.7); --border: rgba(0, 212, 255, 0.2);
-        }
-        [data-theme="vaporwave"] {
-            --bg: #1a0033; --accent: #ff00ff; --glow: rgba(255, 0, 255, 0.25);
-            --glass: rgba(26, 0, 51, 0.7); --border: rgba(255, 0, 255, 0.2);
-        }
-        [data-theme="ocean"] {
-            --bg: #001f3f; --accent: #7fdbff; --glow: rgba(127, 219, 255, 0.25);
-            --glass: rgba(0, 31, 63, 0.7); --border: rgba(127, 219, 255, 0.2);
-        }
-        [data-theme="forest"] {
-            --bg: #003300; --accent: #2ecc40; --glow: rgba(46, 204, 64, 0.25);
-            --glass: rgba(0, 51, 0, 0.7); --border: rgba(46, 204, 64, 0.2);
-        }
-        [data-theme="ruby"] {
-            --bg: #330000; --accent: #ff4136; --glow: rgba(255, 65, 54, 0.25);
-            --glass: rgba(51, 0, 0, 0.7); --border: rgba(255, 65, 54, 0.2);
-        }
-        [data-theme="arctic"] {
-            --bg: #f0f8ff; --accent: #0000ff; --glow: rgba(0, 0, 255, 0.1);
-            --glass: rgba(240, 248, 255, 0.7); --border: rgba(0, 0, 255, 0.1);
-            --text: #000000;
-        }
-        [data-theme="fire"] {
-            --bg: #330c00; --accent: #ff851b; --glow: rgba(255, 133, 27, 0.3);
-            --glass: rgba(51, 12, 0, 0.7); --border: rgba(255, 133, 27, 0.2);
-        }
-        [data-theme="grape"] {
-            --bg: #1a001a; --accent: #b100ff; --glow: rgba(177, 0, 255, 0.25);
-            --glass: rgba(26, 0, 26, 0.7); --border: rgba(177, 0, 255, 0.2);
-        }
-        [data-theme="lime"] {
-            --bg: #0d1a00; --accent: #39ff14; --glow: rgba(57, 255, 20, 0.25);
-            --glass: rgba(13, 26, 0, 0.7); --border: rgba(57, 255, 20, 0.2);
-        }
-        [data-theme="solar"] {
-            --bg: #001a1a; --accent: #fffd37; --glow: rgba(255, 253, 55, 0.25);
-            --glass: rgba(0, 26, 26, 0.7); --border: rgba(255, 253, 55, 0.2);
-        }
-        [data-theme="rose"] {
-            --bg: #1a000a; --accent: #ff007f; --glow: rgba(255, 0, 127, 0.25);
-            --glass: rgba(26, 0, 10, 0.7); --border: rgba(255, 0, 127, 0.2);
-        }
-        [data-theme="silver"] {
-            --bg: #1a1a1a; --accent: #aaaaaa; --glow: rgba(170, 170, 170, 0.25);
-            --glass: rgba(26, 26, 26, 0.7); --border: rgba(170, 170, 170, 0.2);
-        }
-        [data-theme="rust"] {
-            --bg: #330d00; --accent: #b5651d; --glow: rgba(181, 101, 29, 0.25);
-            --glass: rgba(51, 13, 0, 0.7); --border: rgba(181, 101, 29, 0.2);
-        }
-        [data-theme="indigo"] {
-            --bg: #000033; --accent: #4b0082; --glow: rgba(75, 0, 130, 0.25);
-            --glass: rgba(0, 0, 51, 0.7); --border: rgba(75, 0, 130, 0.2);
-        }
-        [data-theme="neon"] {
-            --bg: #000000; --accent: #39ff14; --glow: rgba(57, 255, 20, 0.5);
-            --glass: rgba(0, 0, 0, 0.8); --border: rgba(57, 255, 20, 0.3);
-        }
-        [data-theme="pastel"] {
-            --bg: #f5eefc; --accent: #ffb6c1; --glow: rgba(255, 182, 193, 0.5);
-            --glass: rgba(245, 239, 252, 0.7); --border: rgba(255, 182, 193, 0.2);
-            --text: #333333;
-        }
-        [data-theme="darkmatter"] {
-            --bg: #0a0a0a; --accent: #6a0dad; --glow: rgba(106, 13, 173, 0.25);
-            --glass: rgba(10, 10, 10, 0.7); --border: rgba(106, 13, 173, 0.2);
-        }
-        [data-theme="cyber"] {
-            --bg: #000000; --accent: #00ffff; --glow: rgba(0, 255, 255, 0.4);
-            --glass: rgba(0, 0, 0, 0.85); --border: rgba(0, 255, 255, 0.2);
-        }
-        [data-theme="blizzard"] {
-            --bg: #e0f7fa; --accent: #00bcd4; --glow: rgba(0, 188, 212, 0.2);
-            --glass: rgba(224, 247, 250, 0.7); --border: rgba(0, 188, 212, 0.15);
-            --text: #000000;
+        :root {
+            --primary: #00f2ff;
+            --accent: #7000ff;
+            --bg: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
         }
 
-
-        --font: 'Segoe UI', system-ui, sans-serif;
-        
-        body { background: var(--bg); color: var(--text); font-family: var(--font); margin: 0; overflow: hidden; height: 100vh; width: 100vw; transition: background 0.8s ease; }
-        /* Reset cursor for everything, JS handles custom cursor */
-        * { cursor: none !important; box-sizing: border-box; }
-
-        /* --- PHYSICS & PARTICLES --- */
-        #physics-container { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
-        /* Add cool particle effects */
-        .particle {
-            position: absolute; width: 3px; height: 3px; background: var(--accent);
-            border-radius: 50%; pointer-events: none; opacity: 0.6;
-            animation: flicker 1s infinite alternate;
-        }
-        @keyframes flicker { 0% { opacity: 0.6; transform: scale(1); } 100% { opacity: 1; transform: scale(1.5); } }
-
-
-        /* --- CUSTOM CURSOR --- */
-        #cursor-glow {
-            position: fixed; width: 450px; height: 450px;
-            background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
-            pointer-events: none; z-index: 10001; transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s, background 0.5s ease;
-        }
-        #cursor-dot {
-            position: fixed; width: 6px; height: 6px; background: var(--accent);
-            border-radius: 50%; pointer-events: none; z-index: 10002;
-            transform: translate(-50%, -50%); box-shadow: 0 0 15px var(--accent);
-            transition: background 0.5s ease, box-shadow 0.5s ease;
+        [data-theme="light"] {
+            --primary: #7000ff;
+            --bg: #f0f2f5;
+            --glass: rgba(0, 0, 0, 0.05);
+            --border: rgba(0, 0, 0, 0.1);
         }
 
-        /* --- AUTH SCREEN --- */
-        #auth-overlay { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background: #000; transition: 1s ease-in-out; }
-        .login-card { background: var(--glass); padding: 40px; border-radius: 30px; border: 1px solid var(--border); text-align: center; width: 350px; box-shadow: 0 0 50px rgba(0,0,0,1); backdrop-filter: blur(20px); transition: all 0.5s ease; }
-        .login-card h1 { color: var(--accent); letter-spacing: 5px; margin-bottom: 5px; font-size: 24px; text-shadow: 0 0 10px var(--glow); }
-        .credits { font-size: 10px; opacity: 0.6; margin-bottom: 25px; letter-spacing: 2px; text-transform: uppercase; }
-        .login-card input { width: 100%; background: #000; border: 1px solid var(--border); padding: 12px; border-radius: 12px; color: #fff; margin-bottom: 15px; text-align: center; outline: none; transition: all 0.5s ease; }
-        .login-card button { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--accent); color: #000; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-        .login-card button:hover { box-shadow: 0 0 20px var(--accent); transform: scale(1.02); }
-        #welcome-msg { opacity: 0; transition: opacity 1s ease 0.5s; font-size: 14px; margin-top: 20px; color: var(--text); }
-        #welcome-msg.show { opacity: 1; }
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.4s ease;
+            overflow-x: hidden;
+            margin: 0;
+        }
 
-        /* --- SIDEBAR (MADNESS LIST) --- */
-        #sidebar { position: fixed; left: -250px; top: 50%; transform: translateY(-50%); width: 250px; background: var(--glass); border: 1px solid var(--border); padding: 20px; border-radius: 0 25px 25px 0; z-index: 2000; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(15px); }
-        #sidebar.open { left: 0; box-shadow: 15px 0 40px rgba(0,0,0,0.6); border-right: 2px solid var(--accent); }
-        #sidebar-tab { position: absolute; right: -42px; top: 50%; transform: translateY(-50%); background: var(--accent); color: #000; padding: 15px 10px; border-radius: 0 12px 12px 0; cursor: pointer; font-weight: 900; writing-mode: vertical-rl; font-size: 11px; }
+        .neon-text {
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary);
+        }
 
-        .option-btn { width: 100%; padding: 12px; margin: 6px 0; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); border-radius: 10px; font-size: 12px; cursor: pointer; text-align: left; transition: 0.2s; }
-        .option-btn:hover { background: var(--accent); color: #000; font-weight: bold; }
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
 
-        /* --- WINDOWS & GAMES --- */
-        #desktop { position: relative; width: 100vw; height: 100vh; z-index: 10; display: none; }
-        .window { position: absolute; background: var(--glass); border: 1px solid var(--border); border-radius: 20px; backdrop-filter: blur(25px); box-shadow: 0 15px 40px rgba(0,0,0,0.6); overflow: hidden; display: flex; flex-direction: column; min-width: 400px; }
-        .win-header { padding: 15px; background: rgba(255,255,255,0.05); cursor: move; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-        .win-title { font-size: 11px; font-weight: bold; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; }
-        .win-close { cursor: pointer; color: #ff5f56; font-size: 22px; line-height: 1; }
-        .win-content { flex-grow: 1; background: #000; position: relative; }
-        iframe { width: 100%; height: 100%; border: none; }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px var(--primary);
+            border-color: var(--primary);
+        }
 
-        /* --- TASKBAR --- */
-        #taskbar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: var(--glass); border: 1px solid var(--border); padding: 12px 25px; border-radius: 25px; display: flex; gap: 20px; z-index: 1000; backdrop-filter: blur(20px); }
-        .t-icon { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); border-radius: 15px; cursor: pointer; font-size: 24px; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .t-icon:hover { transform: translateY(-12px) scale(1.2); background: var(--accent); color: #000; box-shadow: 0 5px 25px var(--glow); }
+        /* PICO-8 Specific Styling */
+        #p8_container {
+            width: 100%;
+            max-width: 512px;
+            margin: 0 auto;
+            aspect-ratio: 1/1;
+            background: #000;
+            border: 5px solid #222;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .navbar {
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        #ownerPanel { display: none; margin-top: 50px; padding: 40px; border-radius: 30px; background: rgba(112, 0, 255, 0.1); }
     </style>
 </head>
 <body>
 
-    <div id="cursor-glow"></div>
-    <div id="cursor-dot"></div>
-    <div id="physics-container"></div>
-
-    <div id="auth-overlay">
-        <div class="login-card">
-            <h1>MASON'S MANSION</h1>
-            <div class="credits">HONEY PERFECT | V13</div>
-            <input type="password" id="pass" placeholder="ACCESS CODE (Any key works)">
-            <button onclick="login()">Enter Mansion</button>
-            <p id="welcome-msg">Thank you for logging in! Credits to Mason Porrazzo.</p>
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold fs-3 neon-text" href="#">MASON'S MANSION</a>
+        <div class="d-flex align-items-center">
+            <button onclick="toggleTheme()" class="btn btn-outline-light btn-sm me-2">Theme</button>
+            <button onclick="triggerLogin()" class="btn btn-primary px-4 rounded-pill">Login</button>
         </div>
     </div>
+</nav>
 
-    <div id="sidebar">
-        <div id="sidebar-tab" onclick="toggleSidebar()">MADNESS LIST</div>
-        <p style="font-size: 10px; color: var(--accent); opacity: 0.8; margin-top: 15px;">ARCADE & TOOLS</p>
-        <button class="option-btn" onclick="openGame('gladi')">⚔️ Gladihoppers</button>
-        <button class="option-btn" onclick="openGame('chess')">♟️ Master Chess</button>
-        <button class="option-btn" onclick="openGame('sudoku')">🧩 Daily Sudoku</button>
-        <button class="option-btn" onclick="spawnSquare()">📦 Spawn Physics Box</button>
-        <p style="font-size: 10px; color: var(--accent); opacity: 0.8; margin-top: 15px;">THEMES (20)</p>
-        <button class="option-btn" onclick="setTheme('honey')">🍯 Honey Gold</button>
-        <button class="option-btn" onclick="setTheme('midnight')">🌃 Midnight Blue</button>
-        <button class="option-btn" onclick="setTheme('vaporwave')">🔮 Vaporwave</button>
-        <button class="option-btn" onclick="setTheme('ocean')">🌊 Ocean Deep</button>
-        <button class="option-btn" onclick="setTheme('forest')">🌳 Forest Green</button>
-        <button class="option-btn" onclick="setTheme('ruby')">♦️ Ruby Red</button>
-        <button class="option-btn" onclick="setTheme('arctic')">❄️ Arctic White</button>
-        <button class="option-btn" onclick="setTheme('fire')">🔥 Fire Orange</button>
-        <button class="option-btn" onclick="setTheme('grape')">🍇 Grape Purple</button>
-        <button class="option-btn" onclick="setTheme('lime')">🍋 Lime Green</button>
-        <button class="option-btn" onclick="setTheme('solar')">☀️ Solar Yellow</button>
-        <button class="option-btn" onclick="setTheme('rose')">🌹 Rose Pink</button>
-        <button class="option-btn" onclick="setTheme('silver')">⚪ Silver Grey</button>
-        <button class="option-btn" onclick="setTheme('rust')">🍂 Rust Brown</button>
-        <button class="option-btn" onclick="setTheme('indigo')">🌌 Indigo Violet</button>
-        <button class="option-btn" onclick="setTheme('neon')">💡 Neon Green</button>
-        <button class="option-btn" onclick="setTheme('pastel')">🌸 Pastel Dreams</button>
-        <button class="option-btn" onclick="setTheme('darkmatter')">🖤 Dark Matter</button>
-        <button class="option-btn" onclick="setTheme('cyber')">🤖 Cyber Blue</button>
-        <button class="option-btn" onclick="setTheme('blizzard')">🌨️ Blizzard White</button>
-    </div>
+<header class="container py-5 text-center">
+    <h1 class="display-4 fw-bold">Virtual <span class="neon-text">Mansion</span> Console</h1>
+    <p class="opacity-75">Elite Unblocked Games & Integrated PICO-8 Environment</p>
+</header>
 
-    <div id="desktop">
-        <div id="win-gladi" class="window" style="width: 900px; height: 600px; left: 15%; top: 10%; display: none;">
-            <div class="win-header">
-                <span class="win-title">Gladihoppers | Arcade</span>
-                <span class="win-close" onclick="closeGame('gladi')">●</span>
-            </div>
-            <div class="win-content">
-                <iframe id="frame-gladi" src=""></iframe>
+<main class="container">
+    <div class="row g-4">
+        <!-- PICO-8 Console Card -->
+        <div class="col-lg-6">
+            <div class="glass-card p-4 text-center">
+                <h3 class="mb-3 neon-text">PICO-8 Virtual Station</h3>
+                <div id="p8_container">
+                    <!-- The PICO-8 canvas would be injected here by the engine -->
+                    <div style="color: #444; padding-top: 40%;">[ PICO-8 READY ]<br>Click Play to Initialize</div>
+                </div>
+                <button class="btn btn-primary mt-3 w-100" onclick="alert('PICO-8 Engine Initialized')">Run Cartridge</button>
             </div>
         </div>
-        <div id="win-chess" class="window" style="width: 600px; height: 600px; left: 30%; top: 20%; display: none;">
-            <div class="win-header">
-                <span class="win-title">Master Chess | Arcade</span>
-                <span class="win-close" onclick="closeGame('chess')">●</span>
-            </div>
-            <div class="win-content">
-                <iframe id="frame-chess" src=""></iframe>
-            </div>
-        </div>
-         <div id="win-sudoku" class="window" style="width: 600px; height: 600px; left: 40%; top: 10%; display: none;">
-            <div class="win-header">
-                <span class="win-title">Sudoku | Arcade</span>
-                <span class="win-close" onclick="closeGame('sudoku')">●</span>
-            </div>
-            <div class="win-content">
-                <iframe id="frame-sudoku" src=""></iframe>
+
+        <!-- Library Grid -->
+        <div class="col-lg-6">
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="glass-card p-3 d-flex align-items-center">
+                        <img src="github.com" width="80" class="rounded me-3">
+                        <div>
+                            <h5 class="mb-1">Defcry</h5>
+                            <a href="#" class="btn btn-sm btn-outline-info">Launch</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="glass-card p-3 d-flex align-items-center">
+                        <img src="encrypted-tbn0.gstatic.com" width="80" class="rounded me-3">
+                        <div>
+                            <h5 class="mb-1">Friday Night Funkin</h5>
+                            <a href="#" class="btn btn-sm btn-outline-info">Launch</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="taskbar">
-        <div class="t-icon" onclick="toggleSidebar()">☰</div>
-        <div class="t-icon" onclick="openGame('gladi')">⚔️</div>
-        <div class="t-icon" onclick="openGame('chess')">♟️</div>
-        <div class="t-icon" onclick="openGame('sudoku')">🧩</div>
-    </div>
+    <!-- Owner Restricted Area -->
+    <section id="ownerPanel" class="container">
+        <h2 class="neon-text text-center mb-4">Mason's Command Center [2026]</h2>
+        <div class="row g-4 text-center">
+            <div class="col-md-4"><div class="glass-card p-4"><h4>GPIO Access</h4><p>PICO-8 Array: 128 Pins</p></div></div>
+            <div class="col-md-4"><div class="glass-card p-4"><h4>Server Nodes</h4><p>Encryption: Mason-v2</p></div></div>
+            <div class="col-md-4"><div class="glass-card p-4"><h4>Ad Config</h4><p>Adfoc.us: Active</p></div></div>
+        </div>
+    </section>
+</main>
 
-    <script>
-        // --- CURSOR LOGIC ---
-        const glow = document.getElementById('cursor-glow');
-        const dot = document.getElementById('cursor-dot');
-        document.addEventListener('mousemove', (e) => {
-            glow.style.left = e.clientX + 'px';
-            glow.style.top = e.clientY + 'px';
-            dot.style.left = e.clientX + 'px';
-            dot.style.top = e.clientY + 'px';
-        });
+<script>
+    function toggleTheme() {
+        const html = document.documentElement;
+        html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
 
-        // --- AUTH & UI ---
-        function login() {
-            document.getElementById('welcome-msg').classList.add('show');
-            // Give a moment for message to appear then transition out
-            setTimeout(() => {
-                document.getElementById('auth-overlay').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('auth-overlay').style.display = 'none';
-                    document.getElementById('desktop').style.display = 'block';
-                }, 1000);
-            }, 1500);
+    function triggerLogin() {
+        const pass = prompt("Access Key:");
+        if (pass === "masononly69") {
+            alert("Owner Verified. Mason's Mansion Unlocked.");
+            document.getElementById('ownerPanel').style.display = 'block';
+            document.body.style.boxShadow = "inset 0 0 100px #7000ff";
+        } else if (pass === "honey") {
+            alert("Guest Access Granted.");
+        } else {
+            alert("Denied.");
         }
+    }
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-        }
+    // Mouse follow effect for the cool factor
+    document.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth) * 100;
+        const y = (e.clientY / window.innerHeight) * 100;
+        document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, #0a0a0a 0%, #050505 70%)`;
+    });
+</script>
 
-        function setTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-        }
-
-        function openGame(gameId) {
-            const win = document.getElementById(`win-${gameId}`);
-            const iframe = document.getElementById(`frame-${gameId}`);
-            win.style.display = 'flex';
-
-            // Use trusted embeddable sources
-            if (gameId === 'gladi' && !iframe.src) iframe.src = "gladihoppers.com";
-            if (gameId === 'chess' && !iframe.src) iframe.src = "www.htmlgames.com?"; /* */
-            if (gameId === 'sudoku' && !iframe.src) iframe.src = "www.htmlgames.com?"; /* */
-        }
-
-        function closeGame(gameId) {
-            document.getElementById(`win-${gameId}`).style.display = 'none';
-            document.getElementById(`frame-${gameId}`).src = "";
-        }
-
-        // --- PHYSICS ENGINE (Matter.js) ---
-        const Engine = Matter.Engine,
-              Render = Matter.Render,
-              Runner = Matter.Runner,
-              Bodies = Matter.Bodies,
-              Composite = Matter.Composite;
-
-        const engine = Engine.create();
-        // Configure render options
-        const render = Render.create({
-            element: document.getElementById('physics-container'),
-            engine: engine,
-            options: { width: window.innerWidth, height: window.innerHeight, wireframes: false, background: 'transparent' }
-        });
-
-        const ground = Bodies.rectangle(window.innerWidth/2, window.innerHeight + 25, window.innerWidth, 50, { isStatic: true, render: { fillStyle: 'transparent' } });
-        const leftWall = Bodies.rectangle(-25, window.innerHeight/2, 50, window.innerHeight, { isStatic: true, render: { fillStyle: 'transparent' } });
-        const rightWall = Bodies.rectangle(window.innerWidth + 25, window.innerHeight/2, 50, window.innerHeight, { isStatic: true, render: { fillStyle: 'transparent' } });
-        Composite.add(engine.world, [ground, leftWall, rightWall]);
-
-        function spawnSquare() {
-            const size = Math.random() * 30 + 20;
-            const square = Bodies.rectangle(
-                Math.random() * window.innerWidth, 
-                -50, 
-                size, size, 
-                { 
-                    render: { fillStyle: 'transparent', strokeStyle: getComputedStyle(document.documentElement).getPropertyValue('--accent'), lineWidth: 2 },
-                    friction: 0.5, restitution: 0.7 
-                }
-            );
-            Composite.add(engine.world, square);
-        }
-
-        // Add cool background particle effect (non-physics)
-        function createParticle() {
-            const p = document.createElement('div');
-            p.classList.add('particle');
-            p.style.left = `${Math.random() * 100}vw`;
-            p.style.top = `${Math.random() * 100}vh`;
-            p.style.animationDuration = `${Math.random() * 2 + 1}s`;
-            document.getElementById('physics-container').appendChild(p);
-            setTimeout(() => { p.remove(); }, 2000);
-        }
-        setInterval(createParticle, 300);
-
-        Render.run(render);
-        const runner = Runner.create();
-        Runner.run(runner, engine);
-
-        window.addEventListener('resize', () => {
-            render.canvas.width = window.innerWidth;
-            render.canvas.height = window.innerHeight;
-            Matter.Body.setPosition(ground, { x: window.innerWidth/2, y: window.innerHeight + 25 });
-        });
-
-        // Auto-spawn initial physics squares
-        for(let i=0; i<10; i++) setTimeout(spawnSquare, i * 300);
-    </script>
 </body>
 </html>
