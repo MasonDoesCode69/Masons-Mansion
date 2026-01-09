@@ -3,193 +3,580 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mason's Mansion | Elite Unblocked & PICO-8</title>
+    <title>Mason's Mansion | Elite Unblocked 2026</title>
     
-    <link href="cdn.jsdelivr.net" rel="stylesheet">
-    
-    <!-- PICO-8 Engine Header Scripts -->
-    <script type="text/javascript">
-        var p8_allow_mobile_menu = true;
-        var p8_autoplay = false;
-        var pico8_state = [];
-        var pico8_buttons = [0, 0, 0, 0, 0, 0, 0, 0];
-        var pico8_mouse = [];
-        var pico8_gamepads = {count: 0};
-        var pico8_gpio = new Array(128);
-        var pico8_audio_context;
-
-        // Injected GFX Data from your source
-        p8_gfx_dat={
-            "p8b_pause1": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAOUlEQVRIx2NgGPbg/8cX/0F46FtAM4vobgHVLRowC6hm0YBbQLFFoxaM4FQ0dHPy0C1Nh26NNugBAAnizNiMfvbGAAAAAElFTkSuQmCC",
-            "p8b_controls":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAQ0lEQVRIx2NgGAXEgP8fX/ynBaap4XBLhqcF1IyfYWQBrZLz0LEAlzqqxQFVLcAmT3MLqJqTaW7B4CqLaF4fjIIBBwBL/B2vqtPVIwAAAABJRU5ErkJggg==",
-            "p8b_full":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAN0lEQVRIx2NgGPLg/8cX/2mJ6WcBrUJm4CwgOSgGrQVEB8WoBaMWDGMLhm5OHnql6dCt0YY8AAA9oZm+9Z9xQAAAAABJRU5ErkJggg==",
-            "p8b_pause0":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAKUlEQVRIx2NgGHbg/8cX/7FhctWNWjBqwagFoxaMWjBqwagF5Fkw5AAAPaGZvsIUtXUAAAAASUVORK5CYII=",
-            "p8b_sound0":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAANklEQVRIx2NgGDHg/8cX/5Hx0LEA3cChYwEugwavBcRG4qgFoxYMZwuGfk4efqXp8KnRBj0AAMz7cLDnG4FeAAAAAElFTkSuQmCC",
-            "p8b_sound1":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAPUlEQVRIx2NgGDHg/8cX/5Hx0LEA3cChYwEugwhZQLQDqG4BsZFIKMhGLRi1YChbMPRz8vArTYdPjTboAQCSVgpXUWQAMAAAAABJRU5ErkJggg==",
-            "p8b_close":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAU0lEQVRIx2NkoDFgpJsF/z+++I8iwS9BkuW49A+cBcRaREgf/Swg1SJi1dHfAkIG4EyOOIJy4Cwg1iJCiWDUAvItGLqpaOjm5KFfmg79Gm3ItioAl+mAGVYIZUUAAAAASUVORK5CYII=",
-            "controls_left_panel":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAEI0lEQVR42u3dMU7DQBCG0Tjam9DTcP8jpEmfswS5iHBhAsLxev/hvQY6pGXyZRTQ+nQCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHqbHEEtl+vt7hS+fLy/mXHBQqxEi/6aI/AiFW9SnB2BWDkDBAtAsADBAhAsAMECBAtAsAAECxAsAMECECxAsAAEC0CwONJ8tYvrXRAsImK19j0IFsPGSrQQLCJiNV+et7xAT7QQLIaN1dr3ooVgMWysRAvBIipWooVgERUr0UKwiIqVaCFYRMVKtBAsomIlWggWUbESLQSLqFiJFoJFVKxEC8EiKlaihWARFSvRQrDYJSSVfhaCBSBYAIIFCBbAHpoj4Bl/scOGBWDD4lX8iwE2LADBAgQLQLAABAsQLADBAhAsQLAABAtAsADBAhAsAMECBAtAsAAECxAsAMECECxAsAAECxAsAMECECxAsMh1ud7uTsHZVDcZyFo8Yt5sVJ6NyUAaSNEyIymaXwZepIKd4mwoQbAFC0CwAMECECwAwQIEC0CwAAQLECwAwQIQLECwAAQLQLAAwQI4UHME2/10QZq7usyBObBhRQwpmBUb1nADuPbuaUD/p2ezMH+1admwhosVfBcxb2SCJVaIlmAhVoiWYIkVoiVagiVWiJZgiZVYIVqCJVaIlmgJllghWoIlViBagiVWiJZoCZZYIVqCJVYgWoIlViBaggUIlnc0sPELlmghVmIlWKKFWAmWaIFYCZZoIVYIlmghVoIlWiBWgiVaiJVgIVqIlWCJFoiVYIkWYiVYiBZiJViihViJ1XbNEWyL1mMQRYvfvIGJlQ1rmE0LzIoNyyBiDrBhAYIFIFiAYAEIFoBgAYIFIFgAggUIFoBgAQgWIFgAggUgWIBgDc+Nn1D/tdH8YupwgZy5qG4ykKIlVmZDsDjshSlazqQqH7p793Q2CBaAYAGCBSBYAIIFCBaAYAEIFiBYAIIFIFiAYAEIFoBgAYIFIFgAggUIFoBgAQgWIFgAggUgWIBgAQgWwENzBKxZPub9CJ7WjA0LsGFRV+9N5+jNDhsWgGABggUgWACCxW56fgjuA3cEiz9Z/nWwR0iWP8P/YCFYDBstsUKwiIiWWCFYRERLrBAsIqIlVggWEdESKwSLiGiJFYJFRLTECsEiIlpihWARES2xQrCIiJZYIVhEREusECwioiVWCBYx0RIrBIuoaIkVr+YhFHTZtMCGBQgWgGABCBYgWACCBSBYgGABCBaAYAGCBSBYAIIFCBbj2uOR8s6AEbhexgsWYri3SKhKczcXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMA2n+e0UMDzh3yTAAAAAElFTkSuQmCC",
-            "controls_right_panel":"data:image/png;base64,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"
-        };
-    </script>
+    <!-- UI Frameworks & Cool Fonts -->
+    <link href="https://cdn.jsdelivr.net" rel="stylesheet">
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
 
     <style>
         :root {
             --primary: #00f2ff;
-            --accent: #7000ff;
-            --bg: #050505;
-            --glass: rgba(255, 255, 255, 0.05);
+            --accent: #bc13fe;
+            --bg: #020205;
+            --glass: rgba(255, 255, 255, 0.03);
             --border: rgba(255, 255, 255, 0.1);
-        }
-
-        [data-theme="light"] {
-            --primary: #7000ff;
-            --bg: #f0f2f5;
-            --glass: rgba(0, 0, 0, 0.05);
-            --border: rgba(0, 0, 0, 0.1);
+            --font-main: 'Space Grotesk', sans-serif;
         }
 
         body {
             background-color: var(--bg);
-            color: white;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.4s ease;
-            overflow-x: hidden;
+            color: #fff;
+            font-family: var(--font-main);
             margin: 0;
+            overflow-x: hidden;
+            background-attachment: fixed;
         }
 
-        .neon-text {
+        .neon-glow {
             color: var(--primary);
-            text-shadow: 0 0 10px var(--primary);
+            text-shadow: 0 0 20px var(--primary);
         }
 
-        .glass-card {
+        .mansion-card {
             background: var(--glass);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--border);
-            border-radius: 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            overflow: hidden;
+            border-radius: 24px;
+            padding: 25px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            height: 100%;
         }
 
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 25px var(--primary);
+        .mansion-card:hover {
+            transform: translateY(-10px) scale(1.02);
             border-color: var(--primary);
+            box-shadow: 0 0 40px rgba(0, 242, 255, 0.15);
         }
 
-        /* PICO-8 Specific Styling */
-        #p8_container {
+        .game-thumb {
             width: 100%;
-            max-width: 512px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        #mainContent { display: none; }
+
+        .btn-mansion {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border: none;
+            color: #000;
+            font-weight: 700;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .owner-section {
+            display: none;
+            border-top: 2px solid var(--accent);
+            padding: 50px 0;
+            background: linear-gradient(transparent, rgba(188, 19, 254, 0.05));
+        }
+
+        /* Physics playground */
+        .physics-section {
+            margin-top: 60px;
+        }
+
+        .physics-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .physics-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .physics-controls button {
+            background: var(--glass);
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            color: #fff;
+            cursor: pointer;
+            font-family: var(--font-main);
+            font-size: 0.85rem;
+        }
+
+        .physics-controls button:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 18px rgba(0, 242, 255, 0.25);
+        }
+
+        #physicsCanvas {
+            width: 100%;
+            height: 420px;
+            border-radius: 24px;
+            background: radial-gradient(circle at 20% 0%, #15151b 0%, #050509 55%);
+            border: 1px solid var(--border);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+            cursor: crosshair;
+        }
+
+        .canvas-hint {
+            font-size: 0.85rem;
+            opacity: 0.6;
+            margin-top: 10px;
+        }
+
+        /* Quick bootstrap-ish layout shim (so your existing markup looks okay without full bootstrap) */
+        .container {
+            max-width: 1100px;
             margin: 0 auto;
-            aspect-ratio: 1/1;
-            background: #000;
-            border: 5px solid #222;
-            border-radius: 10px;
-            position: relative;
+            padding: 0 16px;
         }
 
         .navbar {
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
         }
 
-        #ownerPanel { display: none; margin-top: 50px; padding: 40px; border-radius: 30px; background: rgba(112, 0, 255, 0.1); }
+        .navbar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -12px;
+        }
+
+        .col-md-4, .col-md-12, .col-md-3 {
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        @media (min-width: 768px) {
+            .col-md-4 { width: 33.333%; }
+            .col-md-3 { width: 25%; }
+            .col-md-12 { width: 100%; }
+        }
+
+        @media (max-width: 767px) {
+            .col-md-4, .col-md-3, .col-md-12 { width: 100%; }
+        }
+
+        .text-center { text-align: center; }
+        .py-5 { padding-top: 3rem; padding-bottom: 3rem; }
+        .mb-5 { margin-bottom: 3rem; }
+        .mt-5 { margin-top: 3rem; }
+        .display-2 { font-size: 3rem; }
+        .fw-bold { font-weight: 700; }
+        .lead { font-size: 1.1rem; }
+        .opacity-50 { opacity: 0.5; }
+        .opacity-75 { opacity: 0.75; }
+        .d-md-flex {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .align-items-center { align-items: center; }
+        .text-md-start { text-align: left; }
+        .m-2 { margin: 0.5rem; }
     </style>
 </head>
-<body>
+<body onload="checkEntry()">
 
-<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-transparent border-bottom border-secondary">
     <div class="container">
-        <a class="navbar-brand fw-bold fs-3 neon-text" href="#">MASON'S MANSION</a>
-        <div class="d-flex align-items-center">
-            <button onclick="toggleTheme()" class="btn btn-outline-light btn-sm me-2">Theme</button>
-            <button onclick="triggerLogin()" class="btn btn-primary px-4 rounded-pill">Login</button>
-        </div>
+        <a class="navbar-brand fw-bold fs-2 neon-glow" href="#">MASON'S MANSION</a>
+        <button onclick="triggerLogin()" class="btn btn-outline-info rounded-pill px-4 btn-mansion" style="background:none;color:#00f2ff;border:1px solid var(--border);padding:6px 18px;">
+            Dev Login
+        </button>
     </div>
 </nav>
 
-<header class="container py-5 text-center">
-    <h1 class="display-4 fw-bold">Virtual <span class="neon-text">Mansion</span> Console</h1>
-    <p class="opacity-75">Elite Unblocked Games & Integrated PICO-8 Environment</p>
-</header>
+<div id="mainContent">
+    <header class="container text-center py-5">
+        <h1 class="display-2 fw-bold">The <span class="neon-glow">Ultimate</span> Vault</h1>
+        <p class="lead opacity-50">Curated unblocked resources for 2026 elite gaming.</p>
+    </header>
 
-<main class="container">
-    <div class="row g-4">
-        <!-- PICO-8 Console Card -->
-        <div class="col-lg-6">
-            <div class="glass-card p-4 text-center">
-                <h3 class="mb-3 neon-text">PICO-8 Virtual Station</h3>
-                <div id="p8_container">
-                    <!-- The PICO-8 canvas would be injected here by the engine -->
-                    <div style="color: #444; padding-top: 40%;">[ PICO-8 READY ]<br>Click Play to Initialize</div>
+    <main class="container mb-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="mansion-card">
+                    <img src="https://www.coolmathgames.com" class="game-thumb">
+                    <h3>Cool Math Games</h3>
+                    <p class="opacity-75">The classic trusted repository for logic and strategy.</p>
+                    <a href="https://www.coolmathgames.com" target="_blank" class="btn btn-mansion w-100">Enter Site</a>
                 </div>
-                <button class="btn btn-primary mt-3 w-100" onclick="alert('PICO-8 Engine Initialized')">Run Cartridge</button>
+            </div>
+
+            <div class="col-md-4">
+                <div class="mansion-card">
+                    <img src="https://yt3.googleusercontent.com" class="game-thumb">
+                    <h3>Unblocked Games 66</h3>
+                    <p class="opacity-75">Massive HTML5 library designed for school networks.</p>
+                    <a href="https://sites.google.com" target="_blank" class="btn btn-mansion w-100">Enter Site</a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="mansion-card">
+                    <img src="https://www.hoodamath.com" class="game-thumb">
+                    <h3>Hooda Math</h3>
+                    <p class="opacity-75">Brain-training and skill games that bypass filters.</p>
+                    <a href="https://www.hoodamath.com" target="_blank" class="btn btn-mansion w-100">Enter Site</a>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="mansion-card d-md-flex align-items-center text-md-start">
+                    <img src="https://is1-ssl.mzstatic.com" style="width: 120px; border-radius: 20px; margin-right: 30px;">
+                    <div>
+                        <h3>Subway Surfers Online</h3>
+                        <p class="opacity-75">Run, dodge, and surf the tracks in full browser-based HTML5.</p>
+                        <a href="https://adfoc.us" class="btn btn-mansion">Launch Runner</a>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Library Grid -->
-        <div class="col-lg-6">
-            <div class="row g-3">
-                <div class="col-12">
-                    <div class="glass-card p-3 d-flex align-items-center">
-                        <img src="github.com" width="80" class="rounded me-3">
-                        <div>
-                            <h5 class="mb-1">Defcry</h5>
-                            <a href="#" class="btn btn-sm btn-outline-info">Launch</a>
-                        </div>
+        <!-- Physics Playground -->
+        <section class="physics-section">
+            <div class="mansion-card">
+                <div class="physics-header">
+                    <div>
+                        <h2 class="neon-glow">Mansion Physics Lab</h2>
+                        <p class="opacity-75" style="margin:0;">Spawn orbs, throw them around, and watch the chaos.</p>
+                    </div>
+                    <div class="physics-controls">
+                        <button onclick="physicsLab.spawnRandom(10)">+10 Orbs</button>
+                        <button onclick="physicsLab.clear()">Clear</button>
+                        <button onclick="physicsLab.toggleGravity()">
+                            Toggle Gravity
+                        </button>
+                        <button onclick="physicsLab.randomKick()">Random Kick</button>
                     </div>
                 </div>
-                <div class="col-12">
-                    <div class="glass-card p-3 d-flex align-items-center">
-                        <img src="encrypted-tbn0.gstatic.com" width="80" class="rounded me-3">
-                        <div>
-                            <h5 class="mb-1">Friday Night Funkin</h5>
-                            <a href="#" class="btn btn-sm btn-outline-info">Launch</a>
-                        </div>
-                    </div>
+                <canvas id="physicsCanvas"></canvas>
+                <div class="canvas-hint">
+                    Left click & drag to throw. Right click to spawn. Scroll to change orb size.
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Owner Restricted Area -->
-    <section id="ownerPanel" class="container">
-        <h2 class="neon-text text-center mb-4">Mason's Command Center [2026]</h2>
-        <div class="row g-4 text-center">
-            <div class="col-md-4"><div class="glass-card p-4"><h4>GPIO Access</h4><p>PICO-8 Array: 128 Pins</p></div></div>
-            <div class="col-md-4"><div class="glass-card p-4"><h4>Server Nodes</h4><p>Encryption: Mason-v2</p></div></div>
-            <div class="col-md-4"><div class="glass-card p-4"><h4>Ad Config</h4><p>Adfoc.us: Active</p></div></div>
-        </div>
-    </section>
-</main>
+        <section id="ownerArea" class="owner-section mt-5 text-center">
+            <h2 class="neon-glow mb-4">Mansion Dev Terminal</h2>
+            <div class="row g-3 justify-content-center">
+                <div class="col-md-3 mansion-card m-2"><h4>Node: 2026.x</h4></div>
+                <div class="col-md-3 mansion-card m-2"><h4>Status: Elite</h4></div>
+                <div class="col-md-3 mansion-card m-2"><h4>GPIO: Active</h4></div>
+            </div>
+        </section>
+    </main>
+</div>
 
 <script>
-    function toggleTheme() {
-        const html = document.documentElement;
-        html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-    }
-
-    function triggerLogin() {
-        const pass = prompt("Access Key:");
-        if (pass === "masononly69") {
-            alert("Owner Verified. Mason's Mansion Unlocked.");
-            document.getElementById('ownerPanel').style.display = 'block';
-            document.body.style.boxShadow = "inset 0 0 100px #7000ff";
-        } else if (pass === "honey") {
-            alert("Guest Access Granted.");
+    function checkEntry() {
+        const pass = prompt("WELCOME TO THE MANSION. Access Key:");
+        if (pass === "honey") {
+            document.getElementById('mainContent').style.display = 'block';
+        } else if (pass === "masononly69") {
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('ownerArea').style.display = 'block';
+            alert("OWNER VERIFIED. Welcome back, Mason.");
         } else {
-            alert("Denied.");
+            alert("ACCESS DENIED.");
+            location.reload();
         }
     }
 
-    // Mouse follow effect for the cool factor
+    function triggerLogin() {
+        const devPass = prompt("Developer Override Key:");
+        if (devPass === "masononly69") {
+            document.getElementById('ownerArea').style.display = 'block';
+            document.getElementById('ownerArea').scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
     document.addEventListener('mousemove', (e) => {
         const x = (e.clientX / window.innerWidth) * 100;
         const y = (e.clientY / window.innerHeight) * 100;
-        document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, #0a0a0a 0%, #050505 70%)`;
+        document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, #0a0a0d 0%, #020205 60%)`;
     });
+
+    // --------------------------------------------------
+    // Simple 2D physics engine: circles + walls
+    // --------------------------------------------------
+    const physicsLab = (() => {
+        const canvas = document.getElementById('physicsCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+
+        function resize() {
+            const rect = canvas.getBoundingClientRect();
+            width = rect.width;
+            height = rect.height;
+            const scale = window.devicePixelRatio || 1;
+            canvas.width = width * scale;
+            canvas.height = height * scale;
+            ctx.setTransform(scale, 0, 0, scale, 0, 0);
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        const balls = [];
+        let gravityOn = true;
+        let gravity = 900;
+        let restitution = 0.75;
+        let friction = 0.995;
+        let lastTime = performance.now();
+        let mouse = { x: 0, y: 0, down: false, button: 0 };
+        let dragIndex = -1;
+        let dragOffset = { x: 0, y: 0 };
+        let prevMouse = { x: 0, y: 0 };
+        let spawnRadius = 18;
+
+        class Ball {
+            constructor(x, y, r) {
+                this.x = x;
+                this.y = y;
+                this.r = r;
+                this.vx = (Math.random() - 0.5) * 200;
+                this.vy = (Math.random() - 0.5) * 200;
+                this.mass = r * r * 0.02;
+                this.color = randomNeonColor();
+            }
+        }
+
+        function randomNeonColor() {
+            const palette = ['#00f2ff', '#bc13fe', '#ff2079', '#fffb00', '#00ff85'];
+            return palette[Math.floor(Math.random() * palette.length)];
+        }
+
+        function spawnRandom(count = 1) {
+            for (let i = 0; i < count; i++) {
+                const r = 10 + Math.random() * 25;
+                const x = r + Math.random() * (width - 2 * r);
+                const y = r + Math.random() * (height - 2 * r);
+                balls.push(new Ball(x, y, r));
+            }
+        }
+
+        function clear() {
+            balls.length = 0;
+        }
+
+        function toggleGravity() {
+            gravityOn = !gravityOn;
+        }
+
+        function randomKick() {
+            balls.forEach(b => {
+                b.vx += (Math.random() - 0.5) * 600;
+                b.vy += (Math.random() - 0.5) * 600;
+            });
+        }
+
+        canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+        canvas.addEventListener('mousedown', e => {
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+            mouse.down = true;
+            mouse.button = e.button;
+            prevMouse.x = mouse.x;
+            prevMouse.y = mouse.y;
+
+            if (e.button === 2) {
+                balls.push(new Ball(mouse.x, mouse.y, spawnRadius));
+                return;
+            }
+
+            let nearest = -1;
+            let minDist = Infinity;
+            for (let i = 0; i < balls.length; i++) {
+                const b = balls[i];
+                const dx = mouse.x - b.x;
+                const dy = mouse.y - b.y;
+                const d2 = dx * dx + dy * dy;
+                if (d2 <= b.r * b.r && d2 < minDist) {
+                    nearest = i;
+                    minDist = d2;
+                }
+            }
+            dragIndex = nearest;
+            if (dragIndex !== -1) {
+                const b = balls[dragIndex];
+                dragOffset.x = mouse.x - b.x;
+                dragOffset.y = mouse.y - b.y;
+                b.vx = 0;
+                b.vy = 0;
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            mouse.down = false;
+            dragIndex = -1;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            mouse.down = false;
+            dragIndex = -1;
+        });
+
+        canvas.addEventListener('mousemove', e => {
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+            if (dragIndex !== -1) {
+                const b = balls[dragIndex];
+                const dx = mouse.x - dragOffset.x - b.x;
+                const dy = mouse.y - dragOffset.y - b.y;
+                b.x = mouse.x - dragOffset.x;
+                b.y = mouse.y - dragOffset.y;
+                b.vx = dx * 60;
+                b.vy = dy * 60;
+            }
+            prevMouse.x = mouse.x;
+            prevMouse.y = mouse.y;
+        });
+
+        canvas.addEventListener('wheel', e => {
+            e.preventDefault();
+            spawnRadius += e.deltaY > 0 ? -2 : 2;
+            if (spawnRadius < 6) spawnRadius = 6;
+            if (spawnRadius > 60) spawnRadius = 60;
+        }, { passive: false });
+
+        function step(dt) {
+            const maxStep = 0.02;
+            if (dt > maxStep) dt = maxStep;
+
+            for (const b of balls) {
+                if (gravityOn) b.vy += gravity * dt;
+                b.vx *= friction;
+                b.vy *= friction;
+                b.x += b.vx * dt;
+                b.y += b.vy * dt;
+
+                if (b.x - b.r < 0) {
+                    b.x = b.r;
+                    b.vx *= -restitution;
+                } else if (b.x + b.r > width) {
+                    b.x = width - b.r;
+                    b.vx *= -restitution;
+                }
+
+                if (b.y - b.r < 0) {
+                    b.y = b.r;
+                    b.vy *= -restitution;
+                } else if (b.y + b.r > height) {
+                    b.y = height - b.r;
+                    b.vy *= -restitution;
+                }
+            }
+
+            for (let i = 0; i < balls.length; i++) {
+                for (let j = i + 1; j < balls.length; j++) {
+                    resolveCollision(balls[i], balls[j]);
+                }
+            }
+        }
+
+        function resolveCollision(a, b) {
+            const dx = b.x - a.x;
+            const dy = b.y - a.y;
+            const dist2 = dx * dx + dy * dy;
+            const minDist = a.r + b.r;
+            if (dist2 === 0 || dist2 > minDist * minDist) return;
+            const dist = Math.sqrt(dist2);
+            const nx = dx / dist;
+            const ny = dy / dist;
+
+            const overlap = minDist - dist;
+            const totalMass = a.mass + b.mass || 1;
+            const pa = overlap * (b.mass / totalMass);
+            const pb = overlap * (a.mass / totalMass);
+            a.x -= nx * pa;
+            a.y -= ny * pa;
+            b.x += nx * pb;
+            b.y += ny * pb;
+
+            const rvx = b.vx - a.vx;
+            const rvy = b.vy - a.vy;
+            const velAlongNormal = rvx * nx + rvy * ny;
+            if (velAlongNormal > 0) return;
+
+            const e = restitution;
+            const j = -(1 + e) * velAlongNormal / (1 / a.mass + 1 / b.mass);
+            const impulseX = j * nx;
+            const impulseY = j * ny;
+            a.vx -= impulseX / a.mass;
+            a.vy -= impulseY / a.mass;
+            b.vx += impulseX / b.mass;
+            b.vy += impulseY / b.mass;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, 'rgba(0,242,255,0.15)');
+            gradient.addColorStop(1, 'rgba(188,19,254,0.05)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            for (const b of balls) {
+                const glow = ctx.createRadialGradient(
+                    b.x - b.r * 0.3, b.y - b.r * 0.3, b.r * 0.2,
+                    b.x, b.y, b.r * 1.4
+                );
+                glow.addColorStop(0, b.color);
+                glow.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = glow;
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.r * 1.6, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = b.color;
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+
+        function loop(now) {
+            const dt = (now - lastTime) / 1000;
+            lastTime = now;
+            step(dt);
+            draw();
+            requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+
+        spawnRandom(18);
+
+        return {
+            spawnRandom,
+            clear,
+            toggleGravity,
+            randomKick
+        };
+    })();
 </script>
 
 </body>
