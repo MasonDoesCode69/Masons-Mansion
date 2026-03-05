@@ -1,74 +1,253 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mason's Mansion | Elite Unblocked 2026</title>
     
-    <!-- Dependencies -->
+    <!-- External Assets -->
+    <script src="https://cdnjs.cloudflare.com"></script>
     <script src="https://cdnjs.cloudflare.com"></script>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
 
     <style>
+        /* 
+           ========================================
+           MASON'S MANSION: THE GLOBAL STYLESHEET
+           CORE UI DEFINITIONS FOR 2026
+           ========================================
+        */
         :root {
             --primary: #00f2ff;
             --accent: #bc13fe;
             --bg: #020205;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --glow: 0 0 20px rgba(0, 242, 255, 0.3);
+            --font-main: 'Space Grotesk', sans-serif;
+            --font-display: 'Syncopate', sans-serif;
+            --marc-color: #00ff88;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
 
         body {
             background-color: var(--bg);
             color: #fff;
-            font-family: 'Space Grotesk', sans-serif;
-            margin: 0;
+            font-family: var(--font-main);
             overflow-x: hidden;
-            background: radial-gradient(circle at 50% 50%, #0a0a12 0%, #020205 100%);
+            line-height: 1.6;
         }
 
-        /* Loading Screen */
+        /* Background Animated Particles */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            filter: blur(1px);
+        }
+
+        /* Entry Gate Overlay */
         #entryGate {
             position: fixed;
             inset: 0;
-            background: var(--bg);
-            z-index: 9999;
+            background: radial-gradient(circle at center, #0a0a1a 0%, #020205 100%);
+            z-index: 10000;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.8s ease;
+            transition: all 1.2s cubic-bezier(0.7, 0, 0.3, 1);
         }
 
-        .neon-glow {
+        .mansion-logo-big {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 8vw, 5rem);
+            letter-spacing: 15px;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px var(--primary));
+        }
+
+        /* 
+           ========================================
+           NAVIGATION & HEADER
+           ========================================
+        */
+        nav {
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            font-family: var(--font-display);
+            font-weight: 700;
             color: var(--primary);
-            text-shadow: 0 0 20px var(--primary);
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+
+        /* 
+           ========================================
+           M.A.R.C. AI INTERFACE
+           ========================================
+        */
+        .marc-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 350px;
+            background: rgba(5, 5, 10, 0.9);
+            border: 1px solid var(--marc-color);
+            border-radius: 20px;
+            z-index: 1000;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.5s;
+        }
+
+        .marc-container.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .marc-header {
+            padding: 15px;
+            background: rgba(0, 255, 136, 0.1);
+            border-bottom: 1px solid var(--marc-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .marc-status {
+            width: 10px;
+            height: 10px;
+            background: var(--marc-color);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        .marc-body {
+            height: 300px;
+            padding: 15px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .marc-input-area {
+            padding: 15px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+        }
+
+        .marc-input {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 12px;
+            color: #fff;
+            width: 100%;
+            outline: none;
+        }
+
+        /* 
+           ========================================
+           GRID & CARDS
+           ========================================
+        */
+        .container { max-width: 1300px; margin: 0 auto; padding: 4rem 2rem; }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2.5rem;
         }
 
         .mansion-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
+            background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 25px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-align: center;
+            border-radius: 28px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: 0.4s ease;
         }
 
-        .mansion-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-            box-shadow: 0 0 40px rgba(0, 242, 255, 0.15);
+        .mansion-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, transparent, transparent, var(--primary));
+            animation: rotate 6s linear infinite;
+            opacity: 0;
+            transition: 0.5s;
+        }
+
+        .mansion-card:hover::before { opacity: 0.2; }
+
+        .mansion-card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        /* 
+           ========================================
+           PHYSICS PLAYGROUND
+           ========================================
+        */
+        .physics-wrapper {
+            margin-top: 6rem;
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 2rem;
+            border: 1px solid var(--border);
         }
 
         #physicsCanvas {
             width: 100%;
-            height: 500px;
-            border-radius: 24px;
-            border: 1px solid var(--border);
-            background: #050508;
+            height: 550px;
+            border-radius: 20px;
+            background: #000;
+            overflow: hidden;
+            position: relative;
         }
 
+        /* Buttons */
         .btn-mansion {
             background: linear-gradient(90deg, var(--primary), var(--accent));
             border: none;
@@ -76,131 +255,291 @@
             font-weight: 700;
             padding: 12px 30px;
             border-radius: 50px;
-            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
             transition: 0.3s;
         }
 
         .btn-mansion:hover {
-            filter: brightness(1.2);
-            box-shadow: 0 0 20px var(--primary);
+            transform: scale(1.05);
+            box-shadow: 0 0 30px var(--primary);
         }
 
-        /* Grid Layout */
-        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        /* 
+           ========================================
+           ANIMATIONS
+           ========================================
+        */
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
     </style>
 </head>
 <body onload="initMansion()">
 
+<canvas id="bg-canvas"></canvas>
+
 <div id="entryGate">
-    <h1 class="neon-glow" style="font-size: 3rem;">AUTHENTICATING...</h1>
-    <button class="btn-mansion" onclick="enterMansion()">ACCESS VAULT</button>
+    <div class="mansion-logo-big">MASON</div>
+    <div class="mansion-logo-big" style="font-size: 2rem; letter-spacing: 5px; opacity: 0.7;">MANSION 2026</div>
+    <p style="margin-bottom: 2rem; opacity: 0.5;">DECRYPTING PROTOCOLS...</p>
+    <button class="btn-mansion" onclick="accessSystem()">INITIALIZE SESSION</button>
 </div>
 
-<nav style="padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-    <div class="neon-glow" style="font-weight: bold; font-size: 1.5rem;">MASON'S MANSION</div>
-    <button class="btn-mansion" onclick="triggerLogin()" style="padding: 8px 20px;">DEV LOGIN</button>
+<nav>
+    <a href="#" class="nav-brand">M.M. / ELITE</a>
+    <div style="display: flex; gap: 20px; align-items: center;">
+        <span id="system-clock" style="font-family: monospace; opacity: 0.6;">00:00:00</span>
+        <button class="btn-mansion" onclick="toggleMARC()" style="background: var(--marc-color); color: #000;">ASK M.A.R.C.</button>
+        <button class="btn-mansion" onclick="devLogin()" style="padding: 10px 15px;">DEV</button>
+    </div>
 </nav>
 
-<div class="container" id="mainContent" style="opacity: 0; transition: 1s;">
-    <header style="text-align: center; margin-bottom: 4rem;">
-        <h1 style="font-size: 4rem; margin-bottom: 0;">Elite <span class="neon-glow">Unblocked</span></h1>
-        <p style="opacity: 0.6;">Secure, Fast, and Optimized for 2026 Networks.</p>
+<div class="container" id="contentBody" style="opacity: 0; transform: translateY(30px);">
+    <header style="margin-bottom: 5rem;">
+        <h1 style="font-size: 3.5rem; font-family: var(--font-display);">THE <span class="neon-glow" style="color:var(--primary)">VAULT</span></h1>
+        <p style="font-size: 1.2rem; opacity: 0.6; max-width: 600px;">Welcome back, Mason. Your 2026 unblocked environment is synchronized across all nodes.</p>
     </header>
 
-    <div class="grid">
-        <!-- Game Cards -->
+    <div class="main-grid">
+        <!-- Game Node 1 -->
         <div class="mansion-card">
-            <h3>Cool Math Games</h3>
-            <p>High-logic puzzles for elite thinkers.</p>
-            <a href="https://www.coolmathgames.com" target="_blank"><button class="btn-mansion">LAUNCH</button></a>
+            <div class="mansion-card-content">
+                <div class="game-icon">🎮</div>
+                <h3>Cool Math Hub</h3>
+                <p style="margin: 1rem 0; opacity: 0.6;">Bypass 4.0 filters for the classic logic library.</p>
+                <a href="https://www.coolmathgames.com" target="_blank"><button class="btn-mansion">LOAD ENGINE</button></a>
+            </div>
         </div>
+
+        <!-- Game Node 2 -->
         <div class="mansion-card">
-            <h3>Subway Surfers</h3>
-            <p>HTML5 optimized runner.</p>
-            <button class="btn-mansion">LAUNCH</button>
+            <div class="mansion-card-content">
+                <div class="game-icon">⚡</div>
+                <h3>Surfer.io</h3>
+                <p style="margin: 1rem 0; opacity: 0.6;">Lag-free subway surfer instance with local caching.</p>
+                <button class="btn-mansion">EXECUTE</button>
+            </div>
         </div>
+
+        <!-- Game Node 3 -->
         <div class="mansion-card">
-            <h3>Dev Tools</h3>
-            <p>Bypass scripts and proxy links.</p>
-            <button class="btn-mansion">BROWSE</button>
+            <div class="mansion-card-content">
+                <div class="game-icon">🛡️</div>
+                <h3>Proxy Node 9</h3>
+                <p style="margin: 1rem 0; opacity: 0.6;">Ultra-fast browser-in-browser for blocked assets.</p>
+                <button class="btn-mansion">CONNECT</button>
+            </div>
         </div>
     </div>
 
-    <!-- Physics Section -->
-    <div style="margin-top: 5rem;">
-        <h2 class="neon-glow">Matter Playground</h2>
-        <div id="physicsCanvas"></div>
-        <div style="margin-top: 15px; display: flex; gap: 10px;">
-            <button class="btn-mansion" onclick="addShape()">ADD BOX</button>
-            <button class="btn-mansion" onclick="resetPhysics()">RESET</button>
+    <!-- M.A.R.C. CONTROLLED PHYSICS -->
+    <div class="physics-wrapper">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
+            <div>
+                <h2 style="font-family: var(--font-display);">PHYSICS <span style="color:var(--accent)">PLAYGROUND</span></h2>
+                <p style="opacity: 0.5;">Tell M.A.R.C. to "Add shapes" or "Explode".</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-mansion" onclick="addShape('rect')">+ BOX</button>
+                <button class="btn-mansion" onclick="addShape('circle')">+ ORB</button>
+                <button class="btn-mansion" style="background: red;" onclick="clearWorld()">WIPE</button>
+            </div>
         </div>
+        <div id="physicsCanvas"></div>
+    </div>
+</div>
+
+<!-- M.A.R.C. AI CONSOLE -->
+<div class="marc-container" id="marcUI">
+    <div class="marc-header">
+        <div class="marc-status"></div>
+        <span style="font-weight: bold; color: var(--marc-color);">M.A.R.C. AI CONSOLE</span>
+    </div>
+    <div class="marc-body" id="marcChat">
+        <p><strong>[SYSTEM]:</strong> M.A.R.C. Online. Hello, Mason. I am your Mansion Asset & Response Console. Type commands below to interact with the environment.</p>
+    </div>
+    <div class="marc-input-area">
+        <input type="text" class="marc-input" id="marcInput" placeholder="Command M.A.R.C..." onkeydown="if(event.key === 'Enter') handleMARC()">
     </div>
 </div>
 
 <script>
-    // Physics Engine Core
-    let engine, render, runner;
-    const { Engine, Render, Runner, Bodies, Composite, Mouse, MouseConstraint } = Matter;
+/* 
+   ========================================
+   CORE SCRIPTING ENGINE
+   ========================================
+*/
 
-    function initPhysics() {
-        engine = Engine.create();
-        render = Render.create({
-            element: document.getElementById('physicsCanvas'),
-            engine: engine,
-            options: {
-                width: document.getElementById('physicsCanvas').offsetWidth,
-                height: 500,
-                wireframes: false,
-                background: 'transparent'
+// Physics Engine Setup
+const { Engine, Render, Runner, Bodies, Composite, Mouse, MouseConstraint, Vector } = Matter;
+let engine, render, runner;
+
+function initPhysics() {
+    engine = Engine.create();
+    const container = document.getElementById('physicsCanvas');
+    
+    render = Render.create({
+        element: container,
+        engine: engine,
+        options: {
+            width: container.offsetWidth,
+            height: 550,
+            wireframes: false,
+            background: '#050508'
+        }
+    });
+
+    const walls = [
+        Bodies.rectangle(container.offsetWidth/2, 560, container.offsetWidth, 60, { isStatic: true, render: { fillStyle: '#111' } }),
+        Bodies.rectangle(-30, 275, 60, 550, { isStatic: true }),
+        Bodies.rectangle(container.offsetWidth + 30, 275, 60, 550, { isStatic: true })
+    ];
+
+    Composite.add(engine.world, walls);
+    
+    const mouse = Mouse.create(render.canvas);
+    const mouseConstraint = MouseConstraint.create(engine, {
+        mouse: mouse,
+        constraint: { stiffness: 0.1, render: { visible: false } }
+    });
+
+    Composite.add(engine.world, mouseConstraint);
+    Render.run(render);
+    runner = Runner.create();
+    Runner.run(runner, engine);
+}
+
+// M.A.R.C. Logic
+function handleMARC() {
+    const input = document.getElementById('marcInput');
+    const chat = document.getElementById('marcChat');
+    const val = input.value.toLowerCase();
+    
+    if(!val) return;
+
+    // Log User Input
+    chat.innerHTML += `<p style="color:#fff; margin-top:10px;">> ${val}</p>`;
+    
+    let response = "I don't recognize that directive, Mason.";
+
+    if(val.includes("hello") || val.includes("hi")) {
+        response = "Greetings. Mansion status is optimal. Systems at 98% efficiency.";
+    } else if(val.includes("spawn") || val.includes("add")) {
+        response = "Initializing matter replication. 5 nodes added.";
+        for(let i=0; i<5; i++) addShape('rect');
+    } else if(val.includes("gravity")) {
+        engine.gravity.y = engine.gravity.y === 0 ? 1 : 0;
+        response = `Gravity constant modified to ${engine.gravity.y}.`;
+    } else if(val.includes("explode") || val.includes("chaos")) {
+        response = "Applying kinetic impulse to all objects.";
+        const bodies = Composite.allBodies(engine.world);
+        bodies.forEach(b => {
+            if(!b.isStatic) {
+                Matter.Body.applyForce(b, b.position, { 
+                    x: (Math.random() - 0.5) * 0.5, 
+                    y: (Math.random() - 0.5) * 0.5 
+                });
             }
         });
+    } else if(val.includes("clear") || val.includes("wipe")) {
+        clearWorld();
+        response = "Physics buffer purged.";
+    }
 
-        const ground = Bodies.rectangle(400, 490, 1600, 60, { isStatic: true, render: { fillStyle: '#bc13fe' } });
-        const leftWall = Bodies.rectangle(0, 250, 60, 500, { isStatic: true });
-        const rightWall = Bodies.rectangle(1200, 250, 60, 500, { isStatic: true });
+    chat.innerHTML += `<p style="color:var(--marc-color)"><strong>[M.A.R.C.]:</strong> ${response}</p>`;
+    chat.scrollTop = chat.scrollHeight;
+    input.value = "";
+}
 
-        Composite.add(engine.world, [ground, leftWall, rightWall]);
-
-        // Interactivity
-        const mouse = Mouse.create(render.canvas);
-        const mouseConstraint = MouseConstraint.create(engine, {
-            mouse: mouse,
-            constraint: { stiffness: 0.2, render: { visible: false } }
+// UI Utilities
+function initMansion() {
+    // Clock
+    setInterval(() => {
+        document.getElementById('system-clock').innerText = new Date().toLocaleTimeString();
+    }, 1000);
+    
+    // Background Particles
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const particles = [];
+    for(let i=0; i<80; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2,
+            speed: Math.random() * 0.5
         });
-
-        Composite.add(engine.world, mouseConstraint);
-        Render.run(render);
-        runner = Runner.create();
-        Runner.run(runner, engine);
     }
 
-    function addShape() {
-        const box = Bodies.rectangle(Math.random() * 400 + 100, 0, 50, 50, {
-            render: { fillStyle: '#00f2ff' },
-            restitution: 0.8
+    function animate() {
+        ctx.clearRect(0,0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(0, 242, 255, 0.2)";
+        particles.forEach(p => {
+            p.y -= p.speed;
+            if(p.y < 0) p.y = canvas.height;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+            ctx.fill();
         });
-        Composite.add(engine.world, box);
+        requestAnimationFrame(animate);
     }
+    animate();
+}
 
-    function enterMansion() {
-        document.getElementById('entryGate').style.opacity = '0';
-        setTimeout(() => {
-            document.getElementById('entryGate').style.display = 'none';
-            document.getElementById('mainContent').style.opacity = '1';
-            initPhysics();
-        }, 800);
-    }
+function accessSystem() {
+    const gate = document.getElementById('entryGate');
+    gate.style.opacity = '0';
+    gate.style.transform = 'scale(1.2)';
+    setTimeout(() => {
+        gate.style.display = 'none';
+        gsap.to("#contentBody", { opacity: 1, y: 0, duration: 1.5 });
+        initPhysics();
+    }, 1200);
+}
 
-    function triggerLogin() {
-        const pass = prompt("Enter Mansion Security Key:");
-        if(pass === "mason2026") {
-            alert("Welcome, Architect.");
-            document.body.style.border = "5px solid var(--accent)";
-        } else {
-            alert("Access Denied.");
-        }
+function addShape(type) {
+    const x = Math.random() * 400 + 100;
+    let shape;
+    if(type === 'rect') {
+        shape = Bodies.rectangle(x, 0, 50, 50, {
+            render: { fillStyle: Math.random() > 0.5 ? '#00f2ff' : '#bc13fe' },
+            restitution: 0.6
+        });
+    } else {
+        shape = Bodies.circle(x, 0, 25, {
+            render: { fillStyle: '#fff' },
+            restitution: 0.9
+        });
     }
+    Composite.add(engine.world, shape);
+}
+
+function clearWorld() {
+    const bodies = Composite.allBodies(engine.world);
+    bodies.forEach(b => { if(!b.isStatic) Composite.remove(engine.world, b); });
+}
+
+function toggleMARC() {
+    document.getElementById('marcUI').classList.toggle('active');
+}
+
+function devLogin() {
+    const key = prompt("VAULT KEY REQUIRED:");
+    if(key === "mason2026") {
+        alert("ACCESS GRANTED. OVERRIDE ENABLED.");
+        document.documentElement.style.setProperty('--primary', '#ff0055');
+    }
+}
 </script>
 </body>
 </html>
