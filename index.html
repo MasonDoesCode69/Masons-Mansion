@@ -3,35 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mason's Mansion Perfected</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="themeSwitcher.js"></script>
+    <title>Cool Game</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        #gameCanvas {
+            border: 1px solid #000;
+            background-color: #fff;
+        }
+        .theme {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#" onclick="toggleTheme()">Switch Theme</a></li>
-        </ul>
-    </nav>
-    <main>
-        <h1>Welcome to Mason's Mansion Perfected</h1>
-        <section id="qa-system">
-            <h2>M.A.R.C. AI Q&A Knowledge Base</h2>
-            <input type="text" id="user-input" placeholder="Ask a question..." />
-            <button id="ask-button">Ask</button>
-            <div id="answers"></div>
-        </section>
-    </main>
+    <h1>Welcome to the Cool Game</h1>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
     <script>
-        document.getElementById('ask-button').addEventListener('click', function() {
-            const userInput = document.getElementById('user-input').value;
-            // Logic for fetching answer from M.A.R.C. AI knowledge base
-            document.getElementById('answers').innerHTML += `<p>You asked: ${userInput}</p>`;
-            // Display mock answer
-            document.getElementById('answers').innerHTML += `<p>Mock answer for: ${userInput}</p>`;
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let themes = ['theme1', 'theme2', 'theme3']; // Add 100 themes
+        let currentTheme = 0;
+
+        function switchTheme() {
+            currentTheme = (currentTheme + 1) % themes.length;
+            document.body.className = themes[currentTheme];
+        }
+
+        class PhysicsEngine {
+            constructor() {
+                this.gravity = 0.5;
+                this.objects = [];
+            }
+            addObject(obj) {
+                this.objects.push(obj);
+            }
+            update() {
+                this.objects.forEach(obj => {
+                    obj.y += this.gravity;
+                });
+            }
+        }
+
+        class GameObject {
+            constructor(x, y, width, height) {
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+            }
+            draw() {
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
+
+        const engine = new PhysicsEngine();
+        const player = new GameObject(100, 100, 50, 50);
+        engine.addObject(player);
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            engine.update();
+            player.draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 't') {
+                switchTheme();
+            }
         });
+
+        gameLoop();
     </script>
 </body>
 </html>
