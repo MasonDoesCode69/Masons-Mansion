@@ -1,1 +1,37 @@
-Expanded features including 500+ lines of custom themes system and M.A.R.C. Q&A knowledge base.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mason's Mansion Perfected</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="themeSwitcher.js"></script>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#" onclick="toggleTheme()">Switch Theme</a></li>
+        </ul>
+    </nav>
+    <main>
+        <h1>Welcome to Mason's Mansion Perfected</h1>
+        <section id="qa-system">
+            <h2>M.A.R.C. AI Q&A Knowledge Base</h2>
+            <input type="text" id="user-input" placeholder="Ask a question..." />
+            <button id="ask-button">Ask</button>
+            <div id="answers"></div>
+        </section>
+    </main>
+    <script>
+        document.getElementById('ask-button').addEventListener('click', function() {
+            const userInput = document.getElementById('user-input').value;
+            // Logic for fetching answer from M.A.R.C. AI knowledge base
+            document.getElementById('answers').innerHTML += `<p>You asked: ${userInput}</p>`;
+            // Display mock answer
+            document.getElementById('answers').innerHTML += `<p>Mock answer for: ${userInput}</p>`;
+        });
+    </script>
+</body>
+</html>
